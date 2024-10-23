@@ -64,7 +64,7 @@ class MultipleSelectHierarchy {
     container.innerHTML = `
             <div class="dropdown">
                 <div class="input-group">
-                    <div class="form-control d-flex flex-wrap align-items-center" id="${this.id}-chips-container">
+                    <div class="form-control d-flex flex-wrap align-items-center" id="${this.id}-chips-container" tabindex="0">
                         <input type="text" class="border-0 flex-grow-1" id="${this.id}-input" placeholder="${this.options.placeholder}" readonly style="display: none;">
                     </div>
                     <input type="hidden" id="${this.id}-selected-items" name="${this.selectElement.name}">
@@ -108,7 +108,19 @@ class MultipleSelectHierarchy {
   }
 
   attachEventListeners() {
-    this.chipsContainer.addEventListener("click", () => this.showSelectCard());
+    this.chipsContainer.addEventListener("click", () => {
+      this.chipsContainer.focus();
+      this.showSelectCard();
+    });
+
+    this.chipsContainer.addEventListener("focus", () => {
+      this.chipsContainer.classList.add("focused");
+    });
+
+    this.chipsContainer.addEventListener("blur", () => {
+      this.chipsContainer.classList.remove("focused");
+    });
+
     document.addEventListener("click", (e) => {
       if (
         !this.selectCard.contains(e.target) &&
@@ -654,3 +666,4 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
+
