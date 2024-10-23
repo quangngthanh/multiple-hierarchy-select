@@ -1,0 +1,169 @@
+.multiple-select-hierarchy {
+    position: relative;
+    max-width: 400px;
+    margin: 0 auto;
+    font-size: 14px; /* Base font size for the component */
+}
+
+.multiple-select-hierarchy .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    width: 100%;
+    padding: 0.5rem 0;
+    margin: 0.125rem 0 0;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0,0,0,.15);
+    border-radius: 0.25rem;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.multiple-select-hierarchy .dropdown-menu.show {
+    display: block;
+}
+
+.multiple-select-hierarchy .list-group-item {
+    border: none;
+    padding: 0.375rem 0;
+}
+
+.multiple-select-hierarchy .form-check-input,
+.multiple-select-hierarchy .form-check-label {
+    cursor: pointer;
+}
+
+.multiple-select-hierarchy .form-check-input:checked + .form-check-label {
+    font-weight: bold;
+    color: #2F4BA0;
+}
+
+.multiple-select-hierarchy .chevron-right {
+    float: right;
+    line-height: 1.5;
+}
+
+.multiple-select-hierarchy .input {
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.multiple-select-hierarchy .select-card {
+    position: absolute;
+    z-index: 1000;
+    width: 100%;
+    top: 100%;
+    left: 0;
+    margin-top: 0.25rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    font-size: 14px;
+}
+
+.multiple-select-hierarchy .chip {
+    display: inline-flex;
+    align-items: center;
+    background-color: #e9ecef;
+    border-radius: 0.25rem; /* Updated border radius for chips */
+    padding: 0.125rem 0.25rem;
+    font-size: 12px;
+    line-height: 1.5;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    flex: 0 0 auto;
+}
+
+.multiple-select-hierarchy .chip .chip-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    min-width: 0;
+}
+
+.multiple-select-hierarchy .chip .close {
+    margin-left: 0.25rem;
+    cursor: pointer;
+    font-size: 12px;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.multiple-select-hierarchy .placeholder-text {
+    color: #6c757d;
+    font-size: 14px;
+}
+
+/* Updated styles for the search box */
+.multiple-select-hierarchy .search-container {
+    position: relative;
+    margin-bottom: 0.75rem;
+}
+
+.multiple-select-hierarchy .search-input-wrapper {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.multiple-select-hierarchy .search-icon {
+    padding: 0.25rem 0.5rem;
+    color: #6c757d;
+    font-size: 0px;
+}
+
+.multiple-select-hierarchy .search-input {
+    flex-grow: 1;
+    border: none;
+    padding: 0.25rem 0.5rem;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #495057;
+    background-color: transparent;
+}
+
+.multiple-select-hierarchy .search-input:focus {
+    outline: none;
+}
+
+.multiple-select-hierarchy .search-input-wrapper:focus-within {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.multiple-select-hierarchy .card-title {
+    font-size: 16px;
+    margin-bottom: 0.75rem;
+}
+
+.multiple-select-hierarchy .form-check-label {
+    font-size: 14px;
+}
+
+.multiple-select-hierarchy .form-check-input {
+    margin-top: 0.2rem;
+}
+
+.multiple-select-hierarchy .form-control {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 6px;
+    min-height: 38px;
+    overflow-x: hidden;
+    border-radius: 0.25rem !important
+}
+
+.multiple-select-hierarchy .btn-link:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

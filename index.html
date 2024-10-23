@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiple Select Location</title>
+    <link href="bootstrap.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <select class="form-select hierarchy-select" multiple name="location-user-like">
+            <option value="1">International</option>
+            <optgroup label="Hanoi (TP.Hà Nội)" data-value="2">
+                <option value="21">Ba Vi</option>
+                <option value="22">Chuong My</option>
+                <option value="23">Gia Lam</option>
+                <option value="24">Hoai Duc</option>
+                <option value="25">Me Linh</option>
+            </optgroup>
+            <optgroup label="Ho Chi Minh City (TP.HCM)" data-value="3">
+                <option value="31">District 1</option>
+                <option value="32">District 2</option>
+                <option value="33">District 3</option>
+                <option value="34">District 4</option>
+                <option value="35">District 5</option>
+            </optgroup>
+            <option value="4">Hai Phong (TP.Hải Phòng)</option>
+            <option value="5">Da Nang (TP.Đà Nẵng)</option>
+            <option value="6">Can Tho (TP.Cần Thơ)</option>
+            <option value="7">An Giang (Tỉnh An Giang)</option>
+            <option value="8">Bac Lieu (Tỉnh Bạc Liêu)</option>
+        </select>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
