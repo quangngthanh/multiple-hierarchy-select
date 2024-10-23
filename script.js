@@ -651,19 +651,16 @@ class MultipleSelectHierarchy {
     });
     return selectedValues;
   }
+
+  reset() {
+    this.selectedItems = {};
+    this.updateInput();
+    this.updateSelectionInfo();
+    this.renderItems(this.items);
+    this.updateSelectedValuesDisplay();
+    this.hideSelectCard();
+  }
 }
 
-// Usage
-document.addEventListener("DOMContentLoaded", () => {
-  const hierarchySelects = document.querySelectorAll("select.hierarchy-select");
-
-  hierarchySelects.forEach((selectElement) => {
-    new MultipleSelectHierarchy(selectElement, {
-      maxSelections: 2,
-      placeholder: "Please select",
-      searchPlaceholder: "Search",
-      maxSelectionsMessage: "You can select a maximum of {n} items.",
-    });
-  });
-});
-
+// Expose the MultipleSelectHierarchy class globally
+window.MultipleSelectHierarchy = MultipleSelectHierarchy;
