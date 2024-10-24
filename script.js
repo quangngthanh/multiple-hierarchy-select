@@ -9,13 +9,11 @@ class MultipleSelectHierarchy {
       allText: "All",
       clearAllText: "Clear all",
       selectedText: "You have selected {n} items",
-      maxSelectionsMessage: "You can only select up to {n} items.",
       ...options,
     };
     this.items = [];
     this.selectedItems = {};
 
-    // Store the instance in a static map using the select element as the key
     MultipleSelectHierarchy.instances.set(selectElement, this);
 
     this.init();
@@ -145,15 +143,13 @@ class MultipleSelectHierarchy {
 
   renderItems(items) {
     this.itemList.innerHTML = "";
+    const selectedParentCount = Object.keys(this.selectedItems).length;
     items.forEach((item) => {
       const li = document.createElement("li");
       li.className =
         "list-group-item d-flex justify-content-between align-items-center";
       const isChecked = this.selectedItems[item.id] !== undefined;
-      const isDisabled =
-        !isChecked &&
-        Object.keys(this.selectedItems).length >= this.options.maxSelections;
-
+      const isDisabled = !isChecked && selectedParentCount >= this.options.maxSelections;
       const hasChildren = item.children && item.children.length > 0;
 
       li.innerHTML = `
@@ -169,9 +165,7 @@ class MultipleSelectHierarchy {
         ${
           hasChildren
             ? `<button class="btn btn-link p-0" ${isDisabled ? "disabled" : ""}>
-                 <i class="${
-                   isDisabled ? "text-muted" : ""
-                 }">
+                 <i class="${isDisabled ? "text-muted" : ""}">
                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path d="m9 18 6-6-6-6"/></svg>
                  </i>
                </button>`
@@ -251,26 +245,7 @@ class MultipleSelectHierarchy {
   }
 
   handleItemSelection(item, isChecked) {
-    const selectedParentCount = Object.keys(this.selectedItems).length;
-    const isNewSelection = !this.selectedItems[item.id];
-
     if (isChecked) {
-      if (isNewSelection && selectedParentCount >= this.options.maxSelections) {
-        alert(
-          this.options.maxSelectionsMessage.replace(
-            "{n}",
-            this.options.maxSelections
-          )
-        );
-        // Prevent the checkbox from being checked
-        setTimeout(() => {
-          const checkbox = document.getElementById(
-            `${this.id}-item-${item.id}`
-          );
-          if (checkbox) checkbox.checked = false;
-        }, 0);
-        return false;
-      }
       this.selectedItems[item.id] = null;
     } else {
       delete this.selectedItems[item.id];
@@ -279,7 +254,6 @@ class MultipleSelectHierarchy {
     this.updateSelectionInfo();
     this.renderItems(this.items);
     this.updateSelectedValuesDisplay();
-    return true;
   }
 
   handleChildSelection(parent, child, isChecked) {
@@ -687,7 +661,6 @@ document.addEventListener("DOMContentLoaded", () => {
       maxSelections: 3,
       placeholder: "Please select",
       searchPlaceholder: "Search",
-      maxSelectionsMessage: "You can select a maximum of {n} items.",
     });
   });
 
