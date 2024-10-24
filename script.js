@@ -15,6 +15,9 @@ class MultipleSelectHierarchy {
     this.items = [];
     this.selectedItems = {};
 
+    // Store the instance in a static map using the select element as the key
+    MultipleSelectHierarchy.instances.set(selectElement, this);
+
     this.init();
   }
 
@@ -660,7 +663,43 @@ class MultipleSelectHierarchy {
     this.updateSelectedValuesDisplay();
     this.hideSelectCard();
   }
+
+  // Static method to reset instances based on a selector
+  static resetBySelector(selector) {
+    const selectElements = document.querySelectorAll(`${selector} select.hierarchy-select`);
+    selectElements.forEach(selectElement => {
+      const instance = MultipleSelectHierarchy.instances.get(selectElement);
+      if (instance) {
+        instance.reset();
+      }
+    });
+  }
+
+  // Static property to store instances
+  static instances = new Map();
 }
+
+// Usage example:
+document.addEventListener("DOMContentLoaded", () => {
+  const hierarchySelects = document.querySelectorAll("select.hierarchy-select");
+  hierarchySelects.forEach((selectElement) => {
+    new MultipleSelectHierarchy(selectElement, {
+      maxSelections: 3,
+      placeholder: "Please select",
+      searchPlaceholder: "Search",
+      maxSelectionsMessage: "You can select a maximum of {n} items.",
+    });
+  });
+
+  // Example of how to use the resetBySelector method
+  document.querySelectorAll('form').forEach(form => {
+    form.addEventListener('reset', (event) => {
+      event.preventDefault();
+      MultipleSelectHierarchy.resetBySelector(`#${form.id}`);
+      form.reset();
+    });
+  });
+});
 
 // Expose the MultipleSelectHierarchy class globally
 window.MultipleSelectHierarchy = MultipleSelectHierarchy;
