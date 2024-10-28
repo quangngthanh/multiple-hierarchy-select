@@ -211,14 +211,6 @@
     margin-right: 8px;
 }
 
-/* Remove these CSS classes as we're replacing them with SVG icons */
-.multiple-select-hierarchy .chevron-right,
-.multiple-select-hierarchy .search-icon,
-.multiple-select-hierarchy .search-icon:after,
-.multiple-select-hierarchy .back-arrow {
-    display: none;
-}
-
 /* Add new SVG icon styles */
 .multiple-select-hierarchy .icon-chevron-right,
 .multiple-select-hierarchy .icon-search,
