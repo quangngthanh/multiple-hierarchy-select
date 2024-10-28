@@ -77,7 +77,10 @@ class MultipleSelectHierarchy {
                         <h5 class="card-title mb-3">${this.options.placeholder}</h5>
                         <div class="search-container">
                           <div class="search-input-wrapper">
-                            <i class="search-icon"></i>
+                            <svg class="icon-search" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M7.33333 12.6667C10.2789 12.6667 12.6667 10.2789 12.6667 7.33333C12.6667 4.38781 10.2789 2 7.33333 2C4.38781 2 2 4.38781 2 7.33333C2 10.2789 4.38781 12.6667 7.33333 12.6667Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                              <path d="M14 14L11 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
                             <input type="text" class="search-input" placeholder="${this.options.searchPlaceholder}" id="${this.id}-search-input">
                           </div>
                         </div>
@@ -152,7 +155,6 @@ class MultipleSelectHierarchy {
       const isDisabled = !isChecked && selectedParentCount >= this.options.maxSelections;
       const hasChildren = item.children && item.children.length > 0;
 
-      // Add selection count or "all" text for parents with children
       let selectionText = '';
       if (hasChildren && isChecked) {
         if (this.selectedItems[item.id] === null) {
@@ -164,18 +166,18 @@ class MultipleSelectHierarchy {
 
       li.innerHTML = `
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" id="${this.id}-item-${
-        item.id
-      }" 
+          <input class="form-check-input" type="checkbox" id="${this.id}-item-${item.id}" 
             ${isChecked ? "checked" : ""} ${isDisabled ? "disabled" : ""}>
-          <label class="form-check-label" for="${this.id}-item-${item.id}">${
-        item.name
-      }<span class="text-black-50">${selectionText}</span></label>
+          <label class="form-check-label" for="${this.id}-item-${item.id}">${item.name}
+            <span class="text-black-50">${selectionText}</span>
+          </label>
         </div>
         ${
           hasChildren
             ? `<button class="btn btn-link p-0" ${isDisabled ? "disabled" : ""}>
-                 <i class="chevron-right ${isDisabled ? "text-muted" : ""}"></i>
+                <svg class="icon-chevron-right ${isDisabled ? "text-muted" : ""}" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
                </button>`
             : ""
         }
@@ -563,9 +565,13 @@ class MultipleSelectHierarchy {
     header.className = "card-title mt-0 d-flex align-items-center";
 
     if (showBackButton) {
-      const backButton = document.createElement("i");
-      backButton.className = "back-arrow me-2";
-
+      const backButton = document.createElement("button");
+      backButton.className = "btn-back";
+      backButton.innerHTML = `
+        <svg class="icon-arrow-left" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      `;
       backButton.style.cursor = "pointer";
       backButton.addEventListener("click", this.handleBackClick.bind(this));
       header.appendChild(backButton);

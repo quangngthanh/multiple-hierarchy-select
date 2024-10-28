@@ -210,3 +210,54 @@
     transform: rotate(45deg);
     margin-right: 8px;
 }
+
+/* Remove these CSS classes as we're replacing them with SVG icons */
+.multiple-select-hierarchy .chevron-right,
+.multiple-select-hierarchy .search-icon,
+.multiple-select-hierarchy .search-icon:after,
+.multiple-select-hierarchy .back-arrow {
+    display: none;
+}
+
+/* Add new SVG icon styles */
+.multiple-select-hierarchy .icon-chevron-right,
+.multiple-select-hierarchy .icon-search,
+.multiple-select-hierarchy .icon-arrow-left {
+    color: #666;
+}
+
+.multiple-select-hierarchy .icon-chevron-right {
+    width: 20px;
+    height: 20px;
+}
+
+.multiple-select-hierarchy .icon-search {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.multiple-select-hierarchy .icon-arrow-left {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+}
+
+.multiple-select-hierarchy .btn-back {
+    background: none;
+    border: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    margin-right: 8px;
+}
+
+.multiple-select-hierarchy .btn-back:hover {
+    opacity: 0.8;
+}
+
+/* Update search input padding for new SVG icon */
+.multiple-select-hierarchy .search-input {
+    padding-left: 35px;
+}
