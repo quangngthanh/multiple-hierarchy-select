@@ -362,23 +362,59 @@ class MultipleSelectHierarchy {
 
   handleSearch(searchTerm) {
     const searchLower = searchTerm.toLowerCase();
-    const filteredItems = this.items
-      .map((item) => {
-        if (item.children) {
-          return {
-            ...item,
-            children: item.children.filter((child) =>
-              child.name.toLowerCase().includes(searchLower)
-            ),
-          };
-        }
-        return item.name.toLowerCase().includes(searchLower) ? item : null;
-      })
-      .filter(
-        (item) => item !== null && (!item.children || item.children.length > 0)
-      );
+    
+    // If we're in a children view (selectedParent exists)
+    if (this.selectedParent) {
+        const filteredChildren = this.selectedParent.children.filter(child => 
+            child.name.toLowerCase().includes(searchLower)
+        );
+        
+        // Re-render the children list with filtered results
+        this.itemList.innerHTML = `
+            <li class="list-group-item">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="${this.id}-allChildren">
+                    <label class="form-check-label" for="${this.id}-allChildren">${this.options.allText}</label>
+                </div>
+            </li>
+        `;
 
-    this.renderItems(filteredItems);
+        const allChildrenSelected = this.selectedItems[this.selectedParent.id] === null;
+
+        // Render filtered children
+        filteredChildren.forEach((child) => {
+            const li = document.createElement("li");
+            li.className = "list-group-item";
+            const isChecked =
+                allChildrenSelected ||
+                (this.selectedItems[this.selectedParent.id] &&
+                    this.selectedItems[this.selectedParent.id].includes(child.id));
+
+            li.innerHTML = `
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="${this.id}-child-${child.id}" 
+                        ${isChecked ? "checked" : ""}>
+                    <label class="form-check-label" for="${this.id}-child-${child.id}">${child.name}</label>
+                </div>
+            `;
+            li.querySelector("input").addEventListener("change", (e) =>
+                this.handleChildSelection(this.selectedParent, child, e.target.checked)
+            );
+            this.itemList.appendChild(li);
+        });
+
+        const allChildrenCheckbox = this.itemList.querySelector(`#${this.id}-allChildren`);
+        allChildrenCheckbox.checked = allChildrenSelected;
+        allChildrenCheckbox.addEventListener("change", (e) =>
+            this.handleAllChildrenSelection(this.selectedParent, e.target.checked)
+        );
+    } else {
+        // We're in the main parent list view
+        const filteredItems = this.items.filter(item =>
+            item.name.toLowerCase().includes(searchLower)
+        );
+        this.renderItems(filteredItems);
+    }
   }
 
   showSelectCard() {
