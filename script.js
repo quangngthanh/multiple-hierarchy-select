@@ -362,13 +362,18 @@ class MultipleSelectHierarchy {
     this.renderItems(this.items);
   }
 
+  // Add this helper function before the handleSearch method
+  removeDiacritics(text) {
+    return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  }
+
   handleSearch(searchTerm) {
-    const searchLower = searchTerm.toLowerCase();
+    const searchLower = this.removeDiacritics(searchTerm.toLowerCase());
     
     // If we're in a children view (selectedParent exists)
     if (this.selectedParent) {
         const filteredChildren = this.selectedParent.children.filter(child => 
-            child.name.toLowerCase().includes(searchLower)
+            this.removeDiacritics(child.name.toLowerCase()).includes(searchLower)
         );
         
         // Re-render the children list with filtered results
@@ -413,7 +418,7 @@ class MultipleSelectHierarchy {
     } else {
         // We're in the main parent list view
         const filteredItems = this.items.filter(item =>
-            item.name.toLowerCase().includes(searchLower)
+            this.removeDiacritics(item.name.toLowerCase()).includes(searchLower)
         );
         this.renderItems(filteredItems);
     }
