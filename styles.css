@@ -42,8 +42,12 @@
 }
 
 .multiple-select-hierarchy .chevron-right {
-    float: right;
-    line-height: 1.5;
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-top: 2px solid currentColor;
+    border-right: 2px solid currentColor;
+    transform: rotate(45deg);
 }
 
 .multiple-select-hierarchy .input {
@@ -113,12 +117,30 @@
     border: 1px solid #ced4da;
     border-radius: 0.25rem;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    position: relative;
 }
 
 .multiple-select-hierarchy .search-icon {
-    padding: 0.25rem 0.5rem;
-    color: #6c757d;
-    font-size: 0px;
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 14px;
+    height: 14px;
+    border: 2px solid #666;
+    border-radius: 50%;
+}
+
+.multiple-select-hierarchy .search-icon:after {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 6px;
+    height: 2px;
+    background: #666;
+    transform: rotate(45deg);
+    transform-origin: left top;
 }
 
 .multiple-select-hierarchy .search-input {
@@ -129,6 +151,7 @@
     line-height: 1.5;
     color: #495057;
     background-color: transparent;
+    padding-left: 30px; /* Make room for the search icon */
 }
 
 .multiple-select-hierarchy .search-input:focus {
@@ -175,4 +198,15 @@
   border-color: #80bdff;
   outline: 0;
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Add this to your existing styles */
+.multiple-select-hierarchy .back-arrow {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-left: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg);
+    margin-right: 8px;
 }

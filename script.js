@@ -9,6 +9,8 @@ class MultipleSelectHierarchy {
       allText: "All",
       clearAllText: "Clear all",
       selectedText: "You have selected {n} items",
+      defaultSelectionText: "Please select location",
+      unitChipText: "District",
       ...options,
     };
     this.items = [];
@@ -75,13 +77,11 @@ class MultipleSelectHierarchy {
                         <h5 class="card-title mb-3">${this.options.placeholder}</h5>
                         <div class="search-container">
                           <div class="search-input-wrapper">
-                            <i class="search-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                            </i>
+                            <i class="search-icon"></i>
                             <input type="text" class="search-input" placeholder="${this.options.searchPlaceholder}" id="${this.id}-search-input">
                           </div>
                         </div>
-                        <div id="${this.id}-selection-info" class="mb-2 text-muted"></div>
+                        <div id="${this.id}-selection-info" class="mb-2 text-muted">${this.options.defaultSelectionText}</div>
                         <ul class="list-group" id="${this.id}-item-list"></ul>
                     </div>
                 </div>
@@ -152,6 +152,16 @@ class MultipleSelectHierarchy {
       const isDisabled = !isChecked && selectedParentCount >= this.options.maxSelections;
       const hasChildren = item.children && item.children.length > 0;
 
+      // Add selection count or "all" text for parents with children
+      let selectionText = '';
+      if (hasChildren && isChecked) {
+        if (this.selectedItems[item.id] === null) {
+          selectionText = ` (${this.options.allText})`;
+        } else if (Array.isArray(this.selectedItems[item.id])) {
+          selectionText = ` (${this.selectedItems[item.id].length} ${this.options.unitChipText})`;
+        }
+      }
+
       li.innerHTML = `
         <div class="form-check">
           <input class="form-check-input" type="checkbox" id="${this.id}-item-${
@@ -160,14 +170,12 @@ class MultipleSelectHierarchy {
             ${isChecked ? "checked" : ""} ${isDisabled ? "disabled" : ""}>
           <label class="form-check-label" for="${this.id}-item-${item.id}">${
         item.name
-      }</label>
+      }<span class="text-black-50">${selectionText}</span></label>
         </div>
         ${
           hasChildren
             ? `<button class="btn btn-link p-0" ${isDisabled ? "disabled" : ""}>
-                 <i class="${isDisabled ? "text-muted" : ""}">
-                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path d="m9 18 6-6-6-6"/></svg>
-                 </i>
+                 <i class="chevron-right ${isDisabled ? "text-muted" : ""}"></i>
                </button>`
             : ""
         }
@@ -212,17 +220,12 @@ class MultipleSelectHierarchy {
           allChildrenSelected ||
           (this.selectedItems[parent.id] &&
             this.selectedItems[parent.id].includes(child.id));
+
         li.innerHTML = `
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="${
-              this.id
-            }-child-${child.id}" 
-              ${isChecked ? "checked" : ""} ${
-          allChildrenSelected ? "disabled" : ""
-        }>
-            <label class="form-check-label" for="${this.id}-child-${
-          child.id
-        }">${child.name}</label>
+            <input class="form-check-input" type="checkbox" id="${this.id}-child-${child.id}" 
+              ${isChecked ? "checked" : ""}>
+            <label class="form-check-label" for="${this.id}-child-${child.id}">${child.name}</label>
           </div>
         `;
         li.querySelector("input").addEventListener("change", (e) =>
@@ -231,9 +234,7 @@ class MultipleSelectHierarchy {
         this.itemList.appendChild(li);
       });
 
-      const allChildrenCheckbox = this.itemList.querySelector(
-        `#${this.id}-allChildren`
-      );
+      const allChildrenCheckbox = this.itemList.querySelector(`#${this.id}-allChildren`);
       allChildrenCheckbox.checked = allChildrenSelected;
       allChildrenCheckbox.addEventListener("change", (e) =>
         this.handleAllChildrenSelection(parent, e.target.checked)
@@ -257,28 +258,26 @@ class MultipleSelectHierarchy {
   }
 
   handleChildSelection(parent, child, isChecked) {
-    const selectedParentCount = Object.keys(this.selectedItems).length;
-    const isNewParentSelection = !this.selectedItems[parent.id];
+    if (this.selectedItems[parent.id] === null && !isChecked) {
+      // Convert null to array of all child IDs except the one being unchecked
+      this.selectedItems[parent.id] = parent.children
+        .filter(c => c.id !== child.id)
+        .map(c => c.id);
+      
+      // Update the "All" checkbox
+      const allChildrenCheckbox = document.getElementById(`${this.id}-allChildren`);
+      if (allChildrenCheckbox) {
+        allChildrenCheckbox.checked = false;
+      }
 
-    if (
-      isNewParentSelection &&
-      selectedParentCount >= this.options.maxSelections
-    ) {
-      alert(
-        this.options.maxSelectionsMessage.replace(
-          "{n}",
-          this.options.maxSelections
-        )
-      );
-      setTimeout(() => {
-        const checkbox = document.getElementById(
-          `${this.id}-child-${child.id}`
-        );
-        if (checkbox) checkbox.checked = false;
-      }, 0);
+      this.updateInput();
+      this.updateSelectionInfo();
+      this.renderChildren(parent);
+      this.updateSelectedValuesDisplay();
       return;
     }
 
+    // If this is the first child selection for this parent
     if (!this.selectedItems[parent.id]) {
       this.selectedItems[parent.id] = [];
     }
@@ -299,6 +298,11 @@ class MultipleSelectHierarchy {
       this.selectedItems[parent.id].length === parent.children.length
     ) {
       this.selectedItems[parent.id] = null;
+      // Update the "All" checkbox
+      const allChildrenCheckbox = document.getElementById(`${this.id}-allChildren`);
+      if (allChildrenCheckbox) {
+        allChildrenCheckbox.checked = true;
+      }
     }
 
     this.updateInput();
@@ -524,9 +528,9 @@ class MultipleSelectHierarchy {
 
     if (showBackButton) {
       const backButton = document.createElement("i");
-      backButton.className = "me-2";
+      backButton.className = "back-arrow me-2";
+
       backButton.style.cursor = "pointer";
-      backButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path d="m15 18-6-6 6-6"/></svg>`;
       backButton.addEventListener("click", this.handleBackClick.bind(this));
       header.appendChild(backButton);
     }
@@ -558,7 +562,8 @@ class MultipleSelectHierarchy {
         this.clearAll();
       });
     } else {
-      selectionInfo.innerHTML = "";
+      // Show default selection text when no items are selected
+      selectionInfo.innerHTML = this.options.defaultSelectionText;
     }
   }
 
@@ -661,6 +666,9 @@ document.addEventListener("DOMContentLoaded", () => {
       maxSelections: 3,
       placeholder: "Please select",
       searchPlaceholder: "Search",
+      defaultSelectionText: "Chọn tỉnh thành",
+      unitChipText: "Quận/Huyện",
+      allText: "Tất cả"
     });
   });
 
