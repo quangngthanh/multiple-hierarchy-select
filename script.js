@@ -1,4 +1,3 @@
-// Add this utility function at the top of the file, before the class definition
 function debounce(func, wait) {
   let timeout;
   return function executedFunction(...args) {
@@ -17,14 +16,11 @@ function removeDiacritics(text) {
 
 class MultipleSelectHierarchy {
   constructor(selectElement, options = {}) {
-    // Cache DOM elements as class properties during initialization
     this.selectElement = selectElement;
     this.id = `msh-${Math.random().toString(36).slice(2, 9)}`;
     
-    // Cache commonly used DOM elements
     this.domCache = new Map();
     
-    // Cache options object
     this.options = {
       maxSelections: 3,
       placeholder: "Please select",
@@ -40,13 +36,11 @@ class MultipleSelectHierarchy {
     this.items = [];
     this.selectedItems = {};
     
-    // Use WeakMap for better memory management
     if (!MultipleSelectHierarchy.instances) {
       MultipleSelectHierarchy.instances = new WeakMap();
     }
     MultipleSelectHierarchy.instances.set(selectElement, this);
 
-    // Bind the debounced search handler in the constructor
     this.handleSearch = debounce((searchTerm) => {
       const searchLower = removeDiacritics(searchTerm.toLowerCase());
       if (this.selectedParent) {
@@ -57,6 +51,9 @@ class MultipleSelectHierarchy {
     }, 150);
 
     this.init();
+
+    this.abortController = new AbortController();
+    this.signal = this.abortController.signal;
   }
 
   init() {
@@ -80,7 +77,6 @@ class MultipleSelectHierarchy {
         };
         this.items.push(currentParent);
 
-        // Process children of the optgroup
         for (let child of element.children) {
           const childItem = {
             id: parseInt(child.value),
@@ -89,7 +85,6 @@ class MultipleSelectHierarchy {
           currentParent.children.push(childItem);
         }
       } else if (element.tagName === "OPTION") {
-        // Top level option
         this.items.push({
           id: parseInt(element.value),
           name: element.textContent,
@@ -147,12 +142,10 @@ class MultipleSelectHierarchy {
     this.selectionInfo = container.querySelector(`#${this.id}-selection-info`);
     this.itemList = container.querySelector(`#${this.id}-item-list`);
 
-    // After setting all the element references, cache them
     this.cacheElements();
   }
 
   attachEventListeners() {
-    // Use event delegation for dynamic elements
     this.itemList.addEventListener('click', (e) => {
       const target = e.target;
       
@@ -171,20 +164,20 @@ class MultipleSelectHierarchy {
           this.handleItemClick(item);
         }
       }
-    });
+    }, { signal: this.signal });
 
     this.chipsContainer.addEventListener("click", () => {
       this.chipsContainer.focus();
       this.showSelectCard();
-    });
+    }, { signal: this.signal });
 
     this.chipsContainer.addEventListener("focus", () => {
       this.chipsContainer.classList.add("focused");
-    });
+    }, { signal: this.signal });
 
     this.chipsContainer.addEventListener("blur", () => {
       this.chipsContainer.classList.remove("focused");
-    });
+    }, { signal: this.signal });
 
     document.addEventListener("click", (e) => {
       if (
@@ -193,10 +186,14 @@ class MultipleSelectHierarchy {
       ) {
         this.hideSelectCard();
       }
-    });
-    this.selectCard.addEventListener("click", (e) => e.stopPropagation());
+    }, { signal: this.signal });
+
+    this.selectCard.addEventListener("click", (e) => e.stopPropagation(), 
+      { signal: this.signal });
+      
     this.searchInput.addEventListener("input", (e) =>
-      this.handleSearch(e.target.value)
+      this.handleSearch(e.target.value),
+      { signal: this.signal }
     );
   }
 
@@ -250,7 +247,8 @@ class MultipleSelectHierarchy {
           </div>
         `;
         li.querySelector("input").addEventListener("change", (e) =>
-          this.handleChildSelection(parent, child, e.target.checked)
+          this.handleChildSelection(parent, child, e.target.checked),
+          { signal: this.signal }
         );
         this.itemList.appendChild(li);
       });
@@ -258,10 +256,10 @@ class MultipleSelectHierarchy {
       const allChildrenCheckbox = this.itemList.querySelector(`#${this.id}-allChildren`);
       allChildrenCheckbox.checked = allChildrenSelected;
       allChildrenCheckbox.addEventListener("change", (e) =>
-        this.handleAllChildrenSelection(parent, e.target.checked)
+        this.handleAllChildrenSelection(parent, e.target.checked),
+        { signal: this.signal }
       );
     } else {
-      // If the item doesn't have children, just display it as a single item
       this.renderItems([parent]);
     }
   }
@@ -279,12 +277,10 @@ class MultipleSelectHierarchy {
 
   handleChildSelection(parent, child, isChecked) {
     if (this.selectedItems[parent.id] === null && !isChecked) {
-      // Convert null to array of all child IDs except the one being unchecked
       this.selectedItems[parent.id] = parent.children
         .filter(c => c.id !== child.id)
         .map(c => c.id);
       
-      // Update the "All" checkbox
       const allChildrenCheckbox = document.getElementById(`${this.id}-allChildren`);
       if (allChildrenCheckbox) {
         allChildrenCheckbox.checked = false;
@@ -295,7 +291,6 @@ class MultipleSelectHierarchy {
       this.renderChildren(parent);
     }
 
-    // If this is the first child selection for this parent
     if (!this.selectedItems[parent.id]) {
       this.selectedItems[parent.id] = [];
     }
@@ -316,7 +311,6 @@ class MultipleSelectHierarchy {
       this.selectedItems[parent.id].length === parent.children.length
     ) {
       this.selectedItems[parent.id] = null;
-      // Update the "All" checkbox
       const allChildrenCheckbox = document.getElementById(`${this.id}-allChildren`);
       if (allChildrenCheckbox) {
         allChildrenCheckbox.checked = true;
@@ -337,7 +331,6 @@ class MultipleSelectHierarchy {
       isNewParentSelection &&
       selectedParentCount >= this.options.maxSelections
     ) {
-      // Prevent the "All" checkbox from being checked
       setTimeout(() => {
         const checkbox = document.getElementById(`${this.id}-allChildren`);
         if (checkbox) checkbox.checked = false;
@@ -411,7 +404,6 @@ class MultipleSelectHierarchy {
     let totalChipsWidth = 0;
     const chipWidths = [];
 
-    // First pass: calculate total width and individual chip widths
     chips.forEach((chip) => {
       this.chipsContainer.appendChild(chip);
       const chipWidth = chip.offsetWidth + chipMargin;
@@ -420,7 +412,6 @@ class MultipleSelectHierarchy {
       this.chipsContainer.removeChild(chip);
     });
 
-    // If total width exceeds available width, adjust chip widths
     if (totalChipsWidth > availableWidth) {
       const scaleFactor = availableWidth / totalChipsWidth;
       let currentLineWidth = 0;
@@ -431,7 +422,6 @@ class MultipleSelectHierarchy {
         this.adjustChipWidth(chip, newWidth, closeButtonWidth, chipPadding);
         currentLineWidth += newWidth + chipMargin;
 
-        // Ensure we don't exceed the available width due to rounding
         if (index === chips.length - 1 && currentLineWidth > availableWidth) {
           const finalAdjustment = currentLineWidth - availableWidth;
           this.adjustChipWidth(
@@ -445,7 +435,6 @@ class MultipleSelectHierarchy {
         this.chipsContainer.appendChild(chip);
       });
     } else {
-      // If total width doesn't exceed available width, use original sizes
       chips.forEach((chip) => {
         this.chipsContainer.appendChild(chip);
       });
@@ -475,7 +464,7 @@ class MultipleSelectHierarchy {
     chip.querySelector(".close").addEventListener("click", (e) => {
       e.stopPropagation();
       this.removeSelection(id);
-    });
+    }, { signal: this.signal });
     return chip;
   }
 
@@ -506,7 +495,8 @@ class MultipleSelectHierarchy {
         </svg>
       `;
       backButton.style.cursor = "pointer";
-      backButton.addEventListener("click", this.handleBackClick.bind(this));
+      backButton.addEventListener("click", this.handleBackClick.bind(this), 
+        { signal: this.signal });
       header.appendChild(backButton);
     }
 
@@ -535,9 +525,8 @@ class MultipleSelectHierarchy {
       clearAllButton.addEventListener("click", (e) => {
         e.preventDefault();
         this.clearAll();
-      });
+      }, { signal: this.signal });
     } else {
-      // Show default selection text when no items are selected
       selectionInfo.innerHTML = this.options.defaultSelectionText;
     }
   }
@@ -559,7 +548,6 @@ class MultipleSelectHierarchy {
     this.hideSelectCard();
   }
 
-  // Static method to reset instances based on a selector
   static resetBySelector(selector) {
     const selectElements = document.querySelectorAll(`${selector} select.hierarchy-select`);
     selectElements.forEach(selectElement => {
@@ -570,23 +558,17 @@ class MultipleSelectHierarchy {
     });
   }
 
-  // Static property to store instances
   static instances = new Map();
 
+  // Only use when remove component
   destroy() {
-    // Clear all cached elements
+    this.abortController.abort();
     this.domCache.clear();
-    
-    // Remove all event listeners
-    this.removeEventListeners();
-    
-    // Clear instance from WeakMap
     MultipleSelectHierarchy.instances.delete(this.selectElement);
-    
-    // Clear references
     this.items = null;
     this.selectedItems = null;
     this.options = null;
+    this.abortController = null;
   }
 
   createItemElement(item, selectedParentCount) {
@@ -597,7 +579,6 @@ class MultipleSelectHierarchy {
     const isDisabled = !isChecked && selectedParentCount >= this.options.maxSelections;
     const hasChildren = item.children && item.children.length > 0;
 
-    // Calculate selection text only if needed
     let selectionText = '';
     if (hasChildren && isChecked) {
       if (this.selectedItems[item.id] === null) {
@@ -607,7 +588,6 @@ class MultipleSelectHierarchy {
       }
     }
 
-    // Create checkbox and label container
     const checkboxContainer = document.createElement('div');
     checkboxContainer.className = 'form-check';
     checkboxContainer.innerHTML = `
@@ -621,7 +601,6 @@ class MultipleSelectHierarchy {
 
     li.appendChild(checkboxContainer);
 
-    // Add chevron button for items with children
     if (hasChildren) {
       const button = document.createElement('button');
       button.className = `btn btn-link p-0 ${isDisabled ? "disabled" : ""}`;
@@ -636,14 +615,11 @@ class MultipleSelectHierarchy {
     return li;
   }
 
-  // Add these methods to the MultipleSelectHierarchy class
-
   renderFilteredChildren(searchTerm) {
     if (!this.selectedParent || !this.selectedParent.children) return;
 
     const fragment = document.createDocumentFragment();
     
-    // Add "All" checkbox first
     const allLi = document.createElement('li');
     allLi.className = 'list-group-item';
     allLi.innerHTML = `
@@ -654,7 +630,6 @@ class MultipleSelectHierarchy {
     `;
     fragment.appendChild(allLi);
 
-    // Filter and render matching children
     const filteredChildren = this.selectedParent.children.filter(child =>
       removeDiacritics(child.name.toLowerCase()).includes(searchTerm)
     );
@@ -677,7 +652,8 @@ class MultipleSelectHierarchy {
       `;
 
       li.querySelector('input').addEventListener('change', e =>
-        this.handleChildSelection(this.selectedParent, child, e.target.checked)
+        this.handleChildSelection(this.selectedParent, child, e.target.checked),
+        { signal: this.signal }
       );
       fragment.appendChild(li);
     });
@@ -685,11 +661,11 @@ class MultipleSelectHierarchy {
     this.itemList.innerHTML = '';
     this.itemList.appendChild(fragment);
 
-    // Update "All" checkbox state
     const allChildrenCheckbox = this.itemList.querySelector(`#${this.id}-allChildren`);
     allChildrenCheckbox.checked = allChildrenSelected;
     allChildrenCheckbox.addEventListener('change', e =>
-      this.handleAllChildrenSelection(this.selectedParent, e.target.checked)
+      this.handleAllChildrenSelection(this.selectedParent, e.target.checked),
+      { signal: this.signal }
     );
   }
 
@@ -745,7 +721,8 @@ class MultipleSelectHierarchy {
           <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       `;
-      backButton.addEventListener('click', () => this.handleBackClick());
+      backButton.addEventListener('click', () => this.handleBackClick(), 
+        { signal: this.signal });
       header.appendChild(backButton);
     }
 
@@ -753,21 +730,7 @@ class MultipleSelectHierarchy {
     cardBody.insertBefore(header, cardBody.firstChild);
   }
 
-  removeEventListeners() {
-    // Remove all event listeners that were added
-    this.itemList.removeEventListener('click', this.handleItemClick);
-    this.chipsContainer.removeEventListener('click', this.showSelectCard);
-    this.chipsContainer.removeEventListener('focus', this.handleFocus);
-    this.chipsContainer.removeEventListener('blur', this.handleBlur);
-    this.searchInput.removeEventListener('input', this.handleSearch);
-    
-    // Remove document click listener
-    document.removeEventListener('click', this.handleOutsideClick);
-  }
-
-  // Add this method to cache DOM elements
   cacheElements() {
-    // Cache frequently accessed elements
     this.domCache.set('container', this.container);
     this.domCache.set('chipsContainer', this.chipsContainer);
     this.domCache.set('input', this.input);
@@ -778,12 +741,10 @@ class MultipleSelectHierarchy {
     this.domCache.set('itemList', this.itemList);
   }
 
-  // Add a method to get cached elements
   getElement(key) {
     if (this.domCache.has(key)) {
       return this.domCache.get(key);
     }
-    // If element isn't cached, query it and cache it
     const element = this.container.querySelector(`#${this.id}-${key}`);
     if (element) {
       this.domCache.set(key, element);
@@ -792,7 +753,7 @@ class MultipleSelectHierarchy {
   }
 }
 
-// Usage example:
+
 document.addEventListener("DOMContentLoaded", () => {
   const hierarchySelects = document.querySelectorAll("select.hierarchy-select");
   hierarchySelects.forEach((selectElement) => {
@@ -806,7 +767,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Example of how to use the resetBySelector method
   document.querySelectorAll('form').forEach(form => {
     form.addEventListener('reset', (event) => {
       event.preventDefault();
@@ -816,6 +776,5 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// Expose the MultipleSelectHierarchy class globally
 window.MultipleSelectHierarchy = MultipleSelectHierarchy;
 

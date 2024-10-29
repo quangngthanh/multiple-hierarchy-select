@@ -34,7 +34,7 @@
         </form>
 
         <!-- Example 2: Form with Additional Fields -->
-        <!-- <form id="complexForm" action="/submit-complex" method="POST" class="mb-5">
+        <form id="complexForm" action="/submit-complex" method="POST" class="mb-5">
             <h2>Complex Form</h2>
             <div class="mb-3">
                 <label for="name" class="form-label">Name</label>
@@ -71,10 +71,10 @@
             </div>
             <button type="submit" class="btn btn-primary">Submit Complex Form</button>
             <button type="reset" class="btn btn-secondary">Reset</button>
-        </form> -->
+        </form>
 
         <!-- Example 3: Form with Multiple Hierarchy Selects -->
-        <!-- <form id="multiSelectForm" action="/submit-multi" method="POST" class="mb-5">
+        <form id="multiSelectForm" action="/submit-multi" method="POST" class="mb-5">
             <h2>Multiple Hierarchy Selects Form</h2>
             <div class="mb-3">
                 <label for="work-locations" class="form-label">Work Locations</label>
@@ -100,7 +100,7 @@
             </div>
             <button type="submit" class="btn btn-primary">Submit Multi-Select Form</button>
             <button type="reset" class="btn btn-secondary">Reset</button>
-        </form> -->
+        </form>
     </div>
 
     <script src="script.js"></script>
@@ -116,8 +116,8 @@
 
             // Add submit event listeners to all forms
             document.getElementById('basicForm').addEventListener('submit', handleSubmit);
-                    // document.getElementById('complexForm').addEventListener('submit', handleSubmit);
-                    // document.getElementById('multiSelectForm').addEventListener('submit', handleSubmit);
+            document.getElementById('complexForm').addEventListener('submit', handleSubmit);
+            document.getElementById('multiSelectForm').addEventListener('submit', handleSubmit);
         });
     </script>
 </body>
