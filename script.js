@@ -1,7 +1,30 @@
+// Add this utility function at the top of the file, before the class definition
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func.apply(this, args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
+function removeDiacritics(text) {
+    return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
 class MultipleSelectHierarchy {
   constructor(selectElement, options = {}) {
+    // Cache DOM elements as class properties during initialization
     this.selectElement = selectElement;
     this.id = `msh-${Math.random().toString(36).slice(2, 9)}`;
+    
+    // Cache commonly used DOM elements
+    this.domCache = new Map();
+    
+    // Cache options object
     this.options = {
       maxSelections: 3,
       placeholder: "Please select",
@@ -10,13 +33,28 @@ class MultipleSelectHierarchy {
       clearAllText: "Clear all",
       selectedText: "You have selected {n} items",
       defaultSelectionText: "Please select location",
-      unitChipText: "District",
+      unitChildText: "District",
       ...options,
     };
+
     this.items = [];
     this.selectedItems = {};
-
+    
+    // Use WeakMap for better memory management
+    if (!MultipleSelectHierarchy.instances) {
+      MultipleSelectHierarchy.instances = new WeakMap();
+    }
     MultipleSelectHierarchy.instances.set(selectElement, this);
+
+    // Bind the debounced search handler in the constructor
+    this.handleSearch = debounce((searchTerm) => {
+      const searchLower = removeDiacritics(searchTerm.toLowerCase());
+      if (this.selectedParent) {
+        this.renderFilteredChildren(searchLower);
+      } else {
+        this.renderFilteredItems(searchLower);
+      }
+    }, 150);
 
     this.init();
   }
@@ -68,7 +106,6 @@ class MultipleSelectHierarchy {
             <div class="dropdown">
                 <div class="input-group">
                     <div class="form-control d-flex flex-wrap align-items-center" id="${this.id}-chips-container" tabindex="0">
-                        <input type="text" class="border-0 flex-grow-1" id="${this.id}-input" placeholder="${this.options.placeholder}" readonly style="display: none;">
                     </div>
                     <input type="hidden" id="${this.id}-selected-items" name="${this.selectElement.name}">
                 </div>
@@ -109,9 +146,33 @@ class MultipleSelectHierarchy {
     this.searchInput = container.querySelector(`#${this.id}-search-input`);
     this.selectionInfo = container.querySelector(`#${this.id}-selection-info`);
     this.itemList = container.querySelector(`#${this.id}-item-list`);
+
+    // After setting all the element references, cache them
+    this.cacheElements();
   }
 
   attachEventListeners() {
+    // Use event delegation for dynamic elements
+    this.itemList.addEventListener('click', (e) => {
+      const target = e.target;
+      
+      if (target.matches('.form-check-input')) {
+        const itemId = target.id.replace(`${this.id}-item-`, '');
+        const item = this.items.find(i => i.id === parseInt(itemId));
+        if (item) {
+          this.handleItemSelection(item, target.checked);
+        }
+      }
+      
+      if (target.matches('.btn-link') || target.closest('.btn-link')) {
+        const itemId = target.closest('li').querySelector('.form-check-input').id.replace(`${this.id}-item-`, '');
+        const item = this.items.find(i => i.id === parseInt(itemId));
+        if (item) {
+          this.handleItemClick(item);
+        }
+      }
+    });
+
     this.chipsContainer.addEventListener("click", () => {
       this.chipsContainer.focus();
       this.showSelectCard();
@@ -145,58 +206,16 @@ class MultipleSelectHierarchy {
   }
 
   renderItems(items) {
-    this.itemList.innerHTML = "";
+    const fragment = document.createDocumentFragment();
     const selectedParentCount = Object.keys(this.selectedItems).length;
+
     items.forEach((item) => {
-      const li = document.createElement("li");
-      li.className =
-        "list-group-item d-flex justify-content-between align-items-center";
-      const isChecked = this.selectedItems[item.id] !== undefined;
-      const isDisabled = !isChecked && selectedParentCount >= this.options.maxSelections;
-      const hasChildren = item.children && item.children.length > 0;
-
-      let selectionText = '';
-      if (hasChildren && isChecked) {
-        if (this.selectedItems[item.id] === null) {
-          selectionText = ` (${this.options.allText})`;
-        } else if (Array.isArray(this.selectedItems[item.id])) {
-          selectionText = ` (${this.selectedItems[item.id].length} ${this.options.unitChipText})`;
-        }
-      }
-
-      li.innerHTML = `
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" id="${this.id}-item-${item.id}" 
-            ${isChecked ? "checked" : ""} ${isDisabled ? "disabled" : ""}>
-          <label class="form-check-label" for="${this.id}-item-${item.id}">${item.name}
-            <span class="text-black-50">${selectionText}</span>
-          </label>
-        </div>
-        ${
-          hasChildren
-            ? `<button class="btn btn-link p-0" ${isDisabled ? "disabled" : ""}>
-                <svg class="icon-chevron-right ${isDisabled ? "text-muted" : ""}" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-               </button>`
-            : ""
-        }
-      `;
-
-      li.querySelector("input").addEventListener("change", (e) =>
-        this.handleItemSelection(item, e.target.checked)
-      );
-
-      if (hasChildren) {
-        li.querySelector("button").addEventListener("click", (e) => {
-          if (!isDisabled) {
-            this.handleItemClick(item);
-          }
-        });
-      }
-
-      this.itemList.appendChild(li);
+      const li = this.createItemElement(item, selectedParentCount);
+      fragment.appendChild(li);
     });
+
+    this.itemList.innerHTML = '';
+    this.itemList.appendChild(fragment);
     this.updateSelectionInfo();
   }
 
@@ -256,7 +275,6 @@ class MultipleSelectHierarchy {
     this.updateInput();
     this.updateSelectionInfo();
     this.renderItems(this.items);
-    this.updateSelectedValuesDisplay();
   }
 
   handleChildSelection(parent, child, isChecked) {
@@ -275,8 +293,6 @@ class MultipleSelectHierarchy {
       this.updateInput();
       this.updateSelectionInfo();
       this.renderChildren(parent);
-      this.updateSelectedValuesDisplay();
-      return;
     }
 
     // If this is the first child selection for this parent
@@ -310,7 +326,6 @@ class MultipleSelectHierarchy {
     this.updateInput();
     this.updateSelectionInfo();
     this.renderChildren(parent);
-    this.updateSelectedValuesDisplay();
   }
 
   handleAllChildrenSelection(parent, isChecked) {
@@ -322,12 +337,6 @@ class MultipleSelectHierarchy {
       isNewParentSelection &&
       selectedParentCount >= this.options.maxSelections
     ) {
-      alert(
-        this.options.maxSelectionsMessage.replace(
-          "{n}",
-          this.options.maxSelections
-        )
-      );
       // Prevent the "All" checkbox from being checked
       setTimeout(() => {
         const checkbox = document.getElementById(`${this.id}-allChildren`);
@@ -344,7 +353,6 @@ class MultipleSelectHierarchy {
     this.updateInput();
     this.updateSelectionInfo();
     this.renderChildren(parent);
-    this.updateSelectedValuesDisplay();
   }
 
   handleItemClick(item) {
@@ -362,67 +370,7 @@ class MultipleSelectHierarchy {
     this.renderItems(this.items);
   }
 
-  // Add this helper function before the handleSearch method
-  removeDiacritics(text) {
-    return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-  }
 
-  handleSearch(searchTerm) {
-    const searchLower = this.removeDiacritics(searchTerm.toLowerCase());
-    
-    // If we're in a children view (selectedParent exists)
-    if (this.selectedParent) {
-        const filteredChildren = this.selectedParent.children.filter(child => 
-            this.removeDiacritics(child.name.toLowerCase()).includes(searchLower)
-        );
-        
-        // Re-render the children list with filtered results
-        this.itemList.innerHTML = `
-            <li class="list-group-item">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="${this.id}-allChildren">
-                    <label class="form-check-label" for="${this.id}-allChildren">${this.options.allText}</label>
-                </div>
-            </li>
-        `;
-
-        const allChildrenSelected = this.selectedItems[this.selectedParent.id] === null;
-
-        // Render filtered children
-        filteredChildren.forEach((child) => {
-            const li = document.createElement("li");
-            li.className = "list-group-item";
-            const isChecked =
-                allChildrenSelected ||
-                (this.selectedItems[this.selectedParent.id] &&
-                    this.selectedItems[this.selectedParent.id].includes(child.id));
-
-            li.innerHTML = `
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="${this.id}-child-${child.id}" 
-                        ${isChecked ? "checked" : ""}>
-                    <label class="form-check-label" for="${this.id}-child-${child.id}">${child.name}</label>
-                </div>
-            `;
-            li.querySelector("input").addEventListener("change", (e) =>
-                this.handleChildSelection(this.selectedParent, child, e.target.checked)
-            );
-            this.itemList.appendChild(li);
-        });
-
-        const allChildrenCheckbox = this.itemList.querySelector(`#${this.id}-allChildren`);
-        allChildrenCheckbox.checked = allChildrenSelected;
-        allChildrenCheckbox.addEventListener("change", (e) =>
-            this.handleAllChildrenSelection(this.selectedParent, e.target.checked)
-        );
-    } else {
-        // We're in the main parent list view
-        const filteredItems = this.items.filter(item =>
-            this.removeDiacritics(item.name.toLowerCase()).includes(searchLower)
-        );
-        this.renderItems(filteredItems);
-    }
-  }
 
   showSelectCard() {
     this.selectCard.style.display = "block";
@@ -435,40 +383,21 @@ class MultipleSelectHierarchy {
   }
 
   updateInput() {
-    this.chipsContainer.innerHTML = "";
-    const selectedItems = Object.entries(this.selectedItems)
-      .map(([itemId, childrenIds]) => {
-        const item = this.items.find((i) => i.id.toString() === itemId);
-        if (item) {
-          if (
-            childrenIds === null ||
-            (Array.isArray(childrenIds) &&
-              childrenIds.length === item.children?.length)
-          ) {
-            return this.createChip(item.name, itemId);
-          } else {
-            return this.createChip(
-              `${item.name} (${childrenIds.length})`,
-              itemId
-            );
-          }
-        }
-        return null;
-      })
-      .filter((chip) => chip !== null);
-
-    if (selectedItems.length === 0) {
-      const placeholderSpan = document.createElement("span");
-      placeholderSpan.textContent = this.options.placeholder;
-      placeholderSpan.className = "placeholder-text";
-      this.chipsContainer.appendChild(placeholderSpan);
-    } else {
-      this.renderChips(selectedItems);
-    }
-
-    this.selectedItemsInput.value = JSON.stringify(
-      this.getSelectedValuesArray()
-    );
+    requestAnimationFrame(() => {
+      const chipsContainer = this.getElement('chipsContainer');
+      const selectedItemsInput = this.getElement('selectedItemsInput');
+      
+      chipsContainer.innerHTML = '';
+      const selectedItems = this.getSelectedItemsForDisplay();
+      
+      if (selectedItems.length === 0) {
+        this.renderPlaceholder();
+      } else {
+        this.renderChips(selectedItems);
+      }
+      
+      selectedItemsInput.value = JSON.stringify(this.selectedItems);
+    });
   }
 
   renderChips(chips) {
@@ -555,7 +484,6 @@ class MultipleSelectHierarchy {
     this.updateInput();
     this.updateSelectionInfo();
     this.renderItems(this.items);
-    this.updateSelectedValuesDisplay();
   }
 
   updateHeader(title, showBackButton = false) {
@@ -623,70 +551,11 @@ class MultipleSelectHierarchy {
     this.updateSelectionInfo();
   }
 
-  updateSelectedValuesDisplay() {
-    const selectedValues = this.getSelectedValuesArray();
-
-    const event = new CustomEvent("selectionChange", {
-      detail: {
-        id: this.selectElement.id,
-        selectedItems: selectedValues,
-      },
-    });
-    this.selectElement.dispatchEvent(event);
-
-    // Update the original select element
-    Array.from(this.selectElement.options).forEach((option) => {
-      const optionId = parseInt(option.value);
-      const isSelected = selectedValues.some(
-        (item) =>
-          item.id === optionId ||
-          (item.children && item.children.includes(optionId)) ||
-          this.items.find(
-            (parent) =>
-              parent.id === item.id &&
-              parent.children?.some((child) => child.id === optionId)
-          )
-      );
-      option.selected = isSelected;
-    });
-
-    // Update the hidden input
-    this.selectedItemsInput.value = JSON.stringify(selectedValues);
-  }
-
-  getSelectedValuesArray() {
-    const selectedValues = [];
-    Object.entries(this.selectedItems).forEach(([parentId, childrenIds]) => {
-      const parent = this.items.find((item) => item.id === parseInt(parentId));
-      if (parent) {
-        if (
-          childrenIds === null ||
-          (Array.isArray(childrenIds) &&
-            childrenIds.length === parent.children?.length)
-        ) {
-          // Parent is fully selected or all children are selected
-          selectedValues.push({ id: parent.id });
-        } else if (Array.isArray(childrenIds) && childrenIds.length > 0) {
-          // Some children are selected
-          selectedValues.push({
-            id: parent.id,
-            children: childrenIds,
-          });
-        }
-      } else {
-        // Handle case where parentId is actually a top-level item without children
-        selectedValues.push({ id: parseInt(parentId) });
-      }
-    });
-    return selectedValues;
-  }
-
   reset() {
     this.selectedItems = {};
     this.updateInput();
     this.updateSelectionInfo();
     this.renderItems(this.items);
-    this.updateSelectedValuesDisplay();
     this.hideSelectCard();
   }
 
@@ -703,6 +572,224 @@ class MultipleSelectHierarchy {
 
   // Static property to store instances
   static instances = new Map();
+
+  destroy() {
+    // Clear all cached elements
+    this.domCache.clear();
+    
+    // Remove all event listeners
+    this.removeEventListeners();
+    
+    // Clear instance from WeakMap
+    MultipleSelectHierarchy.instances.delete(this.selectElement);
+    
+    // Clear references
+    this.items = null;
+    this.selectedItems = null;
+    this.options = null;
+  }
+
+  createItemElement(item, selectedParentCount) {
+    const li = document.createElement("li");
+    li.className = "list-group-item d-flex justify-content-between align-items-center";
+    
+    const isChecked = this.selectedItems[item.id] !== undefined;
+    const isDisabled = !isChecked && selectedParentCount >= this.options.maxSelections;
+    const hasChildren = item.children && item.children.length > 0;
+
+    // Calculate selection text only if needed
+    let selectionText = '';
+    if (hasChildren && isChecked) {
+      if (this.selectedItems[item.id] === null) {
+        selectionText = ` (${this.options.allText})`;
+      } else if (Array.isArray(this.selectedItems[item.id])) {
+        selectionText = ` (${this.selectedItems[item.id].length} ${this.options.unitChildText})`;
+      }
+    }
+
+    // Create checkbox and label container
+    const checkboxContainer = document.createElement('div');
+    checkboxContainer.className = 'form-check';
+    checkboxContainer.innerHTML = `
+      <input class="form-check-input" type="checkbox" id="${this.id}-item-${item.id}" 
+        ${isChecked ? "checked" : ""} ${isDisabled ? "disabled" : ""}>
+      <label class="form-check-label" for="${this.id}-item-${item.id}">
+        ${item.name}
+        <span class="text-black-50">${selectionText}</span>
+      </label>
+    `;
+
+    li.appendChild(checkboxContainer);
+
+    // Add chevron button for items with children
+    if (hasChildren) {
+      const button = document.createElement('button');
+      button.className = `btn btn-link p-0 ${isDisabled ? "disabled" : ""}`;
+      button.innerHTML = `
+        <svg class="icon-chevron-right ${isDisabled ? "text-muted" : ""}" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      `;
+      li.appendChild(button);
+    }
+
+    return li;
+  }
+
+  // Add these methods to the MultipleSelectHierarchy class
+
+  renderFilteredChildren(searchTerm) {
+    if (!this.selectedParent || !this.selectedParent.children) return;
+
+    const fragment = document.createDocumentFragment();
+    
+    // Add "All" checkbox first
+    const allLi = document.createElement('li');
+    allLi.className = 'list-group-item';
+    allLi.innerHTML = `
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="${this.id}-allChildren">
+        <label class="form-check-label" for="${this.id}-allChildren">${this.options.allText}</label>
+      </div>
+    `;
+    fragment.appendChild(allLi);
+
+    // Filter and render matching children
+    const filteredChildren = this.selectedParent.children.filter(child =>
+      removeDiacritics(child.name.toLowerCase()).includes(searchTerm)
+    );
+
+    const allChildrenSelected = this.selectedItems[this.selectedParent.id] === null;
+
+    filteredChildren.forEach(child => {
+      const li = document.createElement('li');
+      li.className = 'list-group-item';
+      const isChecked = allChildrenSelected ||
+        (this.selectedItems[this.selectedParent.id] &&
+          this.selectedItems[this.selectedParent.id].includes(child.id));
+
+      li.innerHTML = `
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="${this.id}-child-${child.id}" 
+            ${isChecked ? "checked" : ""}>
+          <label class="form-check-label" for="${this.id}-child-${child.id}">${child.name}</label>
+        </div>
+      `;
+
+      li.querySelector('input').addEventListener('change', e =>
+        this.handleChildSelection(this.selectedParent, child, e.target.checked)
+      );
+      fragment.appendChild(li);
+    });
+
+    this.itemList.innerHTML = '';
+    this.itemList.appendChild(fragment);
+
+    // Update "All" checkbox state
+    const allChildrenCheckbox = this.itemList.querySelector(`#${this.id}-allChildren`);
+    allChildrenCheckbox.checked = allChildrenSelected;
+    allChildrenCheckbox.addEventListener('change', e =>
+      this.handleAllChildrenSelection(this.selectedParent, e.target.checked)
+    );
+  }
+
+  renderFilteredItems(searchTerm) {
+    const filteredItems = this.items.filter(item =>
+      removeDiacritics(item.name.toLowerCase()).includes(searchTerm)
+    );
+    this.renderItems(filteredItems);
+  }
+
+  getSelectedItemsForDisplay() {
+    return Object.entries(this.selectedItems)
+      .map(([itemId, childrenIds]) => {
+        const item = this.items.find(i => i.id === parseInt(itemId));
+        if (!item) return null;
+
+        let displayText = item.name;
+        if (item.children) {
+          if (childrenIds === null) {
+            displayText += ` (${this.options.allText})`;
+          } else if (Array.isArray(childrenIds)) {
+            displayText += ` (${childrenIds.length} ${this.options.unitChildText})`;
+          }
+        }
+        return this.createChip(displayText, itemId);
+      })
+      .filter(chip => chip !== null);
+  }
+
+  renderPlaceholder() {
+    const placeholderSpan = document.createElement('span');
+    placeholderSpan.textContent = this.options.placeholder;
+    placeholderSpan.className = 'placeholder-text';
+    this.chipsContainer.appendChild(placeholderSpan);
+  }
+
+  updateHeader(title, showBackButton = false) {
+    const cardBody = this.selectCard.querySelector('.card-body');
+    const existingHeader = cardBody.querySelector('h5.card-title');
+
+    if (existingHeader) {
+      existingHeader.remove();
+    }
+
+    const header = document.createElement('h5');
+    header.className = 'card-title mt-0 d-flex align-items-center';
+
+    if (showBackButton) {
+      const backButton = document.createElement('button');
+      backButton.className = 'btn-back';
+      backButton.innerHTML = `
+        <svg class="icon-arrow-left" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      `;
+      backButton.addEventListener('click', () => this.handleBackClick());
+      header.appendChild(backButton);
+    }
+
+    header.appendChild(document.createTextNode(title));
+    cardBody.insertBefore(header, cardBody.firstChild);
+  }
+
+  removeEventListeners() {
+    // Remove all event listeners that were added
+    this.itemList.removeEventListener('click', this.handleItemClick);
+    this.chipsContainer.removeEventListener('click', this.showSelectCard);
+    this.chipsContainer.removeEventListener('focus', this.handleFocus);
+    this.chipsContainer.removeEventListener('blur', this.handleBlur);
+    this.searchInput.removeEventListener('input', this.handleSearch);
+    
+    // Remove document click listener
+    document.removeEventListener('click', this.handleOutsideClick);
+  }
+
+  // Add this method to cache DOM elements
+  cacheElements() {
+    // Cache frequently accessed elements
+    this.domCache.set('container', this.container);
+    this.domCache.set('chipsContainer', this.chipsContainer);
+    this.domCache.set('input', this.input);
+    this.domCache.set('selectedItemsInput', this.selectedItemsInput);
+    this.domCache.set('selectCard', this.selectCard);
+    this.domCache.set('searchInput', this.searchInput);
+    this.domCache.set('selectionInfo', this.selectionInfo);
+    this.domCache.set('itemList', this.itemList);
+  }
+
+  // Add a method to get cached elements
+  getElement(key) {
+    if (this.domCache.has(key)) {
+      return this.domCache.get(key);
+    }
+    // If element isn't cached, query it and cache it
+    const element = this.container.querySelector(`#${this.id}-${key}`);
+    if (element) {
+      this.domCache.set(key, element);
+    }
+    return element;
+  }
 }
 
 // Usage example:
@@ -714,7 +801,7 @@ document.addEventListener("DOMContentLoaded", () => {
       placeholder: "Please select",
       searchPlaceholder: "Search",
       defaultSelectionText: "Chọn tỉnh thành",
-      unitChipText: "Quận/Huyện",
+      unitChildText: "Quận/Huyện",
       allText: "Tất cả"
     });
   });
@@ -731,3 +818,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Expose the MultipleSelectHierarchy class globally
 window.MultipleSelectHierarchy = MultipleSelectHierarchy;
+
