@@ -79,7 +79,7 @@ class MultipleSelectHierarchy {
                     <input type="hidden" id="${this.id}-selected-items" name="${this.element.dataset.name || 'selected-items'}">
                 </div>
                 <div class="card select-card" style="display: none;">
-                    <div class="card-body">
+                    <div id="${this.id}-card-body">
                         <h5 class="card-title mb-3">${this.options.placeholder}</h5>
                         <div class="search-container">
                           <div class="search-input-wrapper">
@@ -535,7 +535,7 @@ class MultipleSelectHierarchy {
   }
 
   updateHeader(title, showBackButton = false) {
-    const cardBody = this.selectCard.querySelector('.card-body');
+    const cardBody = this.selectCard.querySelector(`#${this.id}-card-body`);
     const existingHeader = cardBody.querySelector('h5.card-title');
 
     if (existingHeader) {
