@@ -3,50 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multiple Select Location - Examples</title>
+    <title>Multiple Select Examples</title>
     <link href="bootstrap.css" rel="stylesheet">
     <link href="styles.css" rel="stylesheet">
 </head>
 <body>
     <div class="container mt-5">
-        <h1>Multiple Select Location Examples</h1>
-        <form id="complexForm" action="/submit-complex" method="POST" class="mb-5">
-            <h2>Complex Form</h2>
+        <h1>Multiple Select Examples</h1>
+
+        <!-- Industry Selection Form -->
+        <form id="industryForm" action="/submit-industry" method="POST" class="mb-5">
+            <h2>Industry Selection Form</h2>
             <div class="mb-3">
-                <label for="name" class="form-label">Name</label>
-                <input type="text" class="form-control" id="name" name="name" required>
+                <label for="companyName" class="form-label">Company Name</label>
+                <input type="text" class="form-control" id="companyName" name="companyName" required>
             </div>
             
             <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" name="email" required>
+                <label for="businessEmail" class="form-label">Business Email</label>
+                <input type="email" class="form-control" id="businessEmail" name="businessEmail" required>
             </div>
+
             <div class="mb-3">
-                <label for="location-complex" class="form-label">Preferred Locations</label>
-                <div class="hierarchy-select-container" data-name="location-complex"></div>
+                <label class="form-label">Business Industries</label>
+                <div class="hierarchy-select-container" data-name="business-industries"></div>
             </div>
-            <button type="submit" class="btn btn-primary">Submit Complex Form</button>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
             <button type="reset" class="btn btn-secondary">Reset</button>
         </form>
 
-        
+        <!-- Location Selection Form -->
+        <form id="locationForm" action="/submit-location" method="POST" class="mb-5">
+            <h2>Location Selection Form</h2>
+            <div class="mb-3">
+                <label for="jobTitle" class="form-label">Job Title</label>
+                <input type="text" class="form-control" id="jobTitle" name="jobTitle" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Primary Work Location</label>
+                <div class="hierarchy-select-container" data-name="primary-location"></div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Additional Work Locations</label>
+                <div class="hierarchy-select-container" data-name="additional-locations"></div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="reset" class="btn btn-secondary">Reset</button>
+        </form>
     </div>
 
     <script src="script.js"></script>
+    <script src="datasample.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Function to handle form submission
-            function handleSubmit(event) {
-                event.preventDefault();
-                const formData = new FormData(event.target);
-                const payload = Object.fromEntries(formData.entries());
-                alert('Form Payload:\n' + JSON.stringify(payload, null, 2));
-            }
+            // Initialize industry selectors
+            const industryContainers = document.querySelector('#industryForm').querySelectorAll('.hierarchy-select-container');
+            industryContainers.forEach((container) => {
+                new MultipleSelectHierarchy(container, industryData, {
+                    maxSelections: 3,
+                    placeholder: "Select Industries",
+                    searchPlaceholder: "Search Industries",
+                    defaultSelectionText: "Select industries",
+                    unitChildText: "Sectors",
+                    allText: "All"
+                });
+            });
 
-            // Add submit event listeners to all forms
-            // document.getElementById('basicForm').addEventListener('submit', handleSubmit);
-            document.getElementById('complexForm').addEventListener('submit', handleSubmit);
-            // document.getElementById('multiSelectForm').addEventListener('submit', handleSubmit);
+            // Initialize location selectors
+            const locationContainers = document.querySelector('#locationForm').querySelectorAll('.hierarchy-select-container');
+            locationContainers.forEach((container) => {
+                new MultipleSelectHierarchy(container, locationData, {
+                    maxSelections: 3,
+                    placeholder: "Select Locations",
+                    searchPlaceholder: "Search Locations",
+                    defaultSelectionText: "Select locations",
+                    unitChildText: "Districts",
+                    allText: "All"
+                });
+            });
+
+            // Handle form submissions
+            ['industryForm', 'locationForm'].forEach(formId => {
+                document.getElementById(formId).addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    const formData = new FormData(event.target);
+                    const payload = Object.fromEntries(formData.entries());
+                    console.log(`${formId} Data:`, payload);
+                    alert(`${formId} Payload:\n` + JSON.stringify(payload, null, 2));
+                });
+            });
         });
     </script>
 </body>

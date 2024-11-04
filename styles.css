@@ -254,7 +254,7 @@
     padding-left: 35px;
 }
 
-.country-header {
+.group-header {
     background-color: #f8f9fa;
     font-weight: 500;
     color: #6c757d;
@@ -262,22 +262,21 @@
     border-bottom: 1px solid #dee2e6;
 }
 
-.country-label {
+.group-label {
     font-size: 0.875rem;
-    text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
-.location-item {
+.subgroup-item {
     padding-left: 1.5rem;
 }
 
-.list-group-item.country-header:first-child {
+.list-group-item.group-header:first-child {
     border-top-left-radius: 0.375rem;
     border-top-right-radius: 0.375rem;
 }
 
-.list-group-item.country-header + .location-item {
+.list-group-item.group-header + .subgroup-item {
     border-top: none;
 }
 
@@ -304,9 +303,14 @@
     opacity: 0.5;
 }
 
-.multiple-select-hierarchy .location-item {
+.multiple-select-hierarchy .subgroup-item {
     padding: 0.5rem 1rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+/* Add new class for smooth scrolling */
+.multiple-select-hierarchy .select-card.smooth-scroll {
+    scroll-behavior: smooth;
 }
