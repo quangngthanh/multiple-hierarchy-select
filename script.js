@@ -31,11 +31,11 @@ class MultipleSelectHierarchy {
       selectedText: "You have selected {n} items",
       defaultSelectionText: "Please select items",
       unitChildText: "Items",
+      showGroupHeaders: true,
       ...options,
     };
 
     this.items = this.processData(data);
-    console.log(this.items);
     this.selectedItems = {};
     
     if (!MultipleSelectHierarchy.instances) {
@@ -184,13 +184,15 @@ class MultipleSelectHierarchy {
     const selectedParentCount = Object.keys(this.selectedItems).length;
 
     items.forEach((group) => {
-        // Create group header
-        const groupHeader = document.createElement("li");
-        groupHeader.className = "list-group-item group-header";
-        groupHeader.innerHTML = `
-            <div class="group-label">${group.name}</div>
-        `;
-        fragment.appendChild(groupHeader);
+        // Only create group header if showGroupHeaders is true
+        if (this.options.showGroupHeaders) {
+            const groupHeader = document.createElement("li");
+            groupHeader.className = "list-group-item group-header";
+            groupHeader.innerHTML = `
+                <div class="group-label">${group.name}</div>
+            `;
+            fragment.appendChild(groupHeader);
+        }
 
         // Render subgroups under this group
         if (group.children && group.children.length > 0) {
@@ -441,7 +443,12 @@ class MultipleSelectHierarchy {
         this.renderChips(selectedItems);
       }
       
-      selectedItemsInput.value = JSON.stringify(this.selectedItems);
+      // Prepare the value object including group IDs if showGroupHeaders is true
+      const inputValue = this.options.showGroupHeaders ? 
+          this.getSelectedItemsWithGroups() : 
+          this.selectedItems;
+      
+      selectedItemsInput.value = JSON.stringify(inputValue);
     });
   }
 
@@ -832,7 +839,8 @@ class MultipleSelectHierarchy {
   // Simplify the processData method
   processData(items) {
     return items.map(item => ({
-        ...item,
+        id: item.id, // Ensure group ID is included
+        name: item.name,
         children: item.children ? this.processData(item.children) : []
     }));
   }
@@ -851,6 +859,32 @@ class MultipleSelectHierarchy {
         }
     }
     return null;
+  }
+
+  // Add new method to get selected items with their group IDs
+  getSelectedItemsWithGroups() {
+    const selectedWithGroups = {};
+    
+    this.items.forEach(group => {
+        const selectedChildrenInGroup = group.children.some(
+            subgroup => this.selectedItems[subgroup.id] !== undefined
+        );
+        
+        if (selectedChildrenInGroup) {
+            selectedWithGroups[group.id] = {
+                children: {}
+            };
+            
+            group.children.forEach(subgroup => {
+                if (this.selectedItems[subgroup.id] !== undefined) {
+                    selectedWithGroups[group.id].children[subgroup.id] = 
+                        this.selectedItems[subgroup.id];
+                }
+            });
+        }
+    });
+    
+    return selectedWithGroups;
   }
 }
 
