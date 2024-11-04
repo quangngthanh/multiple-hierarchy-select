@@ -1,138 +1,173 @@
-# Multiple Select Location Component
+# Multiple Select Hierarchy Component
 
-This project implements a customizable multiple select component for location selection, built with HTML, CSS, and JavaScript.
-
-## Introduction
-
-The Multiple Select Location Component is a versatile and user-friendly tool designed to handle hierarchical selection of locations. It's particularly useful for forms where users need to select multiple locations from a structured list, such as cities and their districts.
-
-Key features include:
-- Hierarchical selection of locations
-- Search functionality
-- Chip-based display of selected items
-- Customizable maximum number of selections
-- Responsive design
-- Easy integration with existing forms
+A customizable hierarchical select component with search functionality and group header options.
 
 ## Features
+- Hierarchical selection with groups and subgroups
+- Search functionality with diacritics support
+- Customizable group headers
+- Responsive chip display
+- Form integration
+- Maximum selection limit
+- Smooth scrolling
 
-- Hierarchical selection of locations
-- Search functionality
-- Chip-based display of selected items
-- Responsive design
-- Customizable styling
-
-## File Structure
-
-- `index.html`: The main HTML file containing the structure of the component
-- `bootstrap.css`: Bootstrap 5.3.3 CSS file for basic styling
-- `styles.css`: Custom CSS file for component-specific styling
-- `script.js`: JavaScript file containing the component's functionality
-
-## Usage
+## Installation
 
 1. Include the necessary CSS files in your HTML:
-
-```
+```html
 <link href="bootstrap.css" rel="stylesheet">
 <link href="styles.css" rel="stylesheet">
 ```
 
-2. Add the following HTML structure to your page:
-
+2. Add the container to your HTML:
 ```html
-<select class="form-select hierarchy-select" multiple name="location-user-like">
-    <option value="1">International</option>
-    <optgroup label="Hanoi (TP.Hà Nội)" data-value="2">
-        <option value="21">Ba Vi</option>
-        <option value="22">Chuong My</option>
-        <option value="23">Gia Lam</option>
-    </optgroup>
-    <!-- Add more options as needed -->
-</select>
+<div class="hierarchy-select-container"></div>
 ```
 
-3. Include the JavaScript file at the end of your HTML body:
-
+3. Include the JavaScript:
 ```html
 <script src="script.js"></script>
 ```
 
-4. Initialize the component:
+## Basic Usage
 
 ```javascript
-document.addEventListener("DOMContentLoaded", () => {
-  const hierarchySelects = document.querySelectorAll("select.hierarchy-select");
-  hierarchySelects.forEach((selectElement) => {
-    new MultipleSelectHierarchy(selectElement, {
-      maxSelections: 3,
-      placeholder: "Please select",
-      searchPlaceholder: "Search",
-    });
-  });
+const container = document.querySelector(".hierarchy-select-container");
+const data = [
+  {
+    id: "region1",
+    name: "North Region",
+    children: [
+      {
+        id: "city1",
+        name: "New York",
+        children: [
+          { id: "district1", name: "Manhattan" },
+          { id: "district2", name: "Brooklyn" }
+        ]
+      }
+    ]
+  }
+];
+
+new MultipleSelectHierarchy(container, data, {
+  maxSelections: 3,
+  showGroupHeaders: true
 });
 ```
 
-## Resetting the Component
+## Working with Forms
 
-There are two ways to reset the Multiple Select Location Component:
+```html
+<form id="myForm">
+  <div class="hierarchy-select-container"></div>
+  <button type="reset">Reset</button>
+  <button type="submit">Submit</button>
+</form>
 
-1. **Reset a specific instance:**
-   If you have a reference to the MultipleSelectHierarchy instance, you can call its `reset()` method:
+<script>
+document.getElementById('myForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const selectedValues = JSON.parse(formData.get('selected-items'));
+  console.log(selectedValues);
+});
+</script>
+```
 
-   ```javascript
-   const instance = new MultipleSelectHierarchy(selectElement, options);
-   // ... later in your code ...
-   instance.reset();
-   ```
+## Configuration Options
 
-2. **Reset by selector:**
-   You can reset all instances within a specific container (like a form) using the static `resetBySelector` method:
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| maxSelections | number | 3 | Maximum number of parent items that can be selected |
+| placeholder | string | "Please select" | Placeholder text for the input |
+| searchPlaceholder | string | "Search" | Placeholder text for the search input |
+| showGroupHeaders | boolean | true | Show/hide group headers in the dropdown |
+| allText | string | "All" | Text for the "All" option |
+| clearAllText | string | "Clear all" | Text for the clear all button |
+| selectedText | string | "You have selected {n} items" | Text template for selection count |
+| defaultSelectionText | string | "Please select items" | Default text when nothing is selected |
+| unitChildText | string | "Items" | Text for unit of child items |
 
-   ```javascript
-   // Reset all instances within a form with id "myForm"
-   MultipleSelectHierarchy.resetBySelector('#myForm');
+## Selection Value Format
 
-   // Reset all instances on the page
-   MultipleSelectHierarchy.resetBySelector('body');
-   ```
+### With Group Headers (showGroupHeaders: true)
+```javascript
+{
+  "region1": {
+    "children": {
+      "city1": {
+        "children": {
+          "district1": null,  // All selected
+          "district2": [1, 2] // Specific items selected
+        }
+      }
+    }
+  }
+}
+```
 
-   This is particularly useful when resetting forms:
+### Without Group Headers (showGroupHeaders: false)
+```javascript
+{
+  "city1": {
+    "children": {
+      "district1": null,
+      "district2": [1, 2]
+    }
+  }
+}
+```
 
-   ```javascript
-   document.querySelectorAll('form').forEach(form => {
-     form.addEventListener('reset', (event) => {
-       event.preventDefault();
-       MultipleSelectHierarchy.resetBySelector(`#${form.id}`);
-       form.reset();
-     });
-   });
-   ```
+## Methods
 
-## Customization
+### Initialize
+```javascript
+const hierarchy = new MultipleSelectHierarchy(element, data, options);
+```
 
-You can customize the appearance of the component by modifying the `styles.css` file. The component uses custom classes prefixed with `.multiple-select-hierarchy` for easy targeting and modification.
+### Update Items
+```javascript
+hierarchy.setItems(newData);
+```
 
-## Dependencies
+### Reset
+```javascript
+hierarchy.reset();
+```
 
-- Bootstrap 5.3.3 (included in `bootstrap.css`)
+### Destroy
+```javascript
+hierarchy.destroy();
+```
+
+## Events
+
+The component automatically handles:
+- Form reset events
+- Click outside to close
+- Search input changes
+- Selection changes
+- Navigation between levels
 
 ## Browser Support
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
 
-This component should work in all modern browsers that support ES6+ JavaScript and CSS3.
+## Styling
+
+The component uses CSS variables for easy customization:
+```css
+.multiple-select-hierarchy {
+  --msh-primary-color: #0d6efd;
+  --msh-border-color: #dee2e6;
+  --msh-text-color: #212529;
+  --msh-bg-color: #fff;
+}
+```
 
 ## License
 
-[Add your chosen license here]
-
-## Contributing
-
-[Add contribution guidelines if applicable]
-
-## Authors
-
-[Add your name or your team's name]
-
-## Acknowledgments
-
-- Bootstrap team for the base styling framework
+MIT License
