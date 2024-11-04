@@ -10,97 +10,26 @@
 <body>
     <div class="container mt-5">
         <h1>Multiple Select Location Examples</h1>
-
-        <!-- Example 1: Basic Form -->
-        <form id="basicForm" action="/submit" method="POST" class="mb-5">
-            <h2>Basic Form</h2>
-            <select class="form-select hierarchy-select" multiple name="location-basic">
-                <option value="1">International</option>
-                <optgroup label="Hanoi (TP.Hà Nội)" data-value="2">
-                    <option value="21">Ba Vi</option>
-                    <option value="22">Chuong My</option>
-                    <option value="23">Gia Lam</option>
-                </optgroup>
-                <optgroup label="Ho Chi Minh City (TP.HCM)" data-value="3">
-                    <option value="31">District 1</option>
-                    <option value="32">District 2</option>
-                    <option value="33">District 3</option>
-                </optgroup>
-                <option value="4">Hai Phong (TP.Hải Phòng)</option>
-                <option value="5">Da Nang (TP.Đà Nẵng)</option>
-            </select>
-            <button type="submit" class="btn btn-primary mt-2">Submit Basic Form</button>
-            <button type="reset" class="btn btn-secondary mt-2">Reset</button>
-        </form>
-
-        <!-- Example 2: Form with Additional Fields -->
         <form id="complexForm" action="/submit-complex" method="POST" class="mb-5">
             <h2>Complex Form</h2>
             <div class="mb-3">
                 <label for="name" class="form-label">Name</label>
                 <input type="text" class="form-control" id="name" name="name" required>
             </div>
+            
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
                 <input type="email" class="form-control" id="email" name="email" required>
             </div>
             <div class="mb-3">
                 <label for="location-complex" class="form-label">Preferred Locations</label>
-                <select class="form-select hierarchy-select" multiple name="location-complex" id="location-complex">
-                    <option value="1">International</option>
-                    <optgroup label="Hanoi (TP.Hà Nội)" data-value="2">
-                        <option value="21">Ba Vi</option>
-                        <option value="22">Chuong My</option>
-                        <option value="23">Gia Lam</option>
-                    </optgroup>
-                    <optgroup label="Ho Chi Minh City (TP.HCM)" data-value="3">
-                        <option value="31">District 1</option>
-                        <option value="32">District 2</option>
-                        <option value="33">District 3</option>
-                    </optgroup>
-                    <option value="4">Hai Phong (TP.Hải Phòng)</option>
-                    <option value="5">Da Nang (TP.Đà Nẵng)</option>
-                    <option value="6">Nha Trang</option>
-                    <option value="7">Phu Quoc</option>
-                    <option value="81">Da Lat</option>
-                    <option value="82">Buon Ma Thuot</option>
-                    <option value="91">Vinh</option>
-                    <option value="92">Quy Nhon</option>
-                    <option value="13">Can Tho</option>
-                </select>
+                <div class="hierarchy-select-container" data-name="location-complex"></div>
             </div>
             <button type="submit" class="btn btn-primary">Submit Complex Form</button>
             <button type="reset" class="btn btn-secondary">Reset</button>
         </form>
 
-        <!-- Example 3: Form with Multiple Hierarchy Selects -->
-        <form id="multiSelectForm" action="/submit-multi" method="POST" class="mb-5">
-            <h2>Multiple Hierarchy Selects Form</h2>
-            <div class="mb-3">
-                <label for="work-locations" class="form-label">Work Locations</label>
-                <select class="form-select hierarchy-select" multiple name="work-locations" id="work-locations">
-                    <option value="1">International</option>
-                    <optgroup label="Hanoi (TP.Hà Nội)" data-value="2">
-                        <option value="21">Ba Vi</option>
-                        <option value="22">Chuong My</option>
-                    </optgroup>
-                    <option value="3">Ho Chi Minh City (TP.HCM)</option>
-                    <option value="4">Hai Phong (TP.Hải Phòng)</option>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label for="vacation-locations" class="form-label">Vacation Locations</label>
-                <select class="form-select hierarchy-select" multiple name="vacation-locations" id="vacation-locations">
-                    <option value="5">Da Nang (TP.Đà Nẵng)</option>
-                    <option value="6">Nha Trang</option>
-                    <option value="7">Phu Quoc</option>
-                    <option value="81">Da Lat</option>
-                    <option value="82">Buon Ma Thuot</option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit Multi-Select Form</button>
-            <button type="reset" class="btn btn-secondary">Reset</button>
-        </form>
+        
     </div>
 
     <script src="script.js"></script>
@@ -115,9 +44,9 @@
             }
 
             // Add submit event listeners to all forms
-            document.getElementById('basicForm').addEventListener('submit', handleSubmit);
+            // document.getElementById('basicForm').addEventListener('submit', handleSubmit);
             document.getElementById('complexForm').addEventListener('submit', handleSubmit);
-            document.getElementById('multiSelectForm').addEventListener('submit', handleSubmit);
+            // document.getElementById('multiSelectForm').addEventListener('submit', handleSubmit);
         });
     </script>
 </body>

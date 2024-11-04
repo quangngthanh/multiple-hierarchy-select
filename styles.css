@@ -253,3 +253,60 @@
 .multiple-select-hierarchy .search-input {
     padding-left: 35px;
 }
+
+.country-header {
+    background-color: #f8f9fa;
+    font-weight: 500;
+    color: #6c757d;
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.country-label {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.location-item {
+    padding-left: 1.5rem;
+}
+
+.list-group-item.country-header:first-child {
+    border-top-left-radius: 0.375rem;
+    border-top-right-radius: 0.375rem;
+}
+
+.list-group-item.country-header + .location-item {
+    border-top: none;
+}
+
+/* Add these styles */
+.multiple-select-hierarchy .btn-link {
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    padding: 4px;
+    margin: -4px;
+    border-radius: 4px;
+}
+
+.multiple-select-hierarchy .btn-link:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.multiple-select-hierarchy .btn-link:active {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.multiple-select-hierarchy .btn-link.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+.multiple-select-hierarchy .location-item {
+    padding: 0.5rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
