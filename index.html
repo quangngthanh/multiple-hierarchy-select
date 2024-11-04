@@ -26,7 +26,7 @@
 
             <div class="mb-3">
                 <label class="form-label">Business Industries</label>
-                <div class="hierarchy-select-container" data-name="business-industries"></div>
+                <div class="hierarchy-select-container" id="business-industries" data-name="business-industries"></div>
             </div>
 
             <button type="submit" class="btn btn-primary">Submit</button>
@@ -43,12 +43,12 @@
 
             <div class="mb-3">
                 <label class="form-label">Primary Work Location</label>
-                <div class="hierarchy-select-container" data-name="primary-location"></div>
+                <div class="hierarchy-select-container" id="primary-location" data-name="primary-location"></div>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Additional Work Locations</label>
-                <div class="hierarchy-select-container" data-name="additional-locations"></div>
+                <div class="hierarchy-select-container" id="additional-locations" data-name="additional-locations"></div>
             </div>
 
             <button type="submit" class="btn btn-primary">Submit</button>
@@ -61,33 +61,29 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize industry selectors
-            const industryContainers = document.querySelector('#industryForm').querySelectorAll('.hierarchy-select-container');
-            industryContainers.forEach((container) => {
-                new MultipleSelectHierarchy(container, industryData, {
-                    maxSelections: 3,
-                    placeholder: "Select Industries",
-                    searchPlaceholder: "Search Industries",
-                    defaultSelectionText: "Select industries",
-                    unitChildText: "Sectors",
-                    allText: "All",
-                    showGroupHeaders: true
-                });
+            const industryContainers = document.getElementById('business-industries');
+            new MultipleSelectHierarchy(industryContainers, industryData, {
+                maxSelections: 3,
+                placeholder: "Select Industries",
+                searchPlaceholder: "Search Industries",
+                defaultSelectionText: "Select industries",
+                unitChildText: "Sectors",
+                allText: "All",
+                showGroupHeaders: true
             });
 
             // Initialize location selectors
-            const locationContainers = document.querySelector('#locationForm').querySelectorAll('.hierarchy-select-container');
-            locationContainers.forEach((container) => {
-                new MultipleSelectHierarchy(container, locationData, {
-                    maxSelections: 3,
-                    placeholder: "Select Locations",
-                    searchPlaceholder: "Search Locations",
-                    defaultSelectionText: "Select locations",
-                    unitChildText: "Districts",
-                    allText: "All",
-                    showGroupHeaders: true
-                });
+            const locationContainers = document.getElementById('primary-location');
+            new MultipleSelectHierarchy(locationContainers, locationData, {
+                maxSelections: 3,
+                placeholder: "Select Locations",
+                searchPlaceholder: "Search Locations",
+                defaultSelectionText: "Select locations",
+                unitChildText: "Districts",
+                allText: "All",
+                showGroupHeaders: true
             });
-
+            
             // Handle form submissions
             ['industryForm', 'locationForm'].forEach(formId => {
                 document.getElementById(formId).addEventListener('submit', function(event) {
