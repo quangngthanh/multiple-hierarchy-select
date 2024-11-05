@@ -65,8 +65,6 @@
     border-radius: 0.5rem;
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
     font-size: 14px;
-    max-height: 350px;
-    overflow: auto;
 }
 
 .multiple-select-hierarchy .chip {
@@ -308,4 +306,12 @@
     padding: 3px 8px !important;
     border-radius: 5px !important;
 
+}
+.multiple-select-hierarchy .list-group{
+    max-height: 350px;
+    overflow: auto;
+}
+.multiple-select-hierarchy .list-group-item:hover{
+    background: #f5f5f5;
+    border-radius: 5px;
 }

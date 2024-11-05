@@ -119,36 +119,85 @@ class MultipleSelectHierarchy {
 
   attachEventListeners() {
     // Prevent form submission when clicking buttons inside the component
-    this.container.addEventListener('click', (e) => {
-        if (e.target.closest('.btn-link') || e.target.closest('.btn-back')) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-    }, { signal: this.signal });
+    // this.container.addEventListener('click', (e) => {
+    //     if (e.target.closest('.btn-link') || e.target.closest('.btn-back')) {
+    //         e.preventDefault();
+    //         e.stopPropagation();
+    //     }
+    // }, { signal: this.signal });
 
     this.itemList.addEventListener('click', (e) => {
-        const target = e.target;
-        const btnLink = target.closest('.btn-link');
-        
-        if (target.matches('.form-check-input')) {
-            const itemId = target.id.replace(`${this.id}-item-`, '');
-            const item = this.findItemById(parseInt(itemId));
-            if (item) {
-                this.handleItemSelection(item, target.checked);
-            }
-        }
-        
-        if (btnLink) {
-            e.preventDefault();
-            e.stopPropagation();
-            const listItem = btnLink.closest('li');
-            const itemId = listItem.querySelector('.form-check-input').id.replace(`${this.id}-item-`, '');
-            const item = this.findItemById(parseInt(itemId));
-            if (item) {
-                this.handleItemClick(item);
-            }
-        }
-    }, { signal: this.signal });
+      const target = e.target;
+      const btnLink = target.closest('.btn-link');
+      const listItem = target.closest('.list-group-item');
+
+      // Handle checkbox clicks
+      if (target.matches('.form-check-input')) {
+          // Check if this is a child checkbox
+          if (target.id.startsWith(`${this.id}-child-`)) {
+              const itemId = target.id.replace(`${this.id}-child-`, '');
+              const item = this.findItemById(parseInt(itemId));
+              if (item && this.selectedParent) {
+                  this.handleChildSelection(this.selectedParent, item, target.checked);
+              }
+          } else if (target.id === `${this.id}-allChildren`) {
+              // Handle "All" checkbox
+              if (this.selectedParent) {
+                  this.handleAllChildrenSelection(this.selectedParent, target.checked);
+              }
+          } else {
+              // Handle parent checkbox
+              const itemId = target.id.replace(`${this.id}-item-`, '');
+              const item = this.findItemById(parseInt(itemId));
+              if (item) {
+                  this.handleItemSelection(item, target.checked);
+              }
+          }
+          return;
+      }
+
+      // Handle button link clicks
+      if (btnLink) {
+          e.preventDefault();
+          e.stopPropagation();
+          const listItem = btnLink.closest('li');
+          const itemId = listItem.querySelector('.form-check-input').id.replace(`${this.id}-item-`, '');
+          const item = this.findItemById(parseInt(itemId));
+          if (item) {
+              this.handleItemClick(item);
+          }
+          return;
+      }
+
+      // Handle list item clicks (excluding clicks on buttons and checkboxes)
+      if (listItem && !target.closest('.btn-link') && !target.matches('.form-check-input')) {
+          const checkbox = listItem.querySelector('.form-check-input');
+          if (!checkbox) return;
+
+          checkbox.checked = !checkbox.checked;
+          
+          // Check if this is a child item
+          if (checkbox.id.startsWith(`${this.id}-child-`)) {
+              const itemId = checkbox.id.replace(`${this.id}-child-`, '');
+              const item = this.findItemById(parseInt(itemId));
+              if (item && this.selectedParent) {
+                  this.handleChildSelection(this.selectedParent, item, checkbox.checked);
+              }
+          } else if (checkbox.id === `${this.id}-allChildren`) {
+              // Handle "All" checkbox
+              if (this.selectedParent) {
+                  this.handleAllChildrenSelection(this.selectedParent, checkbox.checked);
+              }
+          } else {
+              // Handle parent checkbox
+              const itemId = checkbox.id.replace(`${this.id}-item-`, '');
+              const item = this.findItemById(parseInt(itemId));
+              if (item) {
+                  this.handleItemSelection(item, checkbox.checked);
+              }
+          }
+      }
+  }, { signal: this.signal });
 
     this.chipsContainer.addEventListener("click", () => {
       this.chipsContainer.focus();
@@ -869,16 +918,30 @@ class MultipleSelectHierarchy {
 
   // Add this helper method to find items by ID
   findItemById(id, items = this.items) {
+    // Check children level first
     for (const item of items) {
-        if (item.id === id) {
-            return item;
+      if (item.children) {
+        const foundInChildren = item.children.find(child => child.id === id);
+        if (foundInChildren) {
+          return foundInChildren;
         }
-        if (item.children) {
-            const found = this.findItemById(id, item.children);
-            if (found) {
-                return found;
-            }
+      }
+    }
+
+    // Then check current level
+    const foundAtCurrentLevel = items.find(item => item.id === id);
+    if (foundAtCurrentLevel) {
+      return foundAtCurrentLevel;
+    }
+
+    // Finally check deeper levels
+    for (const item of items) {
+      if (item.children) {
+        const found = this.findItemById(id, item.children);
+        if (found) {
+          return found;
         }
+      }
     }
     return null;
   }
