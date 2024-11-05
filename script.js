@@ -118,13 +118,6 @@ class MultipleSelectHierarchy {
   }
 
   attachEventListeners() {
-    // Prevent form submission when clicking buttons inside the component
-    // this.container.addEventListener('click', (e) => {
-    //     if (e.target.closest('.btn-link') || e.target.closest('.btn-back')) {
-    //         e.preventDefault();
-    //         e.stopPropagation();
-    //     }
-    // }, { signal: this.signal });
 
     this.itemList.addEventListener('click', (e) => {
       const target = e.target;
@@ -299,12 +292,12 @@ class MultipleSelectHierarchy {
                         <label class="form-check-label mt-1" for="${this.id}-child-${child.id}">
                             ${child.name}
                             ${this.selectedItems[child.id] ? 
-                                `<span class="text-black-50">
-                                    ${this.selectedItems[child.id] === null ? 
-                                        `(${this.options.allText})` : 
-                                        `(${this.selectedItems[child.id].length} ${this.options.unitChildText})`}
-                                </span>` 
-                                : ''}
+                              `<span class="text-black-50">
+                                  ${this.selectedItems[child.id] === null ? 
+                                      `\u00A0(${this.options.allText})` : 
+                                      `\u00A0(${this.selectedItems[child.id].length}\u00A0${this.options.unitChildText})`}
+                              </span>` 
+                              : ''}
                         </label>
                     </div>
                     ${hasChildren ? `
@@ -713,12 +706,12 @@ class MultipleSelectHierarchy {
 
     let selectionText = '';
     if (hasChildren && isChecked) {
-        if (this.selectedItems[item.id] === null) {
-            selectionText = ` (${this.options.allText})`;
-        } else if (Array.isArray(this.selectedItems[item.id])) {
-            selectionText = ` (${this.selectedItems[item.id].length} ${this.options.unitChildText})`;
-        }
-    }
+      if (this.selectedItems[item.id] === null) {
+          selectionText = `\u00A0(${this.options.allText})`;
+      } else if (Array.isArray(this.selectedItems[item.id])) {
+          selectionText = `\u00A0(${this.selectedItems[item.id].length}\u00A0${this.options.unitChildText})`;
+      }
+  }
 
     const checkboxContainer = document.createElement('div');
     checkboxContainer.className = 'form-check d-flex align-item-center gap-2';
@@ -861,18 +854,18 @@ class MultipleSelectHierarchy {
     
     // Iterate through all items to find selected subgroups
     this.items.forEach(group => {
-        group.children.forEach(subgroup => {
-            if (this.selectedItems[subgroup.id] !== undefined) {
-                let displayText = subgroup.name;                
-                if (this.selectedItems[subgroup.id] === null) {
-                    displayText += ``;
-                } else if (Array.isArray(this.selectedItems[subgroup.id])) {
-                    displayText += ` (${this.selectedItems[subgroup.id].length})`;
-                }
-                
-                selectedItems.push(this.createChip(displayText, subgroup.id));
-            }
-        });
+      group.children.forEach(subgroup => {
+          if (this.selectedItems[subgroup.id] !== undefined) {
+              let displayText = subgroup.name;                
+              if (this.selectedItems[subgroup.id] === null) {
+                  displayText += ``;
+              } else if (Array.isArray(this.selectedItems[subgroup.id])) {
+                  displayText += `\u00A0(${this.selectedItems[subgroup.id].length}\u00A0${this.options.unitChildText})`;
+              }
+              
+              selectedItems.push(this.createChip(displayText, subgroup.id));
+          }
+      });
     });
     
     return selectedItems;
