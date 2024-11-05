@@ -69,7 +69,10 @@
                 defaultSelectionText: "Select industries",
                 unitChildText: "Sectors",
                 allText: "All",
-                showGroupHeaders: false
+                showGroupHeaders: true,
+                onChange: function(selectedItems) {
+                    console.log("Selected Industries:", selectedItems);
+                }
             });
 
             // Initialize location selectors
@@ -81,7 +84,10 @@
                 defaultSelectionText: "Select locations",
                 unitChildText: "Districts",
                 allText: "All",
-                showGroupHeaders: false
+                showGroupHeaders: true,
+                onChange: function(selectedItems) {
+                    console.log("Selected Locations:", selectedItems);
+                }
             });
 
             // Handle form submissions

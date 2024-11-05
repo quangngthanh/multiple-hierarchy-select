@@ -32,6 +32,7 @@ class MultipleSelectHierarchy {
       defaultSelectionText: "Please select items",
       unitChildText: "Items",
       showGroupHeaders: true,
+      onChange: options.onChange || function() {},
       ...options,
     };
 
@@ -66,6 +67,12 @@ class MultipleSelectHierarchy {
     this.attachEventListeners();
     this.updateInput();
     this.renderItems(this.items);
+  }
+
+  triggerOnChange(selectedItems) {
+    if (typeof this.options.onChange === 'function') {
+        this.options.onChange(selectedItems);
+    }
   }
 
   render() {
@@ -271,6 +278,7 @@ class MultipleSelectHierarchy {
                 const button = li.querySelector('.btn-link');
                 button.addEventListener("click", (e) => {
                     e.preventDefault();
+                    e.stopPropagation();
                     this.handleItemClick(child);
                 }, { signal: this.signal });
             }
@@ -307,6 +315,7 @@ class MultipleSelectHierarchy {
     this.updateInput();
     this.updateSelectionInfo();
     this.renderItems(this.items);
+    this.triggerOnChange(this.selectedItems); 
   }
 
   handleChildSelection(parent, child, isChecked) {
@@ -323,6 +332,7 @@ class MultipleSelectHierarchy {
       this.updateInput();
       this.updateSelectionInfo();
       this.renderChildren(parent);
+      this.triggerOnChange(this.selectedItems); 
     }
 
     if (!this.selectedItems[parent.id]) {
@@ -354,6 +364,7 @@ class MultipleSelectHierarchy {
     this.updateInput();
     this.updateSelectionInfo();
     this.renderChildren(parent);
+    this.triggerOnChange(this.selectedItems); 
   }
 
   handleAllChildrenSelection(parent, isChecked) {
@@ -380,11 +391,11 @@ class MultipleSelectHierarchy {
     this.updateInput();
     this.updateSelectionInfo();
     this.renderChildren(parent);
+    this.triggerOnChange(this.selectedItems); 
   }
 
   handleItemClick(item) {
     if (!item) return;
-    
     // Store current scroll position before navigating
     this.scrollPositions.set('main', this.selectCard.scrollTop);
     
@@ -532,6 +543,7 @@ class MultipleSelectHierarchy {
     this.updateInput();
     this.updateSelectionInfo();
     this.renderItems(this.items);
+    this.triggerOnChange(this.selectedItems); 
   }
 
   updateHeader(title, showBackButton = false) {
@@ -605,6 +617,7 @@ class MultipleSelectHierarchy {
     this.updateSelectionInfo();
     this.renderItems(this.items);
     this.hideSelectCard();
+    this.triggerOnChange(this.selectedItems); 
   }
 
   static resetBySelector(formElement, selector) {
