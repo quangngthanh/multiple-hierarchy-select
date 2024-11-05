@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Multiple Select Examples</title>
-    <link href="bootstrap.css" rel="stylesheet">
+    <link href="style.bundle.css" rel="stylesheet">
     <link href="styles.css" rel="stylesheet">
 </head>
 <body>
@@ -69,7 +69,7 @@
                 defaultSelectionText: "Select industries",
                 unitChildText: "Sectors",
                 allText: "All",
-                showGroupHeaders: true
+                showGroupHeaders: false
             });
 
             // Initialize location selectors
@@ -81,9 +81,9 @@
                 defaultSelectionText: "Select locations",
                 unitChildText: "Districts",
                 allText: "All",
-                showGroupHeaders: true
+                showGroupHeaders: false
             });
-            
+
             // Handle form submissions
             ['industryForm', 'locationForm'].forEach(formId => {
                 document.getElementById(formId).addEventListener('submit', function(event) {

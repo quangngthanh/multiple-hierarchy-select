@@ -27,7 +27,7 @@ class MultipleSelectHierarchy {
       placeholder: "Please select",
       searchPlaceholder: "Search",
       allText: "All",
-      clearAllText: "Clear all",
+      clearAllText: "Clear",
       selectedText: "You have selected {n} items",
       defaultSelectionText: "Please select items",
       unitChildText: "Items",
@@ -79,7 +79,7 @@ class MultipleSelectHierarchy {
                     <input type="hidden" id="${this.id}-selected-items" name="${this.element.dataset.name || 'selected-items'}">
                 </div>
                 <div class="card select-card" style="display: none;">
-                    <div id="${this.id}-card-body">
+                    <div class="p-3" id="${this.id}-card-body">
                         <h5 class="card-title mb-3">${this.options.placeholder}</h5>
                         <div class="search-container">
                           <div class="search-input-wrapper">
@@ -189,7 +189,7 @@ class MultipleSelectHierarchy {
             const groupHeader = document.createElement("li");
             groupHeader.className = "list-group-item group-header";
             groupHeader.innerHTML = `
-                <div class="group-label">${group.name}</div>
+                <div class="group-label text-black">${group.name}</div>
             `;
             fragment.appendChild(groupHeader);
         }
@@ -218,10 +218,10 @@ class MultipleSelectHierarchy {
         // Add "All" option at the top
         this.itemList.innerHTML = `
             <li class="list-group-item">
-                <div class="form-check">
+                <div class="form-check d-flex align-item-center gap-2">
                     <input class="form-check-input" type="checkbox" id="${this.id}-allChildren"
                         ${allChildrenSelected ? 'checked' : ''}>
-                    <label class="form-check-label" for="${this.id}-allChildren">
+                    <label class="form-check-label mt-1" for="${this.id}-allChildren">
                         ${this.options.allText}
                     </label>
                 </div>
@@ -237,10 +237,10 @@ class MultipleSelectHierarchy {
 
             li.innerHTML = `
                 <div class="d-flex justify-content-between align-items-center">
-                    <div class="form-check">
+                    <div class="form-check d-flex align-item-center gap-2">
                         <input class="form-check-input" type="checkbox" id="${this.id}-child-${child.id}" 
                             ${isChecked ? "checked" : ""}>
-                        <label class="form-check-label" for="${this.id}-child-${child.id}">
+                        <label class="form-check-label mt-1" for="${this.id}-child-${child.id}">
                             ${child.name}
                             ${this.selectedItems[child.id] ? 
                                 `<span class="text-black-50">
@@ -650,11 +650,11 @@ class MultipleSelectHierarchy {
     }
 
     const checkboxContainer = document.createElement('div');
-    checkboxContainer.className = 'form-check';
+    checkboxContainer.className = 'form-check d-flex align-item-center gap-2';
     checkboxContainer.innerHTML = `
         <input class="form-check-input" type="checkbox" id="${this.id}-item-${item.id}" 
             ${isChecked ? "checked" : ""} ${isDisabled ? "disabled" : ""}>
-        <label class="form-check-label" for="${this.id}-item-${item.id}">
+        <label class="form-check-label mt-1" for="${this.id}-item-${item.id}">
             ${item.name}
             <span class="text-black-50">${selectionText}</span>
         </label>
@@ -665,7 +665,7 @@ class MultipleSelectHierarchy {
     if (hasChildren) {
         const button = document.createElement('button');
         button.type = 'button';
-        button.className = `btn btn-link p-0 ${isDisabled ? "disabled" : ""}`;
+        button.className = `btn btn-link p-0 arr-icon-dropdown  ${isDisabled ? "disabled" : ""}` ;
         button.innerHTML = `
             <svg class="icon-chevron-right ${isDisabled ? "text-muted" : ""}" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -688,7 +688,7 @@ class MultipleSelectHierarchy {
     allLi.innerHTML = `
         <div class="form-check">
             <input class="form-check-input" type="checkbox" id="${this.id}-allChildren">
-            <label class="form-check-label" for="${this.id}-allChildren">${this.options.allText}</label>
+            <label class="form-check-label mt-1" for="${this.id}-allChildren">${this.options.allText}</label>
         </div>
     `;
     fragment.appendChild(allLi);
@@ -709,10 +709,10 @@ class MultipleSelectHierarchy {
 
         li.innerHTML = `
             <div class="d-flex justify-content-between align-items-center">
-                <div class="form-check">
+                <div class="form-check d-flex align-item-center gap-2">
                     <input class="form-check-input" type="checkbox" id="${this.id}-child-${child.id}" 
                         ${isChecked ? "checked" : ""}>
-                    <label class="form-check-label" for="${this.id}-child-${child.id}">
+                    <label class="form-check-label mt-1 " for="${this.id}-child-${child.id}">
                         ${child.name}
                     </label>
                 </div>

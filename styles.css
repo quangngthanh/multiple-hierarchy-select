@@ -1,6 +1,6 @@
 .multiple-select-hierarchy {
     position: relative;
-    max-width: 400px;
+    max-width: 100%;
     margin: 0 auto;
     font-size: 14px; /* Base font size for the component */
 }
@@ -28,7 +28,7 @@
 
 .multiple-select-hierarchy .list-group-item {
     border: none;
-    padding: 0.375rem 0;
+    padding: 0.375rem 0.5rem;
 }
 
 .multiple-select-hierarchy .form-check-input,
@@ -183,7 +183,7 @@
     align-items: center;
     gap: 4px;
     padding: 4px 6px;
-    min-height: 38px;
+    min-height: 34px;
     overflow-x: hidden;
     border-radius: 0.25rem !important
 }
@@ -195,7 +195,7 @@
 
 .multiple-select-hierarchy .form-control:focus,
 .multiple-select-hierarchy .form-control.focused {
-  border-color: #80bdff;
+  border-color: #2F4BA0 ;
   outline: 0;
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
@@ -294,7 +294,7 @@
 }
 
 .multiple-select-hierarchy .subgroup-item {
-    padding: 0.5rem 1rem;
+    padding: 0.25rem 0.5rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -303,4 +303,9 @@
 /* Add new class for smooth scrolling */
 .multiple-select-hierarchy .select-card.smooth-scroll {
     scroll-behavior: smooth;
+}
+.multiple-select-hierarchy button.arr-icon-dropdown{
+    padding: 3px 8px !important;
+    border-radius: 5px !important;
+
 }
