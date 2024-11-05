@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,32 +8,10 @@
     <link href="style.bundle.css" rel="stylesheet">
     <link href="styles.css" rel="stylesheet">
 </head>
+
 <body>
     <div class="container mt-5">
         <h1>Multiple Select Examples</h1>
-
-        <!-- Industry Selection Form -->
-        <form id="industryForm" action="/submit-industry" method="POST" class="mb-5">
-            <h2>Industry Selection Form</h2>
-            <div class="mb-3">
-                <label for="companyName" class="form-label">Company Name</label>
-                <input type="text" class="form-control" id="companyName" name="companyName" required>
-            </div>
-            
-            <div class="mb-3">
-                <label for="businessEmail" class="form-label">Business Email</label>
-                <input type="email" class="form-control" id="businessEmail" name="businessEmail" required>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Business Industries</label>
-                <div class="hierarchy-select-container" id="business-industries" data-name="business-industries"></div>
-            </div>
-
-            <button type="submit" class="btn btn-primary">Submit</button>
-            <button type="reset" class="btn btn-secondary">Reset</button>
-        </form>
-
         <!-- Location Selection Form -->
         <form id="locationForm" action="/submit-location" method="POST" class="mb-5">
             <h2>Location Selection Form</h2>
@@ -48,18 +27,42 @@
 
             <div class="mb-3">
                 <label class="form-label">Additional Work Locations</label>
-                <div class="hierarchy-select-container" id="additional-locations" data-name="additional-locations"></div>
+                <div class="hierarchy-select-container" id="additional-locations" data-name="additional-locations">
+                </div>
             </div>
 
             <button type="submit" class="btn btn-primary">Submit</button>
             <button type="reset" class="btn btn-secondary">Reset</button>
         </form>
+        <!-- Industry Selection Form -->
+        <form id="industryForm" action="/submit-industry" method="POST" class="mb-5">
+            <h2>Industry Selection Form</h2>
+            <div class="mb-3">
+                <label for="companyName" class="form-label">Company Name</label>
+                <input type="text" class="form-control" id="companyName" name="companyName" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="businessEmail" class="form-label">Business Email</label>
+                <input type="email" class="form-control" id="businessEmail" name="businessEmail" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Business Industries</label>
+                <div class="hierarchy-select-container" id="business-industries" data-name="business-industries"></div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="reset" class="btn btn-secondary">Reset</button>
+        </form>
+
+
     </div>
 
     <script src="script.js"></script>
     <script src="datasample.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Initialize industry selectors
             const industryContainers = document.getElementById('business-industries');
             new MultipleSelectHierarchy(industryContainers, industryData, {
@@ -70,7 +73,7 @@
                 unitChildText: "Sectors",
                 allText: "All",
                 showGroupHeaders: true,
-                onChange: function(selectedItems) {
+                onChange: function (selectedItems) {
                     console.log("Selected Industries:", selectedItems);
                 }
             });
@@ -85,14 +88,14 @@
                 unitChildText: "Districts",
                 allText: "All",
                 showGroupHeaders: true,
-                onChange: function(selectedItems) {
+                onChange: function (selectedItems) {
                     console.log("Selected Locations:", selectedItems);
                 }
             });
 
             // Handle form submissions
             ['industryForm', 'locationForm'].forEach(formId => {
-                document.getElementById(formId).addEventListener('submit', function(event) {
+                document.getElementById(formId).addEventListener('submit', function (event) {
                     event.preventDefault();
                     const formData = new FormData(event.target);
                     const payload = Object.fromEntries(formData.entries());
@@ -103,4 +106,5 @@
         });
     </script>
 </body>
+
 </html>

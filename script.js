@@ -398,12 +398,21 @@ class MultipleSelectHierarchy {
     if (!item) return;
     // Store current scroll position before navigating
     this.scrollPositions.set('main', this.selectCard.scrollTop);
-    
+    // Disable smooth scrolling temporarily
+    this.selectCard.style.scrollBehavior = 'auto';
+
     this.selectedParent = item;
     this.searchInput.value = "";
     this.renderChildren(item);
     this.updateSelectionInfo();
     this.updateHeader(item.name, true);
+
+    // scroll to top
+    this.selectCard.scrollTop = 0;
+    // Re-enable smooth scrolling after a small delay
+    setTimeout(() => {
+        this.selectCard.style.scrollBehavior = 'smooth';
+    }, 100);
   }
 
   handleBackClick() {
@@ -852,7 +861,7 @@ class MultipleSelectHierarchy {
   // Simplify the processData method
   processData(items) {
     return items.map(item => ({
-        id: item.id, // Ensure group ID is included
+        id: parseInt(item.id), // Ensure group ID is included
         name: item.name,
         children: item.children ? this.processData(item.children) : []
     }));
