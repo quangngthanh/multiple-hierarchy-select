@@ -180,10 +180,10 @@
     flex-wrap: nowrap;
     align-items: center;
     gap: 4px;
-    padding: 4px 6px;
-    min-height: 34px;
+    padding: 4px 10px;
+    min-height: 35px;
     overflow-x: hidden;
-    border-radius: 0.25rem !important
+    border-radius: 5px !important;
 }
 
 .multiple-select-hierarchy .btn-link:disabled {
@@ -260,7 +260,6 @@
 }
 
 .multiple-select-hierarchy .group-label {
-    font-size: 0.875rem;
     letter-spacing: 0.5px;
 }
 
