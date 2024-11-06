@@ -75,7 +75,9 @@ class MultipleSelectHierarchy {
 
     triggerOnChange() {
         if (typeof this.options.onChange === "function") {
-            this.options.onChange(this.getSelectedItemsWithGroups());
+            // Get value input from hidden input
+            const valueInput = this.getElement("selectedItemsInput");
+            this.options.onChange(valueInput.value);
         }
     }
 
