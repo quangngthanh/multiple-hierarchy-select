@@ -438,41 +438,50 @@ class MultipleSelectHierarchy {
 
   handleItemClick(item) {
     if (!item) return;
-    // Store current scroll position before navigating
-    this.scrollPositions.set('main', this.selectCard.scrollTop);
+    
+    // Store current scroll position of the list
+    const itemList = this.getElement('itemList');
+    this.scrollPositions.set('main', itemList.scrollTop);
+    
     // Disable smooth scrolling temporarily
-    this.selectCard.style.scrollBehavior = 'auto';
-
+    itemList.style.scrollBehavior = 'auto';
+    
     this.selectedParent = item;
     this.searchInput.value = "";
     this.renderChildren(item);
     this.updateSelectionInfo();
     this.updateHeader(item.name, true);
 
-    // scroll to top
-    this.selectCard.scrollTop = 0;
+    // Reset list scroll position to top
+    itemList.scrollTop = 0;
+    
     // Re-enable smooth scrolling after a small delay
     setTimeout(() => {
-        this.selectCard.style.scrollBehavior = 'smooth';
+        itemList.style.scrollBehavior = 'smooth';
     }, 100);
   }
 
   handleBackClick() {
     if (this.selectedParent) {
+        const itemList = this.getElement('itemList');
         const previousScrollPosition = this.scrollPositions.get('main');
+        
         // Disable smooth scrolling temporarily
-        this.selectCard.style.scrollBehavior = 'auto';
+        itemList.style.scrollBehavior = 'auto';
+        
         // Reset to main view
         this.selectedParent = null;
         this.updateHeader(this.options.placeholder, false);
         this.renderItems(this.items);
+        
         // Restore scroll position immediately without animation
         if (previousScrollPosition !== undefined) {
-            this.selectCard.scrollTop = previousScrollPosition;
+            itemList.scrollTop = previousScrollPosition;
         }
+        
         // Re-enable smooth scrolling after a small delay
         setTimeout(() => {
-            this.selectCard.style.scrollBehavior = 'smooth';
+            itemList.style.scrollBehavior = 'smooth';
         }, 100);
     }
     this.searchInput.value = "";
