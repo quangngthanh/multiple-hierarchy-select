@@ -75,6 +75,7 @@ class MultipleSelectHierarchy {
 
     triggerOnChange(selectedItems) {
         if (typeof this.options.onChange === "function") {
+            selectedItems = this.getSelectedItemsWithGroups();
             this.options.onChange(selectedItems);
         }
     }
@@ -448,7 +449,7 @@ class MultipleSelectHierarchy {
   handleChildSelection(parent, child, isChecked) {
     if (this.selectedItems[parent.id] === null && !isChecked) {
       this.selectedItems[parent.id] = parent.children
-        .filter((c) => c.id !== child.id)
+        .filter((c) => c.id != child.id)
         .map((c) => c.id);
 
       const allChildrenCheckbox = document.getElementById(
@@ -463,12 +464,12 @@ class MultipleSelectHierarchy {
       }
 
       if (isChecked) {
-        if (!this.selectedItems[parent.id].includes(child.id)) {
+        if (!this.selectedItems[parent.id].some((id) => id == child.id)) {
           this.selectedItems[parent.id].push(child.id);
         }
       } else {
         this.selectedItems[parent.id] = this.selectedItems[parent.id].filter(
-          (id) => id !== child.id
+          (id) => id != child.id
         );
       }
 
@@ -1133,7 +1134,17 @@ class MultipleSelectHierarchy {
       // Convert the grouped format to internal format
       Object.entries(initialValue).forEach(([groupId, groupData]) => {
         Object.entries(groupData).forEach(([subgroupId, selections]) => {
-          this.selectedItems[subgroupId] = selections;
+          if (selections === null) {
+            this.selectedItems[subgroupId] = null;
+          } else if (Array.isArray(selections)) {
+            // Convert all selection IDs to the same type as the original data
+            this.selectedItems[subgroupId] = selections.map((id) => {
+              // Find the matching child to get its original ID type
+              const parent = this.findItemById(subgroupId);
+              const child = parent?.children?.find((c) => c.id == id);
+              return child ? child.id : id; // Use original ID type if found
+            });
+          }
         });
       });
     } catch (error) {
