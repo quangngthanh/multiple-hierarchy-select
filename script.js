@@ -73,10 +73,9 @@ class MultipleSelectHierarchy {
         this.renderItems(this.items);
     }
 
-    triggerOnChange(selectedItems) {
+    triggerOnChange() {
         if (typeof this.options.onChange === "function") {
-            selectedItems = this.getSelectedItemsWithGroups();
-            this.options.onChange(selectedItems);
+            this.options.onChange(this.getSelectedItemsWithGroups());
         }
     }
 
@@ -443,7 +442,7 @@ class MultipleSelectHierarchy {
     this.updateInput();
     this.updateSelectionInfo();
     this.renderItems(this.items);
-    this.triggerOnChange(this.selectedItems);
+    this.triggerOnChange();
   }
 
   handleChildSelection(parent, child, isChecked) {
@@ -494,7 +493,7 @@ class MultipleSelectHierarchy {
     this.updateInput();
     this.updateSelectionInfo();
     this.renderChildren(parent);
-    this.triggerOnChange(this.selectedItems);
+    this.triggerOnChange();
   }
 
   handleAllChildrenSelection(parent, isChecked) {
@@ -521,7 +520,7 @@ class MultipleSelectHierarchy {
     this.updateInput();
     this.updateSelectionInfo();
     this.renderChildren(parent);
-    this.triggerOnChange(this.selectedItems);
+    this.triggerOnChange();
   }
 
   handleItemClick(item) {
@@ -692,7 +691,7 @@ class MultipleSelectHierarchy {
     this.updateInput();
     this.updateSelectionInfo();
     this.renderItems(this.items);
-    this.triggerOnChange(this.selectedItems);
+    this.triggerOnChange();
   }
 
   updateHeader(title, showBackButton = false) {
@@ -781,7 +780,7 @@ class MultipleSelectHierarchy {
     this.updateSelectionInfo();
     this.renderItems(this.items);
     this.hideSelectCard();
-    this.triggerOnChange(this.selectedItems);
+    this.triggerOnChange();
   }
 
   static resetBySelector(formElement, selector) {
@@ -1158,7 +1157,7 @@ class MultipleSelectHierarchy {
     this.updateInput();
     this.updateSelectionInfo();
     this.renderItems(this.items);
-    this.triggerOnChange(this.selectedItems);
+    this.triggerOnChange();
   }
 }
 
