@@ -341,7 +341,7 @@ class MultipleSelectHierarchy {
 
                             const hasChildren = child.children && child.children.length > 0;
                             const isChecked =
-                                allChildrenSelected || selectedChildIds.includes(child.id);
+                                allChildrenSelected || selectedChildIds.some((id) => id == child.id);
 
                             li.innerHTML = `
                 <div class="d-flex justify-content-between align-items-center">
@@ -811,7 +811,7 @@ class MultipleSelectHierarchy {
     const li = document.createElement("li");
     li.className =
       "list-group-item d-flex justify-content-between align-items-center subgroup-item";
-    li.dataset.itemId = item.id;
+    li.dataset.itemId = String(item.id);
 
     const isChecked = this.selectedItems[item.id] !== undefined;
     const isDisabled =
@@ -1055,7 +1055,7 @@ class MultipleSelectHierarchy {
   // Simplify the processData method
   processData(items) {
     return items.map((item) => ({
-      id: parseInt(item.id), // Ensure group ID is included
+      id: item.id,
       name: item.name,
       children: item.children ? this.processData(item.children) : [],
     }));
@@ -1066,7 +1066,7 @@ class MultipleSelectHierarchy {
     // Check children level first
     for (const item of items) {
       if (item.children) {
-        const foundInChildren = item.children.find((child) => child.id === id);
+        const foundInChildren = item.children.find((child) => child.id == id);
         if (foundInChildren) {
           return foundInChildren;
         }
@@ -1074,7 +1074,7 @@ class MultipleSelectHierarchy {
     }
 
     // Then check current level
-    const foundAtCurrentLevel = items.find((item) => item.id === id);
+    const foundAtCurrentLevel = items.find((item) => item.id == id);
     if (foundAtCurrentLevel) {
       return foundAtCurrentLevel;
     }
