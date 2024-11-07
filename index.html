@@ -10,10 +10,11 @@
 </head>
 
 <body>
-    <div class="container mt-5">
+    <div class="container mt-5 w-350px">
         <h1>Multiple Select Examples</h1>
-        <!-- Location Selection Form -->
-        <form id="locationForm" action="/submit-location" method="POST" class="mb-5" style="width: 300px;">
+
+        <!-- Example with data-path -->
+        <form id="locationForm" action="/submit-location" method="POST" class="mb-5 ">
             <h2>Location Selection Form</h2>
             <div class="mb-3">
                 <label for="jobTitle" class="form-label">Job Title</label>
@@ -22,91 +23,66 @@
 
             <div class="mb-3">
                 <label class="form-label">Primary Work Location</label>
-                <div class="hierarchy-select-container" id="primary-location" data-name="primary-location"></div>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Additional Work Locations</label>
-                <div class="hierarchy-select-container" id="additional-locations" data-name="additional-locations">
-                </div>
+                <select class="hierarchy-select" id="primary-location" data-name="primary-location">
+                    <option value="">Select Location</option>
+                    <option value="1" data-path="1">Vietnam</option>
+                    <option value="650" data-path="1.650" selected>Ho Chi Minh</option>
+                    <option value="309" data-path="1.650.309">District 1</option>
+                    <option value="316" data-path="1.650.316">District 2</option>
+                    <option value="308" data-path="1.650.308">District 3</option>
+                    <option value="315" data-path="1.650.315">District 4</option>
+                    <option value="314" data-path="1.650.314" selected>District 5</option>
+                    <option value="313" data-path="1.650.313">District 6</option>
+                    <option value="312" data-path="1.650.312">District 7</option>
+                    <option value="311" data-path="1.650.311">District 8</option>
+                    <option value="310" data-path="1.650.310">District 9</option>
+                    <option value="307" data-path="1.650.307">District 10</option>
+                    <option value="306" data-path="1.650.306">District 11</option>
+                    <option value="305" data-path="1.650.305">District 12</option>
+                    <option value="304" data-path="1.650.304" selected>Binh Thanh</option>
+                    <option value="303" data-path="1.650.303">Thu Duc</option>
+                    <option value="302" data-path="1.650.302">Go Vap</option>
+                    <option value="301" data-path="1.650.301">Tan Binh</option>
+                    <option value="62" data-path="1.62">Ha Noi</option>
+                    <option value="401" data-path="1.62.401">Ba Dinh</option>
+                    <option value="402" data-path="1.62.402" selected>Hoan Kiem</option>
+                    <option value="403" data-path="1.62.403">Hai Ba Trung</option>
+                    <option value="404" data-path="1.62.404">Dong Da</option>
+                    <option value="405" data-path="1.62.405">Cau Giay</option>
+                    <option value="406" data-path="1.62.406">Long Bien</option>
+                    <option value="781" data-path="1.781">Da Nang</option>
+                    <option value="501" data-path="1.781.501">Hai Chau</option>
+                    <option value="502" data-path="1.781.502">Thanh Khe</option>
+                    <option value="503" data-path="1.781.503">Son Tra</option>
+                    <option value="504" data-path="1.781.504">Ngu Hanh Son</option>
+                    <option value="505" data-path="1.781.505">Lien Chieu</option>
+                </select>
             </div>
 
             <button type="submit" class="btn btn-primary">Submit</button>
             <button type="reset" class="btn btn-secondary">Reset</button>
         </form>
-        <!-- Industry Selection Form -->
-        <form id="industryForm" action="/submit-industry" method="POST" class="mb-5">
-            <h2>Industry Selection Form</h2>
-            <div class="mb-3">
-                <label for="companyName" class="form-label">Company Name</label>
-                <input type="text" class="form-control" id="companyName" name="companyName" required>
-            </div>
 
-            <div class="mb-3">
-                <label for="businessEmail" class="form-label">Business Email</label>
-                <input type="email" class="form-control" id="businessEmail" name="businessEmail" required>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Business Industries</label>
-                <div class="hierarchy-select-container" id="business-industries" data-name="business-industries"></div>
-            </div>
-
-            <button type="submit" class="btn btn-primary">Submit</button>
-            <button type="reset" class="btn btn-secondary">Reset</button>
-        </form>
-
-
+        <!-- Initialize with JavaScript -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                MultipleSelectHierarchy.build('.hierarchy-select', {
+                    maxSelections: 5,
+                    placeholder: "Select Locations",
+                    searchPlaceholder: "Search Locations",
+                    defaultSelectionText: "Select locations",
+                    unitChildText: "Districts",
+                    allText: "All",
+                    showGroupHeaders: true,
+                    onChange: function(selectedItems) {
+                        console.log("Selected Locations:", selectedItems);
+                    }
+                });
+            });
+        </script>
     </div>
 
     <script src="script.js" defer></script>
-    <script src="datasample.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-
-            // Initialize location selectors
-            const locationContainers = document.getElementById('primary-location');
-            let a = new MultipleSelectHierarchy(locationContainers, locationData, {
-                maxSelections: 5,
-                placeholder: "Select Locations",
-                searchPlaceholder: "Search Locations",
-                defaultSelectionText: "Select locations",
-                unitChildText: "Districts",
-                allText: "All",
-                showGroupHeaders: true,
-                onChange: function(selectedItems) {
-                    console.log("Selected Locations:", selectedItems);
-                }
-            });
-            a.setValue('{"1":{"62":null,"650":[309,316,308,315,314,313],"781":null}}');
-
-            const industryContainers = document.getElementById('business-industries');
-            let b = new MultipleSelectHierarchy(industryContainers, industryData, {
-                maxSelections: 3,
-                placeholder: "Select Industries",
-                searchPlaceholder: "Search Industries",
-                defaultSelectionText: "Select industries",
-                unitChildText: "Sectors",
-                allText: "All",
-                showGroupHeaders: true,
-                onChange: function(selectedItems) {
-                    console.log("Selected Industries:", selectedItems);
-                },
-                value: '{"1":{"102":null,"103":null}}'
-            });
-
-            // Handle form submissions
-            ['industryForm', 'locationForm'].forEach(formId => {
-                document.getElementById(formId).addEventListener('submit', function(event) {
-                    event.preventDefault();
-                    const formData = new FormData(event.target);
-                    const payload = Object.fromEntries(formData.entries());
-                    console.log(`${formId} Data:`, payload);
-                    alert(`${formId} Payload:\n` + JSON.stringify(payload, null, 2));
-                });
-            });
-        });
-    </script>
 </body>
 
 </html>

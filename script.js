@@ -1102,6 +1102,111 @@ class MultipleSelectHierarchy {
     this.renderItems(this.items);
     this.triggerOnChange();
   }
+
+  static parseSelectOptions(element) {
+    const options = Array.from(element.options).filter(opt => opt.value);
+    const hierarchyData = [];
+    const nodesById = new Map();
+    const selectedValues = {};
+    const selectedParents = new Set();
+    const selectedChildren = new Map(); // parent -> children mapping
+
+    // First pass: create all nodes and track selected options
+    options.forEach(option => {
+        const pathIds = option.dataset.path.split('.');
+        const node = {
+            id: option.value,
+            name: option.text,
+            children: []
+        };
+        nodesById.set(option.value, node);
+
+        // Track selected options
+        if (option.selected) {
+            if (pathIds.length === 2) {
+                // This is a parent (province/city)
+                selectedParents.add(option.value);
+            } else if (pathIds.length === 3) {
+                // This is a child (district)
+                const parentId = pathIds[1];
+                if (!selectedChildren.has(parentId)) {
+                    selectedChildren.set(parentId, []);
+                }
+                selectedChildren.get(parentId).push(option.value);
+            }
+        }
+    });
+
+    // Process selections
+    selectedParents.forEach(parentId => {
+        // If parent is selected, set it to null (all children selected)
+        selectedValues[parentId] = null;
+    });
+
+    // Add individual child selections for parents that weren't fully selected
+    selectedChildren.forEach((children, parentId) => {
+        if (!selectedParents.has(parentId)) {
+            selectedValues[parentId] = children;
+        }
+    });
+
+    // Second pass: build hierarchy
+    options.forEach(option => {
+        const pathIds = option.dataset.path.split('.');
+        const node = nodesById.get(option.value);
+        
+        if (pathIds.length === 1) {
+            hierarchyData.push(node);
+        } else {
+            const parentId = pathIds[pathIds.length - 2];
+            const parent = nodesById.get(parentId);
+            if (parent) {
+                parent.children.push(node);
+            }
+        }
+    });
+
+    // Convert to expected format
+    const formattedValue = {};
+    if (Object.keys(selectedValues).length > 0) {
+        formattedValue["1"] = selectedValues;
+    }
+
+    return {
+        data: hierarchyData,
+        selectedValues: formattedValue
+    };
+  }
+
+  static build(selector, config = {}) {
+    const elements = document.querySelectorAll(selector);
+    return Array.from(elements).map(element => {
+        let hierarchyData;
+        let initialValue = {};
+
+        if (element.dataset.source) {
+            hierarchyData = window[element.dataset.source];
+        } else {
+            const parsed = MultipleSelectHierarchy.parseSelectOptions(element);
+            hierarchyData = parsed.data;
+            initialValue = parsed.selectedValues;
+        }
+        
+        // Replace the select element with a div
+        const container = document.createElement('div');
+        container.className = element.className;
+        container.id = element.id;
+        container.dataset.name = element.dataset.name;
+        element.parentNode.replaceChild(container, element);
+        
+        const instance = new MultipleSelectHierarchy(container, hierarchyData, {
+            ...config,
+            value: JSON.stringify(initialValue)
+        });
+
+        return instance;
+    });
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
