@@ -59,28 +59,14 @@
 
     </div>
 
-    <script src="script.js"></script>
+    <script src="script.js" defer></script>
     <script src="datasample.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Initialize industry selectors
-            const industryContainers = document.getElementById('business-industries');
-            new MultipleSelectHierarchy(industryContainers, industryData, {
-                maxSelections: 3,
-                placeholder: "Select Industries",
-                searchPlaceholder: "Search Industries",
-                defaultSelectionText: "Select industries",
-                unitChildText: "Sectors",
-                allText: "All",
-                showGroupHeaders: true,
-                onChange: function (selectedItems) {
-                    console.log("Selected Industries:", selectedItems);
-                }
-            });
+        document.addEventListener('DOMContentLoaded', function() {
 
             // Initialize location selectors
             const locationContainers = document.getElementById('primary-location');
-            new MultipleSelectHierarchy(locationContainers, locationData, {
+            let a = new MultipleSelectHierarchy(locationContainers, locationData, {
                 maxSelections: 3,
                 placeholder: "Select Locations",
                 searchPlaceholder: "Search Locations",
@@ -88,14 +74,29 @@
                 unitChildText: "Districts",
                 allText: "All",
                 showGroupHeaders: true,
-                onChange: function (selectedItems) {
+                onChange: function(selectedItems) {
                     console.log("Selected Locations:", selectedItems);
                 }
             });
+            a.setValue('{"1":{"62":null,"650":[309,316,308,315,314,313],"781":null}}');
 
+            const industryContainers = document.getElementById('business-industries');
+            let b = new MultipleSelectHierarchy(industryContainers, industryData, {
+                maxSelections: 3,
+                placeholder: "Select Industries",
+                searchPlaceholder: "Search Industries",
+                defaultSelectionText: "Select industries",
+                unitChildText: "Sectors",
+                allText: "All",
+                showGroupHeaders: true,
+                onChange: function(selectedItems) {
+                    console.log("Selected Industries:", selectedItems);
+                },
+                value: {}
+            });
             // Handle form submissions
             ['industryForm', 'locationForm'].forEach(formId => {
-                document.getElementById(formId).addEventListener('submit', function (event) {
+                document.getElementById(formId).addEventListener('submit', function(event) {
                     event.preventDefault();
                     const formData = new FormData(event.target);
                     const payload = Object.fromEntries(formData.entries());

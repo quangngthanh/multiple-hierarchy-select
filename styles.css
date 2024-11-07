@@ -314,3 +314,7 @@
     background: #f5f5f5;
     border-radius: 5px;
 }
+
+.multiple-select-hierarchy .pointer-events-none {
+    pointer-events: none;
+}
