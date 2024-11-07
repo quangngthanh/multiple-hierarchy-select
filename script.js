@@ -386,7 +386,7 @@ class MultipleSelectHierarchy {
       }, 0);
       return;
     }
-    console.log('this.selectedItems :>> ', this.selectedItems);
+    
     if (isChecked) {
       this.selectedItems[item.id] = null;
     } else {
