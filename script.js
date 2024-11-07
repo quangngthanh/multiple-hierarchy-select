@@ -562,10 +562,10 @@ class MultipleSelectHierarchy {
     const containerWidth = this.chipsContainer.offsetWidth;
     const chipMargin = 4;
     const chipPadding = 8;
-    const containerPadding = 12;
+    const containerPadding = 10;
     const closeButtonWidth = 16;
     const availableWidth = containerWidth - containerPadding;
-
+    
     let totalChipsWidth = 0;
     const chipWidths = [];
 
@@ -578,25 +578,14 @@ class MultipleSelectHierarchy {
     });
 
     if (totalChipsWidth > availableWidth) {
-      const scaleFactor = availableWidth / totalChipsWidth;
+      const scaleFactor = 0.969*availableWidth / totalChipsWidth;
       let currentLineWidth = 0;
-
+      
       chips.forEach((chip, index) => {
         const newWidth =
           Math.floor(chipWidths[index] * scaleFactor) - chipMargin;
         this.adjustChipWidth(chip, newWidth, closeButtonWidth, chipPadding);
         currentLineWidth += newWidth + chipMargin;
-
-        if (index === chips.length - 1 && currentLineWidth > availableWidth) {
-          const finalAdjustment = currentLineWidth - availableWidth;
-          this.adjustChipWidth(
-            chip,
-            newWidth - finalAdjustment,
-            closeButtonWidth,
-            chipPadding
-          );
-        }
-
         this.chipsContainer.appendChild(chip);
       });
     } else {

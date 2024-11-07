@@ -13,7 +13,7 @@
     <div class="container mt-5">
         <h1>Multiple Select Examples</h1>
         <!-- Location Selection Form -->
-        <form id="locationForm" action="/submit-location" method="POST" class="mb-5">
+        <form id="locationForm" action="/submit-location" method="POST" class="mb-5" style="width: 300px;">
             <h2>Location Selection Form</h2>
             <div class="mb-3">
                 <label for="jobTitle" class="form-label">Job Title</label>
@@ -67,7 +67,7 @@
             // Initialize location selectors
             const locationContainers = document.getElementById('primary-location');
             let a = new MultipleSelectHierarchy(locationContainers, locationData, {
-                maxSelections: 3,
+                maxSelections: 5,
                 placeholder: "Select Locations",
                 searchPlaceholder: "Search Locations",
                 defaultSelectionText: "Select locations",
@@ -92,8 +92,9 @@
                 onChange: function(selectedItems) {
                     console.log("Selected Industries:", selectedItems);
                 },
-                value: {}
+                value: '{"1":{"102":null,"103":null}}'
             });
+
             // Handle form submissions
             ['industryForm', 'locationForm'].forEach(formId => {
                 document.getElementById(formId).addEventListener('submit', function(event) {
