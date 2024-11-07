@@ -152,7 +152,7 @@ class MultipleSelectHierarchy {
                     // Check if this is a child checkbox
                     if (target.id.startsWith(`${this.id}-child-`)) {
                         const itemId = target.id.replace(`${this.id}-child-`, "");
-                        const item = this.findItemById(parseInt(itemId));
+                        const item = this.findItemById((itemId));
                         if (item && this.selectedParent) {
                             this.handleChildSelection(
                                 this.selectedParent,
@@ -171,7 +171,7 @@ class MultipleSelectHierarchy {
                     } else {
                         // Handle parent checkbox
                         const itemId = target.id.replace(`${this.id}-item-`, "");
-                        const item = this.findItemById(parseInt(itemId));
+                        const item = this.findItemById((itemId));
                         if (item) {
                             this.handleItemSelection(item, target.checked);
                         }
@@ -187,7 +187,7 @@ class MultipleSelectHierarchy {
                     const itemId = listItem
                         .querySelector(".form-check-input")
                         .id.replace(`${this.id}-item-`, "");
-                    const item = this.findItemById(parseInt(itemId));
+                    const item = this.findItemById((itemId));
                     if (item) {
                         this.handleItemClick(item);
                     }
@@ -208,7 +208,7 @@ class MultipleSelectHierarchy {
                     // Check if this is a child item
                     if (checkbox.id.startsWith(`${this.id}-child-`)) {
                         const itemId = checkbox.id.replace(`${this.id}-child-`, "");
-                        const item = this.findItemById(parseInt(itemId));
+                        const item = this.findItemById((itemId));
                         if (item && this.selectedParent) {
                             this.handleChildSelection(
                                 this.selectedParent,
@@ -227,7 +227,7 @@ class MultipleSelectHierarchy {
                     } else {
                         // Handle parent checkbox
                         const itemId = checkbox.id.replace(`${this.id}-item-`, "");
-                        const item = this.findItemById(parseInt(itemId));
+                        const item = this.findItemById((itemId));
                         if (item) {
                             this.handleItemSelection(item, checkbox.checked);
                         }
@@ -434,7 +434,7 @@ class MultipleSelectHierarchy {
       }, 0);
       return;
     }
-
+console.log('this.selectedItems :>> ', this.selectedItems);
     if (isChecked) {
       this.selectedItems[item.id] = null;
     } else {
@@ -585,7 +585,7 @@ class MultipleSelectHierarchy {
   hideSelectCard() {
     if (this.selectCard) {
       this.selectCard.style.display = "none";
-      this.scrollPositions.clear(); // Clear stored positions
+      this.scrollPositions.clear();
     }
   }
 
@@ -1052,14 +1052,20 @@ class MultipleSelectHierarchy {
     return element;
   }
 
-  // Simplify the processData method
-  processData(items) {
-    return items.map((item) => ({
-      id: item.id,
-          name: item.name,
-      children: item.children ? this.processData(item.children) : [],
-    }));
+  processData(items, parentId = '') {
+    return items.map((item) => {
+        // Create unique ID by combining parent ID with current ID
+        const uniqueId = parentId ? `${parentId}_${item.id}` : `${item.id}`;
+        
+        return {
+            id: uniqueId,  // Use combined ID internally
+            name: item.name,
+            children: item.children ? this.processData(item.children, uniqueId) : [],
+        };
+    });
   }
+
+
 
   // Add this helper method to find items by ID
   findItemById(id, items = this.items) {
@@ -1091,63 +1097,68 @@ class MultipleSelectHierarchy {
     return null;
   }
 
-  // Update getSelectedItemsWithGroups method
-  getSelectedItemsWithGroups() {
-    const selectedWithGroups = {};
+    getSelectedItemsWithGroups() {
+      const selectedWithGroups = {};
 
-    this.items.forEach((group) => {
-      const selectedChildrenInGroup = group.children.filter(
-        (subgroup) => this.selectedItems[subgroup.id] !== undefined
-      );
+      this.items.forEach((group) => {
+          const selectedChildrenInGroup = group.children.filter(
+              (subgroup) => this.selectedItems[subgroup.id] !== undefined
+          );
 
       if (selectedChildrenInGroup.length > 0) {
-        selectedWithGroups[group.id] = {};
+        // Extract original group ID
+        const groupId = this.getOriginalId(group.id);
+        selectedWithGroups[groupId] = {};
 
         selectedChildrenInGroup.forEach((subgroup) => {
-          // If all children are selected (null) or there are specific selections
-          if (this.selectedItems[subgroup.id] === null) {
-            // Set to null when all children are selected
-            selectedWithGroups[group.id][subgroup.id] = null;
-          } else if (Array.isArray(this.selectedItems[subgroup.id])) {
-            // Use the specific selections
-            selectedWithGroups[group.id][subgroup.id] =
-              this.selectedItems[subgroup.id];
-          }
-        });
+          // Extract original subgroup ID
+          const subgroupId = this.getOriginalId(subgroup.id);
 
-        // If the group has no valid selections, remove it
-        if (Object.keys(selectedWithGroups[group.id]).length === 0) {
-          delete selectedWithGroups[group.id];
-        }
+                if (this.selectedItems[subgroup.id] === null) {
+                    selectedWithGroups[groupId][subgroupId] = null;
+                } else if (Array.isArray(this.selectedItems[subgroup.id])) {
+                    // Extract original IDs for children
+                    selectedWithGroups[groupId][subgroupId] = 
+                        this.selectedItems[subgroup.id].map(id => this.getOriginalId(id));
+                }
+          });
       }
     });
 
     return selectedWithGroups;
   }
 
+  getOriginalId(combinedId) {
+    return combinedId.split('_').pop();
+  }
+
   initializeWithValue(value) {
     try {
-      const initialValue =
-        typeof value === "string" ? JSON.parse(value) : value;
+        const initialValue = typeof value === "string" ? JSON.parse(value) : value;
 
-      // Convert the grouped format to internal format
-      Object.entries(initialValue).forEach(([groupId, groupData]) => {
-        Object.entries(groupData).forEach(([subgroupId, selections]) => {
-          if (selections === null) {
-            this.selectedItems[subgroupId] = null;
-          } else if (Array.isArray(selections)) {
-            // Convert all selection IDs to the same type as the original data
-            this.selectedItems[subgroupId] = selections.map((id) => {
-              // Find the matching child to get its original ID type
-              const parent = this.findItemById(subgroupId);
-              const child = parent?.children?.find((c) => c.id == id);
-              return child ? child.id : id; // Use original ID type if found
+        // Convert the grouped format to internal format
+        Object.entries(initialValue).forEach(([groupId, groupData]) => {
+            Object.entries(groupData).forEach(([subgroupId, selections]) => {
+                // Find the item with this original ID
+                const parent = this.findItemById(`${groupId}_${subgroupId}`);
+                if (!parent) return;
+
+                if (selections === null) {
+                    this.selectedItems[parent.id] = null;
+                } else if (Array.isArray(selections)) {
+                    // Convert all selection IDs to combined IDs
+                    this.selectedItems[parent.id] = selections.map(childId => {
+                        // Find the matching child to get its combined ID
+                        const child = parent.children?.find(c => 
+                            this.getOriginalId(c.id) == childId
+                        );
+                        return child ? child.id : `${parent.id}_${childId}`;
+                    });
+                }
             });
-          }
         });
-      });
     } catch (error) {
-      console.error("Error initializing with value:", error);
+        console.error("Error initializing with value:", error);
     }
   }
 
