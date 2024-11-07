@@ -1,27 +1,30 @@
 # Multiple Select Hierarchy Component
 
-A customizable hierarchical select component with search functionality and group header options.
+A customizable hierarchical select component with search functionality, group headers, and chip display.
 
 ## Features
-- Hierarchical selection with groups and subgroups
+- Multi-level hierarchical selection
 - Search functionality with diacritics support
 - Customizable group headers
-- Responsive chip display
-- Form integration
+- Responsive chip display with ellipsis
 - Maximum selection limit
-- Smooth scrolling
+- Form integration
+- Smooth scrolling and navigation
+- Back/forward navigation between levels
+- Clear all functionality
+- Keyboard accessibility
 
 ## Installation
 
-1. Include the necessary CSS files in your HTML:
+1. Include the required CSS files:
 ```html
 <link href="bootstrap.css" rel="stylesheet">
 <link href="styles.css" rel="stylesheet">
 ```
 
-2. Add the container to your HTML:
+2. Add the container element:
 ```html
-<div class="hierarchy-select-container"></div>
+<div class="hierarchy-select-container" data-name="selected-items"></div>
 ```
 
 3. Include the JavaScript:
@@ -35,32 +38,95 @@ A customizable hierarchical select component with search functionality and group
 const container = document.querySelector(".hierarchy-select-container");
 const data = [
   {
-    id: "region1",
-    name: "North Region",
+    id: 1,
+    name: "Group 1",
     children: [
       {
-        id: "city1",
-        name: "New York",
+        id: 2,
+        name: "Subgroup 1",
         children: [
-          { id: "district1", name: "Manhattan" },
-          { id: "district2", name: "Brooklyn" }
+          { id: 3, name: "Item 1" },
+          { id: 4, name: "Item 2" }
         ]
       }
     ]
   }
 ];
 
-new MultipleSelectHierarchy(container, data, {
+const hierarchy = new MultipleSelectHierarchy(container, data, {
   maxSelections: 3,
-  showGroupHeaders: true
+  onChange: (value) => console.log('Selected:', value)
 });
 ```
 
-## Working with Forms
+## Data Structure
+
+```javascript
+const data = [
+  {
+    id: "unique_id",        // Required: Unique identifier
+    name: "Display Name",   // Required: Display text
+    children: [            // Optional: Array of child items
+      {
+        id: "child_id",
+        name: "Child Name",
+        children: []       // Can be nested further
+      }
+    ]
+  }
+];
+```
+
+## Configuration Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| maxSelections | number | 3 | Maximum number of parent items that can be selected |
+| placeholder | string | "Please select" | Main input placeholder |
+| searchPlaceholder | string | "Search" | Search input placeholder |
+| showGroupHeaders | boolean | true | Toggle group header visibility |
+| allText | string | "All" | Text for "select all" option |
+| clearAllText | string | "Clear" | Text for clear button |
+| selectedText | string | "You have selected {n} items" | Selection count text ({n} is replaced with count) |
+| defaultSelectionText | string | "Please select items" | Text shown when nothing is selected |
+| unitChildText | string | "Items" | Unit text for child items count |
+| onChange | function | null | Callback function when selection changes |
+
+## Methods
+
+### setValue(value)
+Set selected items programmatically
+```javascript
+hierarchy.setValue({
+  "group1": {
+    "subgroup1": null  // null means all children selected
+  }
+});
+```
+
+### reset()
+Clear all selections
+```javascript
+hierarchy.reset();
+```
+
+### destroy()
+Remove event listeners and clean up
+```javascript
+hierarchy.destroy();
+```
+
+### setItems(items)
+Update the component's data
+```javascript
+hierarchy.setItems(newData);
+```
+
+## Form Integration
 
 ```html
 <form id="myForm">
-  <div class="hierarchy-select-container"></div>
+  <div class="hierarchy-select-container" data-name="locations"></div>
   <button type="reset">Reset</button>
   <button type="submit">Submit</button>
 </form>
@@ -69,86 +135,40 @@ new MultipleSelectHierarchy(container, data, {
 document.getElementById('myForm').addEventListener('submit', (e) => {
   e.preventDefault();
   const formData = new FormData(e.target);
-  const selectedValues = JSON.parse(formData.get('selected-items'));
-  console.log(selectedValues);
+  const selectedLocations = JSON.parse(formData.get('locations'));
+  console.log(selectedLocations);
 });
 </script>
 ```
 
-## Configuration Options
+## Output Format
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| maxSelections | number | 3 | Maximum number of parent items that can be selected |
-| placeholder | string | "Please select" | Placeholder text for the input |
-| searchPlaceholder | string | "Search" | Placeholder text for the search input |
-| showGroupHeaders | boolean | true | Show/hide group headers in the dropdown |
-| allText | string | "All" | Text for the "All" option |
-| clearAllText | string | "Clear all" | Text for the clear all button |
-| selectedText | string | "You have selected {n} items" | Text template for selection count |
-| defaultSelectionText | string | "Please select items" | Default text when nothing is selected |
-| unitChildText | string | "Items" | Text for unit of child items |
+The selected values are stored in JSON format:
 
-## Selection Value Format
-
-### With Group Headers (showGroupHeaders: true)
 ```javascript
 {
-  "region1": {
-    "children": {
-      "city1": {
-        "children": {
-          "district1": null,  // All selected
-          "district2": [1, 2] // Specific items selected
-        }
-      }
+  "groupId": {                // Parent group ID
+    "subgroupId": {          // Subgroup ID
+      "childId": null,       // null = all items selected
+      "childId2": [1, 2, 3]  // Array = specific items selected
     }
   }
 }
 ```
 
-### Without Group Headers (showGroupHeaders: false)
-```javascript
-{
-  "city1": {
-    "children": {
-      "district1": null,
-      "district2": [1, 2]
-    }
-  }
+## Styling
+
+Customize appearance using CSS variables:
+```css
+.multiple-select-hierarchy {
+  --msh-primary-color: #0d6efd;
+  --msh-border-color: #dee2e6;
+  --msh-text-color: #212529;
+  --msh-bg-color: #fff;
+  --msh-hover-bg: #f8f9fa;
+  --msh-chip-bg: #e9ecef;
 }
 ```
-
-## Methods
-
-### Initialize
-```javascript
-const hierarchy = new MultipleSelectHierarchy(element, data, options);
-```
-
-### Update Items
-```javascript
-hierarchy.setItems(newData);
-```
-
-### Reset
-```javascript
-hierarchy.reset();
-```
-
-### Destroy
-```javascript
-hierarchy.destroy();
-```
-
-## Events
-
-The component automatically handles:
-- Form reset events
-- Click outside to close
-- Search input changes
-- Selection changes
-- Navigation between levels
 
 ## Browser Support
 - Chrome (latest)
@@ -156,18 +176,6 @@ The component automatically handles:
 - Safari (latest)
 - Edge (latest)
 
-## Styling
-
-The component uses CSS variables for easy customization:
-```css
-.multiple-select-hierarchy {
-  --msh-primary-color: #0d6efd;
-  --msh-border-color: #dee2e6;
-  --msh-text-color: #212529;
-  --msh-bg-color: #fff;
-}
-```
-
 ## License
 
-MIT License
+MIT License - feel free to use in personal and commercial projects.
