@@ -2,7 +2,8 @@
     position: relative;
     max-width: 100%;
     margin: 0 auto;
-    font-size: 14px; /* Base font size for the component */
+    font-size: 14px;
+    /* Base font size for the component */
 }
 
 .multiple-select-hierarchy .dropdown-menu {
@@ -16,7 +17,7 @@
     margin: 0.125rem 0 0;
     background-color: #fff;
     background-clip: padding-box;
-    border: 1px solid rgba(0,0,0,.15);
+    border: 1px solid rgba(0, 0, 0, .15);
     border-radius: 0.25rem;
     max-height: 300px;
     overflow-y: auto;
@@ -36,7 +37,7 @@
     cursor: pointer;
 }
 
-.multiple-select-hierarchy .form-check-input:checked + .form-check-label {
+.multiple-select-hierarchy .form-check-input:checked+.form-check-label {
     font-weight: bold;
     color: #2F4BA0;
 }
@@ -71,7 +72,8 @@
     display: inline-flex;
     align-items: center;
     background-color: #e9ecef;
-    border-radius: 0.25rem; /* Updated border radius for chips */
+    border-radius: 0.25rem;
+    /* Updated border radius for chips */
     padding: 0.125rem 0.25rem;
     font-size: 12px;
     line-height: 1.5;
@@ -102,7 +104,9 @@
     font-size: 14px;
 }
 
+
 /* Updated styles for the search box */
+
 .multiple-select-hierarchy .search-container {
     position: relative;
     margin-bottom: 0.75rem;
@@ -149,7 +153,8 @@
     line-height: 1.5;
     color: #495057;
     background-color: transparent;
-    padding-left: 30px; /* Make room for the search icon */
+    padding-left: 30px;
+    /* Make room for the search icon */
 }
 
 .multiple-select-hierarchy .search-input:focus {
@@ -187,18 +192,20 @@
 }
 
 .multiple-select-hierarchy .btn-link:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .multiple-select-hierarchy .form-control:focus,
 .multiple-select-hierarchy .form-control.focused {
-  border-color: #2F4BA0 ;
-  outline: 0;
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    border-color: #2F4BA0;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 
+
 /* Add this to your existing styles */
+
 .multiple-select-hierarchy .back-arrow {
     display: inline-block;
     width: 8px;
@@ -209,7 +216,9 @@
     margin-right: 8px;
 }
 
+
 /* Add new SVG icon styles */
+
 .multiple-select-hierarchy .icon-chevron-right,
 .multiple-select-hierarchy .icon-search,
 .multiple-select-hierarchy .icon-arrow-left {
@@ -247,7 +256,9 @@
     opacity: 0.8;
 }
 
+
 /* Update search input padding for new SVG icon */
+
 .multiple-select-hierarchy .search-input {
     padding-left: 35px;
 }
@@ -267,7 +278,9 @@
     padding-left: 1.5rem;
 }
 
+
 /* Add these styles */
+
 .multiple-select-hierarchy .btn-link {
     cursor: pointer;
     border: none;
@@ -297,20 +310,24 @@
     align-items: center;
 }
 
+
 /* Add new class for smooth scrolling */
+
 .multiple-select-hierarchy .select-card.smooth-scroll {
     scroll-behavior: smooth;
 }
-.multiple-select-hierarchy button.arr-icon-dropdown{
+
+.multiple-select-hierarchy button.arr-icon-dropdown {
     padding: 3px 8px !important;
     border-radius: 5px !important;
-
 }
-.multiple-select-hierarchy .list-group{
+
+.multiple-select-hierarchy .list-group {
     max-height: 350px;
     overflow: auto;
 }
-.multiple-select-hierarchy .list-group-item:hover{
+
+.multiple-select-hierarchy .list-group-item:hover {
     background: #f5f5f5;
     border-radius: 5px;
 }

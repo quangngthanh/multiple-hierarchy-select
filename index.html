@@ -23,39 +23,50 @@
 
             <div class="mb-3">
                 <label class="form-label">Primary Work Location</label>
-                <select class="hierarchy-select" id="primary-location" data-name="primary-location">
+                <select class="hierarchy-select" id="primary-location" name="primary-location" multiple>
                     <option value="">Select Location</option>
-                    <option value="1" data-path="1">Vietnam</option>
-                    <option value="650" data-path="1.650" selected>Ho Chi Minh</option>
-                    <option value="309" data-path="1.650.309">District 1</option>
-                    <option value="316" data-path="1.650.316">District 2</option>
-                    <option value="308" data-path="1.650.308">District 3</option>
-                    <option value="315" data-path="1.650.315">District 4</option>
-                    <option value="314" data-path="1.650.314" selected>District 5</option>
-                    <option value="313" data-path="1.650.313">District 6</option>
-                    <option value="312" data-path="1.650.312">District 7</option>
-                    <option value="311" data-path="1.650.311">District 8</option>
-                    <option value="310" data-path="1.650.310">District 9</option>
-                    <option value="307" data-path="1.650.307">District 10</option>
-                    <option value="306" data-path="1.650.306">District 11</option>
-                    <option value="305" data-path="1.650.305">District 12</option>
-                    <option value="304" data-path="1.650.304" selected>Binh Thanh</option>
-                    <option value="303" data-path="1.650.303">Thu Duc</option>
-                    <option value="302" data-path="1.650.302">Go Vap</option>
-                    <option value="301" data-path="1.650.301">Tan Binh</option>
-                    <option value="62" data-path="1.62">Ha Noi</option>
-                    <option value="401" data-path="1.62.401">Ba Dinh</option>
-                    <option value="402" data-path="1.62.402" selected>Hoan Kiem</option>
-                    <option value="403" data-path="1.62.403">Hai Ba Trung</option>
-                    <option value="404" data-path="1.62.404">Dong Da</option>
-                    <option value="405" data-path="1.62.405">Cau Giay</option>
-                    <option value="406" data-path="1.62.406">Long Bien</option>
-                    <option value="781" data-path="1.781">Da Nang</option>
-                    <option value="501" data-path="1.781.501">Hai Chau</option>
-                    <option value="502" data-path="1.781.502">Thanh Khe</option>
-                    <option value="503" data-path="1.781.503">Son Tra</option>
-                    <option value="504" data-path="1.781.504">Ngu Hanh Son</option>
-                    <option value="505" data-path="1.781.505">Lien Chieu</option>
+                    <option value="1" data-group-tag-open label="Vietnam"></option>
+                        <option value="8" data-subgroup-tag-open label="Ho Chi Minh City"></option>
+                            <option value="309" >District 1</option>
+                            <option value="316" >District 2</option>
+                            <option value="308" >District 3</option>
+                            <option value="315" >District 4</option>
+                            <option value="314"  selected>District 5</option>
+                            <option value="313" >District 6</option>
+                            <option value="312" >District 7</option>
+                            <option value="311" >District 8</option>
+                            <option value="310" >District 9</option>
+                            <option value="307" >District 10</option>
+                            <option value="306" >District 11</option>
+                            <option value="305" >District 12</option>
+                            <option value="304"  selected>Binh Thanh</option>
+                            <option value="303" >Thu Duc</option>
+                            <option value="302" >Go Vap</option>
+                            <option value="301" >Tan Binh</option>
+                        <option value="8" data-subgroup-tag-close label="Ho Chi Minh City"></option>
+                        <option value="4" data-subgroup-tag-open label="Ha Noi" selected></option>
+                                <option value="401" >Ba Dinh</option>
+                                <option value="402" >Hoan Kiem</option>
+                                <option value="403" >Hai Ba Trung</option>
+                                <option value="404" >Dong Da</option>
+                                <option value="405" >Cau Giay</option>
+                                <option value="406" >Long Bien</option>
+                        <option value="4" data-subgroup-tag-close label="Ha Noi"></option>
+                        <option value="501" data-subgroup-tag-open label="Da Nang"></option>
+                            <option value="501" >Hai Chau</option>
+                            <option value="502" >Thanh Khe</option>
+                            <option value="503" >Son Tra</option>
+                            <option value="504" >Ngu Hanh Son</option>
+                            <option value="505">Lien Chieu</option>
+                        <option value="501" data-subgroup-tag-close label="Da Nang"></option>
+                    <option value="1" data-group-tag-close label="Vietnam"></option>
+
+                    <option value="3" data-group-tag-open label="Japan"></option>
+                        <option value="1001" data-subgroup selected >Tokyo</option>
+                        <option value="789" data-subgroup selected >Osaka</option>
+                        <option value="765" data-subgroup>Kyoto</option>
+                        <option value="766" data-subgroup>Hiroshima</option>
+                    <option value="3" data-group-tag-close label="Japan"></option>
                 </select>
             </div>
 
@@ -63,11 +74,11 @@
             <button type="reset" class="btn btn-secondary">Reset</button>
         </form>
 
-        <!-- Initialize with JavaScript -->
+
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 MultipleSelectHierarchy.build('.hierarchy-select', {
-                    maxSelections: 5,
+                    maxSelections: 3,
                     placeholder: "Select Locations",
                     searchPlaceholder: "Search Locations",
                     defaultSelectionText: "Select locations",

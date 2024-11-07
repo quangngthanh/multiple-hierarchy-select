@@ -1,86 +1,88 @@
 function debounce(func, wait) {
-  let timeout;
-  return function executedFunction(...args) {
-    const later = () => {
-      clearTimeout(timeout);
-      func.apply(this, args);
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func.apply(this, args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
     };
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-  };
 }
 
 function removeDiacritics(text) {
-  return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 
 class MultipleSelectHierarchy {
-  constructor(element, data, options = {}) {
-    this.element = element;
-    this.data = data;
-    this.id = `msh-${Math.random().toString(36).slice(2, 9)}`;
-    this.domCache = new Map();
-    this.options = {
-      maxSelections: 3,
-      placeholder: "Please select",
-      searchPlaceholder: "Search",
-      allText: "All",
-      clearAllText: "Clear",
-      selectedText: "You have selected {n} items",
-      defaultSelectionText: "Please select items",
-      unitChildText: "Items",
-      showGroupHeaders: true,
-      onChange: options.onChange || function () { },
-      ...options,
-    };
+    constructor(element, data, options = {}) {
+        this.element = element;
+        this.data = data;
+        this.id = `msh-${Math.random().toString(36).slice(2, 9)}`;
+        this.domCache = new Map();
+        this.options = {
+            maxSelections: 3,
+            placeholder: "Please select",
+            searchPlaceholder: "Search",
+            allText: "All",
+            clearAllText: "Clear",
+            selectedText: "You have selected {n} items",
+            defaultSelectionText: "Please select items",
+            unitChildText: "Items",
+            showGroupHeaders: true,
+            onChange: options.onChange || function() {},
+            ...options,
+        };
 
-    this.items = this.processData(data);
-    this.selectedItems = {};
-    if (options.value) {
-      this.initializeWithValue(options.value);
+        this.items = this.processData(data);
+        this.selectedItems = {};
+        if (options.value) {
+            this.initializeWithValue(options.value);
+        }
+        if (!MultipleSelectHierarchy.instances) {
+            MultipleSelectHierarchy.instances = new WeakMap();
+        }
+        MultipleSelectHierarchy.instances.set(element, this);
+
+        this.handleSearch = debounce((searchTerm) => {
+            const searchLower = removeDiacritics(searchTerm.toLowerCase());
+            if (this.selectedParent) {
+                this.renderFilteredChildren(searchLower);
+            } else {
+                this.renderFilteredItems(searchLower);
+            }
+        }, 150);
+        this.init();
+        this.abortController = new AbortController();
+        this.signal = this.abortController.signal;
+        this.scrollPositions = new Map();
     }
-    if (!MultipleSelectHierarchy.instances) {
-      MultipleSelectHierarchy.instances = new WeakMap();
+
+    init() {
+        this.render();
+        this.attachEventListeners();
+        this.updateInput();
+        this.renderItems(this.items);
     }
-    MultipleSelectHierarchy.instances.set(element, this);
 
-    this.handleSearch = debounce((searchTerm) => {
-      const searchLower = removeDiacritics(searchTerm.toLowerCase());
-      if (this.selectedParent) {
-        this.renderFilteredChildren(searchLower);
-      } else {
-        this.renderFilteredItems(searchLower);
-      }
-    }, 150);
-    this.init();
-    this.abortController = new AbortController();
-    this.signal = this.abortController.signal;
-    this.scrollPositions = new Map();
-  }
-
-  init() {
-    this.render();
-    this.attachEventListeners();
-    this.updateInput();
-    this.renderItems(this.items);
-  }
-
-  triggerOnChange() {
-    if (typeof this.options.onChange === "function") {
-      const valueInput = this.getElement("selectedItemsInput");
-      this.options.onChange(valueInput.value);
+    triggerOnChange() {
+        if (typeof this.options.onChange === "function") {
+            setTimeout(() => {
+                const valueInput = this.getElement("selectedItemsInput");
+                this.options.onChange(valueInput.value);
+            }, 0);
+        }
     }
-  }
 
-  render() {
-    const container = document.createElement("div");
-    container.className = "multiple-select-hierarchy";
-    container.innerHTML = `
+    render() {
+        const container = document.createElement("div");
+        container.className = "multiple-select-hierarchy";
+        container.innerHTML = `
             <div class="dropdown">
                 <div class="input-group">
                     <div class="form-control d-flex flex-wrap align-items-center" id="${this.id}-chips-container" tabindex="0">
                     </div>
-                    <input type="hidden" id="${this.id}-selected-items" name="${this.element.dataset.name || "selected-items"}">
+                    <input type="hidden" id="${this.id}-selected-items" name="${this.element.name || "selected-items"}">
                 </div>
                 <div class="card select-card" style="display: none;">
                     <div class="p-3" id="${this.id}-card-body">
@@ -101,214 +103,212 @@ class MultipleSelectHierarchy {
             </div>
         `;
 
-    this.element.appendChild(container);
+        this.element.appendChild(container);
 
-    this.container = container;
-    this.chipsContainer = container.querySelector(
-      `#${this.id}-chips-container`
-    );
-    this.selectedItemsInput = container.querySelector(
-      `#${this.id}-selected-items`
-    );
-    this.selectCard = container.querySelector(".select-card");
-    this.searchInput = container.querySelector(`#${this.id}-search-input`);
-    this.selectionInfo = container.querySelector(`#${this.id}-selection-info`);
-    this.itemList = container.querySelector(`#${this.id}-item-list`);
+        this.container = container;
+        this.chipsContainer = container.querySelector(
+            `#${this.id}-chips-container`
+        );
+        this.selectedItemsInput = container.querySelector(
+            `#${this.id}-selected-items`
+        );
+        this.selectCard = container.querySelector(".select-card");
+        this.searchInput = container.querySelector(`#${this.id}-search-input`);
+        this.selectionInfo = container.querySelector(`#${this.id}-selection-info`);
+        this.itemList = container.querySelector(`#${this.id}-item-list`);
 
-    this.cacheElements();
-  }
+        this.cacheElements();
+    }
 
-  attachEventListeners() {
-    this.itemList.addEventListener(
-      "click",
-      (e) => {
-        const target = e.target;
-        const btnLink = target.closest(".btn-link");
-        const listItem = target.closest(".list-group-item");
+    attachEventListeners() {
+        this.itemList.addEventListener(
+            "click",
+            (e) => {
+                const target = e.target;
+                const btnLink = target.closest(".btn-link");
+                const listItem = target.closest(".list-group-item");
 
-        // Handle checkbox clicks
-        if (target.matches(".form-check-input")) {
-          // Check if this is a child checkbox
-          if (target.id.startsWith(`${this.id}-child-`)) {
-            const itemId = target.id.replace(`${this.id}-child-`, "");
-            const item = this.findItemById((itemId));
-            if (item && this.selectedParent) {
-              this.handleChildSelection(
-                this.selectedParent,
-                item,
-                target.checked
-              );
-            }
-          } else if (target.id === `${this.id}-allChildren`) {
-            // Handle "All" checkbox
-            if (this.selectedParent) {
-              this.handleAllChildrenSelection(
-                this.selectedParent,
-                target.checked
-              );
-            }
-          } else {
-            // Handle parent checkbox
-            const itemId = target.id.replace(`${this.id}-item-`, "");
-            const item = this.findItemById((itemId));
-            if (item) {
-              this.handleItemSelection(item, target.checked);
-            }
-          }
-          return;
-        }
+                // Handle checkbox clicks
+                if (target.matches(".form-check-input")) {
+                    // Check if this is a child checkbox
+                    if (target.id.startsWith(`${this.id}-child-`)) {
+                        const itemId = target.id.replace(`${this.id}-child-`, "");
+                        const item = this.findItemById((itemId));
+                        if (item && this.selectedParent) {
+                            this.handleChildSelection(
+                                this.selectedParent,
+                                item,
+                                target.checked
+                            );
+                        }
+                    } else if (target.id === `${this.id}-allChildren`) {
+                        // Handle "All" checkbox
+                        if (this.selectedParent) {
+                            this.handleAllChildrenSelection(
+                                this.selectedParent,
+                                target.checked
+                            );
+                        }
+                    } else {
+                        // Handle parent checkbox
+                        const itemId = target.id.replace(`${this.id}-item-`, "");
+                        const item = this.findItemById((itemId));
+                        if (item) {
+                            this.handleItemSelection(item, target.checked);
+                        }
+                    }
+                    return;
+                }
 
-        // Handle button link clicks
-        if (btnLink) {
-          e.preventDefault();
-          e.stopPropagation();
-          const listItem = btnLink.closest("li");
-          const itemId = listItem
-            .querySelector(".form-check-input")
-            .id.replace(`${this.id}-item-`, "");
-          const item = this.findItemById((itemId));
-          if (item) {
-            this.handleItemClick(item);
-          }
-          return;
-        }
-        // Handle list item clicks (excluding clicks on buttons and checkboxes)
-        if (
-          listItem &&
-          !target.closest(".btn-link") &&
-          !target.matches(".form-check-input")
-        ) {
-          const checkbox = listItem.querySelector(".form-check-input");
-          if (!checkbox) return;
+                // Handle button link clicks
+                if (btnLink) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const listItem = btnLink.closest("li");
+                    const itemId = listItem
+                        .querySelector(".form-check-input")
+                        .id.replace(`${this.id}-item-`, "");
+                    const item = this.findItemById((itemId));
+                    if (item) {
+                        this.handleItemClick(item);
+                    }
+                    return;
+                }
+                // Handle list item clicks (excluding clicks on buttons and checkboxes)
+                if (
+                    listItem &&
+                    !target.closest(".btn-link") &&
+                    !target.matches(".form-check-input")
+                ) {
+                    const checkbox = listItem.querySelector(".form-check-input");
+                    if (!checkbox) return;
 
-          checkbox.checked = !checkbox.checked;
+                    checkbox.checked = !checkbox.checked;
 
-          // Check if this is a child item
-          if (checkbox.id.startsWith(`${this.id}-child-`)) {
-            const itemId = checkbox.id.replace(`${this.id}-child-`, "");
-            const item = this.findItemById((itemId));
-            if (item && this.selectedParent) {
-              this.handleChildSelection(
-                this.selectedParent,
-                item,
-                checkbox.checked
-              );
-            }
-          } else if (checkbox.id === `${this.id}-allChildren`) {
-            // Handle "All" checkbox
-            if (this.selectedParent) {
-              this.handleAllChildrenSelection(
-                this.selectedParent,
-                checkbox.checked
-              );
-            }
-          } else {
-            // Handle parent checkbox
-            const itemId = checkbox.id.replace(`${this.id}-item-`, "");
-            const item = this.findItemById((itemId));
-            if (item) {
-              this.handleItemSelection(item, checkbox.checked);
-            }
-          }
-        }
-      }, { signal: this.signal }
-    );
+                    // Check if this is a child item
+                    if (checkbox.id.startsWith(`${this.id}-child-`)) {
+                        const itemId = checkbox.id.replace(`${this.id}-child-`, "");
+                        const item = this.findItemById((itemId));
+                        if (item && this.selectedParent) {
+                            this.handleChildSelection(
+                                this.selectedParent,
+                                item,
+                                checkbox.checked
+                            );
+                        }
+                    } else if (checkbox.id === `${this.id}-allChildren`) {
+                        // Handle "All" checkbox
+                        if (this.selectedParent) {
+                            this.handleAllChildrenSelection(
+                                this.selectedParent,
+                                checkbox.checked
+                            );
+                        }
+                    } else {
+                        // Handle parent checkbox
+                        const itemId = checkbox.id.replace(`${this.id}-item-`, "");
+                        const item = this.findItemById((itemId));
+                        if (item) {
+                            this.handleItemSelection(item, checkbox.checked);
+                        }
+                    }
+                }
+            }, { signal: this.signal }
+        );
 
-    this.chipsContainer.addEventListener(
-      "click",
-      () => {
-        this.chipsContainer.focus();
-        this.showSelectCard();
-      }, { signal: this.signal }
-    );
+        this.chipsContainer.addEventListener(
+            "click",
+            () => {
+                this.chipsContainer.focus();
+                this.showSelectCard();
+            }, { signal: this.signal }
+        );
 
-    this.chipsContainer.addEventListener(
-      "focus",
-      () => {
-        this.chipsContainer.classList.add("focused");
-      }, { signal: this.signal }
-    );
+        this.chipsContainer.addEventListener(
+            "focus",
+            () => {
+                this.chipsContainer.classList.add("focused");
+            }, { signal: this.signal }
+        );
 
-    this.chipsContainer.addEventListener(
-      "blur",
-      () => {
-        this.chipsContainer.classList.remove("focused");
-      }, { signal: this.signal }
-    );
+        this.chipsContainer.addEventListener(
+            "blur",
+            () => {
+                this.chipsContainer.classList.remove("focused");
+            }, { signal: this.signal }
+        );
 
-    document.addEventListener(
-      "click",
-      (e) => {
-        if (!this.selectCard.contains(e.target) &&
-          !this.chipsContainer.contains(e.target)
-        ) {
-          this.hideSelectCard();
-        }
-      }, { signal: this.signal }
-    );
+        document.addEventListener(
+            "click",
+            (e) => {
+                if (!this.selectCard.contains(e.target) &&
+                    !this.chipsContainer.contains(e.target)
+                ) {
+                    this.hideSelectCard();
+                }
+            }, { signal: this.signal }
+        );
 
-    this.selectCard.addEventListener("click", (e) => e.stopPropagation(), {
-      signal: this.signal,
-    });
-
-    this.searchInput.addEventListener("input", (e) => this.handleSearch(e.target.value),
-      { signal: this.signal }
-    );
-  }
-
-  setItems(items) {
-    this.items = items;
-    this.renderItems(this.items);
-  }
-
-  renderItems(items) {
-    const fragment = document.createDocumentFragment();
-    const selectedParentCount = Object.keys(this.selectedItems).length;
-
-    items.forEach((group) => {
-      if (this.options.showGroupHeaders) {
-        const groupHeader = document.createElement("li");
-        groupHeader.className = "list-group-item group-header";
-        groupHeader.innerHTML = `<div class="group-label text-black">${group.name}</div>`;
-        fragment.appendChild(groupHeader);
-      }
-
-      if (group.children && group.children.length > 0) {
-        group.children.forEach((subgroup) => {
-          const li = this.createItemElement(subgroup, selectedParentCount);
-          fragment.appendChild(li);
+        this.selectCard.addEventListener("click", (e) => e.stopPropagation(), {
+            signal: this.signal,
         });
-      }
-    });
 
-    this.itemList.innerHTML = "";
-    this.itemList.appendChild(fragment);
-    this.updateSelectionInfo();
-  }
+        this.searchInput.addEventListener("input", (e) => this.handleSearch(e.target.value), { signal: this.signal });
+    }
 
-  renderChildren(parent) {
-    this.itemList.innerHTML = "";
+    setItems(items) {
+        this.items = items;
+        this.renderItems(this.items);
+    }
 
-    if (parent.children && parent.children.length > 0) {
-      const allChildrenSelected = this.selectedItems[parent.id] === null;
-      const selectedChildIds = this.selectedItems[parent.id] || [];
+    renderItems(items) {
+        const fragment = document.createDocumentFragment();
+        const selectedParentCount = Object.keys(this.selectedItems).length;
 
-      this.itemList.innerHTML = `<li class="list-group-item">
+        items.forEach((group) => {
+            if (this.options.showGroupHeaders) {
+                const groupHeader = document.createElement("li");
+                groupHeader.className = "list-group-item group-header";
+                groupHeader.innerHTML = `<div class="group-label text-black">${group.name}</div>`;
+                fragment.appendChild(groupHeader);
+            }
+
+            if (group.children && group.children.length > 0) {
+                group.children.forEach((subgroup) => {
+                    const li = this.createItemElement(subgroup, selectedParentCount);
+                    fragment.appendChild(li);
+                });
+            }
+        });
+
+        this.itemList.innerHTML = "";
+        this.itemList.appendChild(fragment);
+        this.updateSelectionInfo();
+    }
+
+    renderChildren(parent) {
+            this.itemList.innerHTML = "";
+
+            if (parent.children && parent.children.length > 0) {
+                const allChildrenSelected = this.selectedItems[parent.id] === null;
+                const selectedChildIds = this.selectedItems[parent.id] || [];
+
+                this.itemList.innerHTML = `<li class="list-group-item">
                     <div class="form-check d-flex align-item-center gap-2">
                         <input class="form-check-input" type="checkbox" id="${this.id}-allChildren"${allChildrenSelected ? "checked" : ""}>
                         <label class="form-check-label mt-1" for="${this.id}-allChildren">${this.options.allText}</label>
                     </div>
                   </li>`;
 
-      parent.children.forEach((child) => {
-        const li = document.createElement("li");
-        li.className = "list-group-item";
+                parent.children.forEach((child) => {
+                            const li = document.createElement("li");
+                            li.className = "list-group-item";
 
-        const hasChildren = child.children && child.children.length > 0;
-        const isChecked =
-          allChildrenSelected || selectedChildIds.some((id) => id == child.id);
+                            const hasChildren = child.children && child.children.length > 0;
+                            const isChecked =
+                                allChildrenSelected || selectedChildIds.some((id) => id == child.id);
 
-        li.innerHTML = `
+                            li.innerHTML = `
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="form-check d-flex align-item-center gap-2">
                         <input class="form-check-input" type="checkbox" id="${this.id}-child-${child.id}" ${isChecked ? "checked" : ""}>
@@ -578,7 +578,7 @@ class MultipleSelectHierarchy {
     });
 
     if (totalChipsWidth > availableWidth) {
-      const scaleFactor = 0.969*availableWidth / totalChipsWidth;
+      const scaleFactor = 0.95*availableWidth / totalChipsWidth;
       let currentLineWidth = 0;
       
       chips.forEach((chip, index) => {
@@ -1066,33 +1066,56 @@ class MultipleSelectHierarchy {
 
   initializeWithValue(value) {
     try {
-      const initialValue = typeof value === "string" ? JSON.parse(value) : value;
-
-      // Convert the grouped format to internal format
-      Object.entries(initialValue).forEach(([groupId, groupData]) => {
-        Object.entries(groupData).forEach(([subgroupId, selections]) => {
-          // Find the item with this original ID
-          const parent = this.findItemById(`${groupId}_${subgroupId}`);
-          if (!parent) return;
-
-          if (selections === null) {
-            this.selectedItems[parent.id] = null;
-          } else if (Array.isArray(selections)) {
-            // Convert all selection IDs to combined IDs
-            this.selectedItems[parent.id] = selections.map(childId => {
-              // Find the matching child to get its combined ID
-              const child = parent.children?.find(c =>
-                this.getOriginalId(c.id) == childId
-              );
-              return child ? child.id : `${parent.id}_${childId}`;
-            });
-          }
+        let processedValue = typeof value === "string" ? JSON.parse(value) : value;
+        
+        // Count total selections in the initial value
+        let totalSelections = 0;
+        Object.entries(processedValue).forEach(([groupId, groupData]) => {
+            totalSelections += Object.keys(groupData).length;
         });
-      });
+
+        // If total selections exceed max, only take the first max items
+        if (totalSelections > this.options.maxSelections) {
+            console.warn(`Initial selections (${totalSelections}) for ${this.element.name} exceed maximum allowed (${this.options.maxSelections}). Only first ${this.options.maxSelections} items will be selected.`);
+            
+            let currentCount = 0;
+            const trimmedValue = {};
+
+            // Take only up to maxSelections items
+            outer: for (const [groupId, groupData] of Object.entries(processedValue)) {
+                trimmedValue[groupId] = {};
+                for (const [subgroupId, selections] of Object.entries(groupData)) {
+                    if (currentCount >= this.options.maxSelections) break outer;
+                    trimmedValue[groupId][subgroupId] = selections;
+                    currentCount++;
+                }
+            }
+
+            processedValue = trimmedValue;
+        }
+
+        // Process the (potentially trimmed) initial value
+        Object.entries(processedValue).forEach(([groupId, groupData]) => {
+            Object.entries(groupData).forEach(([subgroupId, selections]) => {
+                const parent = this.findItemById(`${groupId}_${subgroupId}`);
+                if (!parent) return;
+
+                if (selections === null) {
+                    this.selectedItems[parent.id] = null;
+                } else if (Array.isArray(selections)) {
+                    this.selectedItems[parent.id] = selections.map(childId => {
+                        const child = parent.children?.find(c =>
+                            this.getOriginalId(c.id) == childId
+                        );
+                        return child ? child.id : `${parent.id}_${childId}`;
+                    });
+                }
+            });
+        });
     } catch (error) {
-      console.error("Error initializing with value:", error);
+        console.error("Error initializing with value:", error);
     }
-  }
+}
 
   setValue(value) {
     this.selectedItems = {};
@@ -1106,75 +1129,73 @@ class MultipleSelectHierarchy {
   static parseSelectOptions(element) {
     const options = Array.from(element.options).filter(opt => opt.value);
     const hierarchyData = [];
-    const nodesById = new Map();
     const selectedValues = {};
-    const selectedParents = new Set();
-    const selectedChildren = new Map(); // parent -> children mapping
+    
+    let currentGroup = null;
+    let currentSubgroup = null;
 
-    // First pass: create all nodes and track selected options
     options.forEach(option => {
-        const pathIds = option.dataset.path.split('.');
         const node = {
             id: option.value,
-            name: option.text,
+            name: option.label || option.text,
             children: []
         };
-        nodesById.set(option.value, node);
 
-        // Track selected options
-        if (option.selected) {
-            if (pathIds.length === 2) {
-                // This is a parent (province/city)
-                selectedParents.add(option.value);
-            } else if (pathIds.length === 3) {
-                // This is a child (district)
-                const parentId = pathIds[1];
-                if (!selectedChildren.has(parentId)) {
-                    selectedChildren.set(parentId, []);
-                }
-                selectedChildren.get(parentId).push(option.value);
-            }
-        }
-    });
-
-    // Process selections
-    selectedParents.forEach(parentId => {
-        // If parent is selected, set it to null (all children selected)
-        selectedValues[parentId] = null;
-    });
-
-    // Add individual child selections for parents that weren't fully selected
-    selectedChildren.forEach((children, parentId) => {
-        if (!selectedParents.has(parentId)) {
-            selectedValues[parentId] = children;
-        }
-    });
-
-    // Second pass: build hierarchy
-    options.forEach(option => {
-        const pathIds = option.dataset.path.split('.');
-        const node = nodesById.get(option.value);
-        
-        if (pathIds.length === 1) {
+        if (option.hasAttribute('data-group-tag-open')) {
+            currentGroup = {
+                node,
+                id: option.value
+            };
             hierarchyData.push(node);
-        } else {
-            const parentId = pathIds[pathIds.length - 2];
-            const parent = nodesById.get(parentId);
-            if (parent) {
-                parent.children.push(node);
+            // Initialize group in selectedValues if not exists
+            if (option.selected) {
+                selectedValues[option.value] = {};
+            }
+        } else if (option.hasAttribute('data-group-tag-close')) {
+            currentGroup = null;
+        } else if (option.hasAttribute('data-subgroup-tag-open')) {
+            currentSubgroup = {
+                node,
+                id: option.value
+            };
+            if (currentGroup) {
+                currentGroup.node.children.push(node);
+            }
+            // Track if subgroup itself is selected
+            if (option.selected && currentGroup) {
+                selectedValues[currentGroup.id] = selectedValues[currentGroup.id] || {};
+                selectedValues[currentGroup.id][option.value] = null;
+            }
+        } else if (option.hasAttribute('data-subgroup-tag-close')) {
+            currentSubgroup = null;
+        } else if (option.hasAttribute('data-subgroup')) {
+            // Handle direct subgroup without open/close tags
+            if (currentGroup) {
+                currentGroup.node.children.push(node);
+                // Track if this subgroup is selected
+                if (option.selected) {
+                    selectedValues[currentGroup.id] = selectedValues[currentGroup.id] || {};
+                    selectedValues[currentGroup.id][option.value] = null;
+                }
+            }
+        } else if (currentSubgroup) {
+            currentSubgroup.node.children.push(node);
+            // Track selected children under subgroups
+            if (option.selected && currentGroup) {
+                selectedValues[currentGroup.id] = selectedValues[currentGroup.id] || {};
+                if (!selectedValues[currentGroup.id][currentSubgroup.id]) {
+                    selectedValues[currentGroup.id][currentSubgroup.id] = [];
+                }
+                if (Array.isArray(selectedValues[currentGroup.id][currentSubgroup.id])) {
+                    selectedValues[currentGroup.id][currentSubgroup.id].push(option.value);
+                }
             }
         }
     });
-
-    // Convert to expected format
-    const formattedValue = {};
-    if (Object.keys(selectedValues).length > 0) {
-        formattedValue["1"] = selectedValues;
-    }
 
     return {
         data: hierarchyData,
-        selectedValues: formattedValue
+        selectedValues: selectedValues
     };
   }
 
@@ -1190,13 +1211,13 @@ class MultipleSelectHierarchy {
             const parsed = MultipleSelectHierarchy.parseSelectOptions(element);
             hierarchyData = parsed.data;
             initialValue = parsed.selectedValues;
+            console.log('parsed', parsed);
         }
-        
         // Replace the select element with a div
         const container = document.createElement('div');
         container.className = element.className;
         container.id = element.id;
-        container.dataset.name = element.dataset.name;
+        container.name = element.name;
         element.parentNode.replaceChild(container, element);
         
         const instance = new MultipleSelectHierarchy(container, hierarchyData, {
