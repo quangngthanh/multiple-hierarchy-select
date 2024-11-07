@@ -811,32 +811,33 @@ class MultipleSelectHierarchy {
 
   createItemElement(item, selectedParentCount) {
     const li = document.createElement("li");
-    li.className =
-      "list-group-item d-flex justify-content-between align-items-center subgroup-item";
+    li.className = "list-group-item d-flex justify-content-between align-items-center subgroup-item";
     li.dataset.itemId = String(item.id);
 
     const isChecked = this.selectedItems[item.id] !== undefined;
-    const isDisabled =
-      !isChecked && selectedParentCount >= this.options.maxSelections;
+    const isDisabled = !isChecked && selectedParentCount >= this.options.maxSelections;
     const hasChildren = item.children && item.children.length > 0;
+
+    // Add pointer-events-none class if disabled
+    if (isDisabled) {
+        li.classList.add('pointer-events-none');
+    }
 
     let selectionText = "";
     if (hasChildren && isChecked) {
-      if (this.selectedItems[item.id] === null) {
-        selectionText = `\u00A0(${this.options.allText})`;
-      } else if (Array.isArray(this.selectedItems[item.id])) {
-        selectionText = `\u00A0(${this.selectedItems[item.id].length}\u00A0${
-          this.options.unitChildText
-        })`;
-      }
+        if (this.selectedItems[item.id] === null) {
+            selectionText = `\u00A0(${this.options.allText})`;
+        } else if (Array.isArray(this.selectedItems[item.id])) {
+            selectionText = `\u00A0(${this.selectedItems[item.id].length}\u00A0${
+                this.options.unitChildText
+            })`;
+        }
     }
 
     const checkboxContainer = document.createElement("div");
     checkboxContainer.className = "form-check d-flex align-item-center gap-2";
     checkboxContainer.innerHTML = `
-        <input class="form-check-input" type="checkbox" id="${this.id}-item-${
-      item.id
-    }" 
+        <input class="form-check-input" type="checkbox" id="${this.id}-item-${item.id}" 
             ${isChecked ? "checked" : ""} ${isDisabled ? "disabled" : ""}>
         <label class="form-check-label mt-1" for="${this.id}-item-${item.id}">
             ${item.name}
@@ -847,23 +848,20 @@ class MultipleSelectHierarchy {
     li.appendChild(checkboxContainer);
 
     if (hasChildren) {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = `btn btn-link p-0 arr-icon-dropdown  ${
-        isDisabled ? "disabled" : ""
-      }`;
-      button.innerHTML = `
-            <svg class="icon-chevron-right ${
-              isDisabled ? "text-muted" : ""
-            }" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "btn btn-link p-0 arr-icon-dropdown";
+        button.innerHTML = `
+            <svg class="icon-chevron-right" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
         `;
-      li.appendChild(button);
+        li.appendChild(button);
     }
 
     return li;
   }
+
 
   renderFilteredChildren(searchTerm) {
     if (!this.selectedParent || !this.selectedParent.children) return;
@@ -1058,7 +1056,7 @@ class MultipleSelectHierarchy {
   processData(items) {
     return items.map((item) => ({
       id: item.id,
-      name: item.name,
+          name: item.name,
       children: item.children ? this.processData(item.children) : [],
     }));
   }
