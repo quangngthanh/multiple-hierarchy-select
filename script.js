@@ -1291,14 +1291,19 @@ processSelectedItems() {
 document.addEventListener("DOMContentLoaded", () => {
     MultipleSelectHierarchy.build('.hierarchy-select', {
         maxSelections: 3,
-        placeholder: "Select Locations",
-        searchPlaceholder: "Search Locations",
-        defaultSelectionText: "Select locations",
-        unitChildText: "Districts",
+        placeholder: "Please select",
+        searchPlaceholder: "Search",
         allText: "All",
+        clearAllText: "Clear",
+        selectedText: "You have selected {n} items",
+        defaultSelectionText: "Please select items",
+        showSearchBox: true,
+        showCardTitle: true,
+        outputFormat: "grouped",
+        unitChildText: "Items",
         showGroupHeaders: true,
         onChange: function(selectedItems) {
-            console.log("Selected Locations:", selectedItems);
+            console.log("Selected Items:", selectedItems);
         }
     });
 
