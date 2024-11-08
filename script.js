@@ -553,23 +553,27 @@ class MultipleSelectHierarchy {
 
   updateInput() {
     requestAnimationFrame(() => {
-      const chipsContainer = this.getElement("chipsContainer");
-      const selectedItemsInput = this.getElement("selectedItemsInput");
+        const chipsContainer = this.getElement("chipsContainer");
+        const selectedItemsInput = this.getElement("selectedItemsInput");
 
-      chipsContainer.innerHTML = "";
-      const selectedItems = this.getSelectedItemsForDisplay();
+        chipsContainer.innerHTML = "";
+        const selectedItems = this.getSelectedItemsForDisplay();
 
-      if (selectedItems.length === 0) {
-        this.renderPlaceholder();
-      } else {
-        this.renderChips(selectedItems);
-      }
+        if (selectedItems.length === 0) {
+            this.renderPlaceholder();
+        } else {
+            this.renderChips(selectedItems);
+        }
 
-      // Convert selected items to the new format
-      const inputValue = this.getSelectedItemsWithGroups();
-      selectedItemsInput.value = JSON.stringify(inputValue);
-    });
+        // Choose output format based on showGroupHeaders option
+        const inputValue = this.options.showGroupHeaders 
+            ? this.getSelectedItemsWithGroups()
+            : this.getSelectedItemsWithoutGroups();
+              
+          selectedItemsInput.value = JSON.stringify(inputValue);
+      });
   }
+
 
   renderChips(chips) {
     const containerWidth = this.chipsContainer.offsetWidth;
@@ -1077,6 +1081,30 @@ class MultipleSelectHierarchy {
     return selectedWithGroups;
   }
 
+  getSelectedItemsWithoutGroups() {
+    const selectedIds = [];
+
+    this.items.forEach(group => {
+        group.children.forEach(subgroup => {
+            if (this.selectedItems[subgroup.id] !== undefined) {
+                const subgroupId = this.getOriginalId(subgroup.id);
+                
+                if (this.selectedItems[subgroup.id] === null) {
+                    // If all children are selected, just add the subgroup ID
+                    selectedIds.push(subgroupId);
+                } else if (Array.isArray(this.selectedItems[subgroup.id])) {
+                    // Add individual child IDs
+                    this.selectedItems[subgroup.id].forEach(childId => {
+                        selectedIds.push(this.getOriginalId(childId));
+                    });
+                }
+            }
+        });
+    });
+
+    return selectedIds;
+  }
+
   getOriginalId(combinedId) {
     return combinedId.split('_').pop();
   }
@@ -1281,7 +1309,6 @@ class MultipleSelectHierarchy {
         container.name = element.name;
         element.parentNode.replaceChild(container, element);
         console.log('hierarchyData :>> ', hierarchyData);
-        console.log('mergedConfig :>> ', mergedConfig);
         const instance = new MultipleSelectHierarchy(container, hierarchyData, {
             ...mergedConfig,
             value: JSON.stringify(initialValue)
@@ -1295,7 +1322,6 @@ class MultipleSelectHierarchy {
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll("form").forEach((form) => {
     form.addEventListener("reset", (event) => {
-      console.log('event :>> ', event);
       MultipleSelectHierarchy.resetBySelector(
         event.target,
         ".hierarchy-select"
