@@ -32,11 +32,13 @@
                     data-all-text="All"
                     data-show-group-headers="false"
                     data-show-search-box="false"
-                    data-show-card-title="true"
+                    data-show-card-title="false"
+                    data-output-format="flat"
+                    multiple
                     >
                     <option  data-group-tag-open ></option>
                     <option value="option1" selected>Option 1</option>
-                    <option value="option2">Option 2</option>
+                    <option value="option2" selected>Option 2</option>
                     <option value="option3">Option 3</option>
                     <option  data-group-tag-close ></option>
                 </select>
@@ -44,7 +46,11 @@
 
             <div class="mb-3">
                 <label for="groupedSelect" class="form-label">Grouped Select Example</label>
-                <select class="form-select hierarchy-select" id="groupedSelect" name="groupedSelect">
+                <select class="form-select hierarchy-select" id="groupedSelect" name="groupedSelect" 
+                    data-output-format="flat"
+                    data-show-group-headers="false"
+                    multiple
+                >
                     <option value="0" data-group-tag-open label="Ngành Điện"></option>
                         <option value="1" >Điện</option>
                         <option value="2" >Điện tử</option>
@@ -52,7 +58,7 @@
                     <option value="0" data-group-tag-close label="Ngành Điện"></option>
                     <option value="1" data-group-tag-open label="Ngành Nước"></option>
                     <option value="11" selected>Nước</option>
-                    <option value="22">Nước lạnh</option>
+                    <option value="22" selected>Nước lạnh</option>
                     <option value="33">Nước nóng</option>
                 <option value="1" data-group-tag-close ></option>
                 </select>
@@ -1352,27 +1358,7 @@
 
             <button type="submit" class="btn btn-primary">Submit</button>
             <button type="reset" class="btn btn-secondary">Reset</button>
-        </form>
-
-        <script src="datasample.js" defer></script>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                MultipleSelectHierarchy.build('.hierarchy-select', {
-                    maxSelections: 3,
-                    placeholder: "Select Locations",
-                    searchPlaceholder: "Search Locations",
-                    defaultSelectionText: "Select locations",
-                    unitChildText: "Districts",
-                    allText: "All",
-                    showGroupHeaders: true,
-                    onChange: function(selectedItems) {
-                        console.log("Selected Locations:", selectedItems);
-                    }
-                });
-
-
-            });
-        </script>
+        </form>       
     </div>
 
     <script src="script.js" defer></script>

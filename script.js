@@ -30,12 +30,12 @@ class MultipleSelectHierarchy {
             defaultSelectionText: "Please select items",
             showSearchBox: true,
             showCardTitle: true,
+            outputFormat: "flat",
             unitChildText: "Items",
             showGroupHeaders: true,
             onChange: options.onChange || function() {},
             ...options,
         };
-        console.log('this.options :>> ', this.options);
         this.items = this.processData(data);
         this.selectedItems = {};
         if (options.value) {
@@ -77,7 +77,6 @@ class MultipleSelectHierarchy {
     }
     
     render() {
-        console.log('this.options :>> ', this.options.showCardTitle);
         const container = document.createElement("div");
         container.className = "multiple-select-hierarchy";
         container.innerHTML = `
@@ -555,24 +554,72 @@ class MultipleSelectHierarchy {
     requestAnimationFrame(() => {
         const chipsContainer = this.getElement("chipsContainer");
         const selectedItemsInput = this.getElement("selectedItemsInput");
+        
+        // Process all data in one loop
+        const {
+            displayItems,
+            groupedValue,
+            flatValue
+        } = this.processSelectedItems();
 
+        // Update chips display
         chipsContainer.innerHTML = "";
-        const selectedItems = this.getSelectedItemsForDisplay();
-
-        if (selectedItems.length === 0) {
+        if (displayItems.length === 0) {
             this.renderPlaceholder();
         } else {
-            this.renderChips(selectedItems);
+            this.renderChips(displayItems);
         }
 
-        // Choose output format based on showGroupHeaders option
-        const inputValue = this.options.showGroupHeaders 
-            ? this.getSelectedItemsWithGroups()
-            : this.getSelectedItemsWithoutGroups();
-              
-          selectedItemsInput.value = JSON.stringify(inputValue);
-      });
-  }
+        // Set input value based on configuration
+        const inputValue = this.options.outputFormat === 'flat' ? flatValue : groupedValue;
+        selectedItemsInput.value = JSON.stringify(inputValue);
+    });
+}
+
+processSelectedItems() {
+    const displayItems = [];
+    const groupedValue = {};
+    const flatValue = [];
+
+    this.items.forEach(group => {
+        group.children.forEach(subgroup => {
+            if (this.selectedItems[subgroup.id] !== undefined) {
+                const originalSubgroupId = this.getOriginalId(subgroup.id);
+                const originalGroupId = this.getOriginalId(group.id);
+
+                // Process for display
+                let displayText = subgroup.name;
+                if (this.selectedItems[subgroup.id] === null) {
+                    displayText += ``;
+                } else if (Array.isArray(this.selectedItems[subgroup.id])) {
+                    displayText += `\u00A0(${this.selectedItems[subgroup.id].length}\u00A0${this.options.unitChildText})`;
+                }
+                displayItems.push(this.createChip(displayText, subgroup.id));
+
+                // Process for grouped value
+                if (!groupedValue[originalGroupId]) {
+                    groupedValue[originalGroupId] = {};
+                }
+                if (this.selectedItems[subgroup.id] === null) {
+                    groupedValue[originalGroupId][originalSubgroupId] = null;
+                    // Add subgroup ID to flat value when all children are selected
+                    flatValue.push(originalSubgroupId);
+                } else if (Array.isArray(this.selectedItems[subgroup.id])) {
+                    const childIds = this.selectedItems[subgroup.id].map(id => this.getOriginalId(id));
+                    groupedValue[originalGroupId][originalSubgroupId] = childIds;
+                    // Add individual child IDs to flat value
+                    flatValue.push(...childIds);
+                }
+            }
+        });
+    });
+
+    return {
+        displayItems,
+        groupedValue,
+        flatValue
+    };
+}
 
 
   renderChips(chips) {
@@ -953,29 +1000,6 @@ class MultipleSelectHierarchy {
     }
   }
 
-  getSelectedItemsForDisplay() {
-    const selectedItems = [];
-
-    // Iterate through all items to find selected subgroups
-    this.items.forEach((group) => {
-      group.children.forEach((subgroup) => {
-        if (this.selectedItems[subgroup.id] !== undefined) {
-          let displayText = subgroup.name;
-          if (this.selectedItems[subgroup.id] === null) {
-            displayText += ``;
-          } else if (Array.isArray(this.selectedItems[subgroup.id])) {
-            displayText += `\u00A0(${this.selectedItems[subgroup.id].length
-              }\u00A0${this.options.unitChildText})`;
-          }
-
-          selectedItems.push(this.createChip(displayText, subgroup.id));
-        }
-      });
-    });
-
-    return selectedItems;
-  }
-
   renderPlaceholder() {
     const placeholderSpan = document.createElement("span");
     placeholderSpan.textContent = this.options.placeholder;
@@ -1048,61 +1072,6 @@ class MultipleSelectHierarchy {
       }
     }
     return null;
-  }
-
-  getSelectedItemsWithGroups() {
-    const selectedWithGroups = {};
-
-    this.items.forEach((group) => {
-      const selectedChildrenInGroup = group.children.filter(
-        (subgroup) => this.selectedItems[subgroup.id] !== undefined
-      );
-
-      if (selectedChildrenInGroup.length > 0) {
-        // Extract original group ID
-        const groupId = this.getOriginalId(group.id);
-        selectedWithGroups[groupId] = {};
-
-        selectedChildrenInGroup.forEach((subgroup) => {
-          // Extract original subgroup ID
-          const subgroupId = this.getOriginalId(subgroup.id);
-
-          if (this.selectedItems[subgroup.id] === null) {
-            selectedWithGroups[groupId][subgroupId] = null;
-          } else if (Array.isArray(this.selectedItems[subgroup.id])) {
-            // Extract original IDs for children
-            selectedWithGroups[groupId][subgroupId] =
-              this.selectedItems[subgroup.id].map(id => this.getOriginalId(id));
-          }
-        });
-      }
-    });
-
-    return selectedWithGroups;
-  }
-
-  getSelectedItemsWithoutGroups() {
-    const selectedIds = [];
-
-    this.items.forEach(group => {
-        group.children.forEach(subgroup => {
-            if (this.selectedItems[subgroup.id] !== undefined) {
-                const subgroupId = this.getOriginalId(subgroup.id);
-                
-                if (this.selectedItems[subgroup.id] === null) {
-                    // If all children are selected, just add the subgroup ID
-                    selectedIds.push(subgroupId);
-                } else if (Array.isArray(this.selectedItems[subgroup.id])) {
-                    // Add individual child IDs
-                    this.selectedItems[subgroup.id].forEach(childId => {
-                        selectedIds.push(this.getOriginalId(childId));
-                    });
-                }
-            }
-        });
-    });
-
-    return selectedIds;
   }
 
   getOriginalId(combinedId) {
@@ -1283,6 +1252,7 @@ class MultipleSelectHierarchy {
             showGroupHeaders: element.dataset.showGroupHeaders !== undefined ? 
                 element.dataset.showGroupHeaders === 'true' : 
                 config.showGroupHeaders,
+            outputFormat: element.dataset.outputFormat || config.outputFormat,
             onChange: config.onChange
         };
         // Merge data attributes with passed config, giving priority to data attributes
@@ -1308,7 +1278,6 @@ class MultipleSelectHierarchy {
         container.id = element.id;
         container.name = element.name;
         element.parentNode.replaceChild(container, element);
-        console.log('hierarchyData :>> ', hierarchyData);
         const instance = new MultipleSelectHierarchy(container, hierarchyData, {
             ...mergedConfig,
             value: JSON.stringify(initialValue)
@@ -1320,6 +1289,19 @@ class MultipleSelectHierarchy {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    MultipleSelectHierarchy.build('.hierarchy-select', {
+        maxSelections: 3,
+        placeholder: "Select Locations",
+        searchPlaceholder: "Search Locations",
+        defaultSelectionText: "Select locations",
+        unitChildText: "Districts",
+        allText: "All",
+        showGroupHeaders: true,
+        onChange: function(selectedItems) {
+            console.log("Selected Locations:", selectedItems);
+        }
+    });
+
   document.querySelectorAll("form").forEach((form) => {
     form.addEventListener("reset", (event) => {
       MultipleSelectHierarchy.resetBySelector(
@@ -1328,6 +1310,7 @@ document.addEventListener("DOMContentLoaded", () => {
       );
     });
   });
+
 });
 
 window.MultipleSelectHierarchy = MultipleSelectHierarchy;
