@@ -499,7 +499,9 @@ class MultipleSelectHierarchy {
     itemList.style.scrollBehavior = "auto";
 
     this.selectedParent = item;
-    this.searchInput.value = "";
+    if (this.options.showSearchBox !== false) {
+      this.searchInput.value = "";
+    }
     this.renderChildren(item);
     this.updateSelectionInfo();
     this.updateHeader(item.name, true);
@@ -534,7 +536,9 @@ class MultipleSelectHierarchy {
         itemList.style.scrollBehavior = "smooth";
       }, 100);
     }
-    this.searchInput.value = "";
+    if (this.options.showSearchBox !== false) {
+      this.searchInput.value = "";
+    }
   }
 
   showSelectCard() {
@@ -1243,6 +1247,8 @@ processSelectedItems() {
             defaultSelectionText: element.dataset.defaultSelectionText || config.defaultSelectionText,
             unitChildText: element.dataset.unitChildText || config.unitChildText,
             allText: element.dataset.allText || config.allText,
+            selectedText: element.dataset.selectedText || config.selectedText,
+            clearAllText: element.dataset.clearAllText || config.clearAllText,
             showSearchBox: element.dataset.showSearchBox !== undefined ? 
                 element.dataset.showSearchBox === 'true' : 
                 config.showSearchBox,
@@ -1277,6 +1283,7 @@ processSelectedItems() {
         container.className = element.className;
         container.id = element.id;
         container.name = element.name;
+        container.classList.add('hierarchy-select-ready');
         element.parentNode.replaceChild(container, element);
         const instance = new MultipleSelectHierarchy(container, hierarchyData, {
             ...mergedConfig,

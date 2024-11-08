@@ -335,3 +335,11 @@
 .multiple-select-hierarchy .pointer-events-none {
     pointer-events: none;
 }
+
+/* Add this to your CSS */
+.multiple-select-hierarchy .hierarchy-select {
+    visibility: hidden;
+}
+.multiple-select-hierarchy .hierarchy-select-ready {
+    visibility: visible;
+}
