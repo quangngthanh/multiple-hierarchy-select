@@ -22,6 +22,33 @@
             </div>
 
             <div class="mb-3">
+                <label for="simpleSelect" class="form-label">Simple Select Example</label>
+                <select class="form-select hierarchy-select" id="simpleSelect" name="simpleSelect">
+                    <option  data-group-tag-open ></option>
+                    <option value="option1" data-subgroup>Option 1</option>
+                    <option value="option2" data-subgroup>Option 2</option>
+                    <option value="option3" data-subgroup>Option 3</option>
+                    <option  data-group-tag-close ></option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="groupedSelect" class="form-label">Grouped Select Example</label>
+                <select class="form-select hierarchy-select" id="groupedSelect" name="groupedSelect">
+                    <option value="0" data-group-tag-open label="Ngành Điện"></option>
+                        <option value="1" >Điện</option>
+                        <option value="2" >Điện tử</option>
+                        <option value="3" >Điện lạnh</option>
+                    <option value="0" data-group-tag-close label="Ngành Điện"></option>
+                    <option value="1" data-group-tag-open></option>
+                    <option value="11" data-subgroup selected>Nước</option>
+                    <option value="22" data-subgroup>Nước lạnh</option>
+                    <option value="33" data-subgroup>Nước nóng</option>
+                <option value="1" data-group-tag-close ></option>
+                </select>
+            </div>
+
+            <div class="mb-3">
                 <label class="form-label">Primary Work Location</label>
                 <select class="hierarchy-select" id="primary-location" name="primary-location" multiple>
                     <option value="">Select Location</option>
@@ -63,10 +90,1253 @@
 
                     <option value="3" data-group-tag-open label="Japan"></option>
                         <option value="1001" data-subgroup selected >Tokyo</option>
-                        <option value="789" data-subgroup selected >Osaka</option>
+                        <option value="789" data-subgroup >Osaka</option>
                         <option value="765" data-subgroup>Kyoto</option>
                         <option value="766" data-subgroup>Hiroshima</option>
                     <option value="3" data-group-tag-close label="Japan"></option>
+                </select>
+                <select class="hierarchy-select" id="location-select" name="location" multiple="">
+                    <option value="">Select Location</option>
+                    <option value="1" data-group-tag-open="" label="Viet Nam"></option>
+                    <option value="76" data-subgroup-tag-open="" label="An Giang" selected></option>
+                    <option value="1706">Huyện An Phú</option>
+                    <option value="1709">Huyện Châu Phú</option>
+                    <option value="1712">Huyện Châu Thành</option>
+                <option value="1713">Huyện Chợ Mới</option>
+                <option value="1708">Huyện Phú Tân</option>
+                <option value="1714">Huyện Thoại Sơn</option>
+                <option value="1710">Huyện Tịnh Biên</option>
+                <option value="1711">Huyện Tri Tôn</option>
+                <option value="1705">Thành phố Châu Đốc</option>
+                <option value="1704">Thành phố Long Xuyên</option>
+                <option value="1707">Thị xã Tân Châu</option>
+                <option value="76" data-subgroup-tag-close="" label="An Giang"></option>
+                <option value="64" data-subgroup-tag-open="" label="Bà Rịa - Vũng Tàu"></option>
+                <option value="1610" selected>Huyện Châu Đức</option>
+                <option value="1615">Huyện Côn Đảo</option>
+                <option value="1613">Huyện Đất Đỏ</option>
+                <option value="1612">Huyện Long Điền</option>
+                <option value="1614">Huyện Tân Thành</option>
+                <option value="1611">Huyện Xuyên Mộc</option>
+                <option value="1609">Thành phố Bà Rịa</option>
+                <option value="328">Thành phố Vũng Tàu</option>
+                <option value="64" data-subgroup-tag-close="" label="Bà Rịa - Vũng Tàu"></option>
+                <option value="650" data-subgroup-tag-open="" label="Bình Dương"></option>
+                <option value="309">Huyện Bàu Bàng</option>
+                <option value="316">Huyện Bắc Tân Uyên</option>
+                <option value="310">Huyện Dầu Tiếng</option>
+                <option value="312">Huyện Phú Giáo</option>
+                <option value="308">Thành phố Thủ Dầu Một</option>
+                <option value="315">Thành Phố Thuận An</option>
+                <option value="311">Thị xã Bến Cát</option>
+                <option value="314">Thị xã Dĩ An</option>
+                <option value="313">Thị xã Tân Uyên</option>
+                <option value="650" data-subgroup-tag-close="" label="Bình Dương"></option>
+                <option value="651" data-subgroup-tag-open="" label="Bình Phước"></option>
+                <option value="296">Huyện Bù Đăng</option>
+                <option value="293">Huyện Bù Đốp</option>
+                <option value="291">Huyện Bù Gia Mập</option>
+                <option value="297">Huyện Chơn Thành</option>
+                <option value="295">Huyện Đồng Phú</option>
+                <option value="294">Huyện Hớn Quản</option>
+                <option value="292">Huyện Lộc Ninh</option>
+                <option value="298">Huyện Phú Riềng</option>
+                <option value="290">Thị xã Bình Long</option>
+                <option value="289">Thị xã Đồng Xoài</option>
+                <option value="288">Thị xã Phước Long</option>
+                <option value="651" data-subgroup-tag-close="" label="Bình Phước"></option>
+                <option value="62" data-subgroup-tag-open="" label="Bình Thuận"></option>
+                <option value="219">Huyện Bắc Bình</option>
+                <option value="223">Huyện Đức Linh</option>
+                <option value="224">Huyện Hàm Tân</option>
+                <option value="220">Huyện Hàm Thuận Bắc</option>
+                <option value="221">Huyện Hàm Thuận Nam</option>
+                <option value="225">Huyện Phú Quí</option>
+                <option value="222">Huyện Tánh Linh</option>
+                <option value="218">Huyện Tuy Phong</option>
+                <option value="216">Thành phố Phan Thiết</option>
+                <option value="217">Thị xã La Gi</option>
+                <option value="62" data-subgroup-tag-close="" label="Bình Thuận"></option>
+                <option value="56" data-subgroup-tag-open="" label="Bình Định"></option>
+                <option value="181">Huyện An Lão</option>
+                <option value="183">Huyện Hoài Ân</option>
+                <option value="182">Huyện Hoài Nhơn</option>
+                <option value="187">Huyện Phù Cát</option>
+                <option value="184">Huyện Phù Mỹ</option>
+                <option value="186">Huyện Tây Sơn</option>
+                <option value="189">Huyện Tuy Phước</option>
+                <option value="190">Huyện Vân Canh</option>
+                <option value="185">Huyện Vĩnh Thạnh</option>
+                <option value="180">Thành phố Qui Nhơn</option>
+                <option value="188">Thị xã An Nhơn</option>
+                <option value="56" data-subgroup-tag-close="" label="Bình Định"></option>
+                <option value="781" data-subgroup-tag-open="" label="Bạc Liêu"></option>
+                <option value="591">Huyện Đông Hải</option>
+                <option value="592">Huyện Hoà Bình</option>
+                <option value="587">Huyện Hồng Dân</option>
+                <option value="588">Huyện Phước Long</option>
+                <option value="589">Huyện Vĩnh Lợi</option>
+                <option value="586">Thành phố Bạc Liêu</option>
+                <option value="590">Thị xã Giá Rai</option>
+                <option value="781" data-subgroup-tag-close="" label="Bạc Liêu"></option>
+                <option value="281" data-subgroup-tag-open="" label="Bắc Cạn"></option>
+                <option value="392">Huyện Ba Bể</option>
+                <option value="394">Huyện Bạch Thông</option>
+                <option value="395">Huyện Chợ Đồn</option>
+                <option value="396">Huyện Chợ Mới</option>
+                <option value="397">Huyện Na Rì</option>
+                <option value="393">Huyện Ngân Sơn</option>
+                <option value="391">Huyện Pác Nặm</option>
+                <option value="390">Thành Phố Bắc Kạn</option>
+                <option value="281" data-subgroup-tag-close="" label="Bắc Cạn"></option>
+                <option value="240" data-subgroup-tag-open="" label="Bắc Giang"></option>
+                <option value="500">Huyện Hiệp Hòa</option>
+                <option value="494">Huyện Lạng Giang</option>
+                <option value="495">Huyện Lục Nam</option>
+                <option value="496">Huyện Lục Ngạn</option>
+                <option value="497">Huyện Sơn Động</option>
+                <option value="493">Huyện Tân Yên</option>
+                <option value="499">Huyện Việt Yên</option>
+                <option value="498">Huyện Yên Dũng</option>
+                <option value="492">Huyện Yên Thế</option>
+                <option value="491">Thành phố Bắc Giang</option>
+                <option value="240" data-subgroup-tag-close="" label="Bắc Giang"></option>
+                <option value="241" data-subgroup-tag-open="" label="Bắc Ninh"></option>
+                <option value="529">Huyện Gia Bình</option>
+                <option value="530">Huyện Lương Tài</option>
+                <option value="525">Huyện Quế Võ</option>
+                <option value="528">Huyện Thuận Thành</option>
+                <option value="526">Huyện Tiên Du</option>
+                <option value="524">Huyện Yên Phong</option>
+                <option value="523">Thành phố Bắc Ninh</option>
+                <option value="527">Thị xã Từ Sơn</option>
+                <option value="241" data-subgroup-tag-close="" label="Bắc Ninh"></option>
+                <option value="75" data-subgroup-tag-open="" label="Bến Tre"></option>
+                <option value="1672">Huyện Ba Tri</option>
+                <option value="1671">Huyện Bình Đại</option>
+                <option value="1667">Huyện Châu Thành</option>
+                <option value="1668">Huyện Chợ Lách</option>
+                <option value="1670">Huyện Giồng Trôm</option>
+                <option value="1674">Huyện Mỏ Cày Bắc</option>
+                <option value="1669">Huyện Mỏ Cày Nam</option>
+                <option value="1673">Huyện Thạnh Phú</option>
+                <option value="1666">Thành phố Bến Tre</option>
+                <option value="75" data-subgroup-tag-close="" label="Bến Tre"></option>
+                <option value="26" data-subgroup-tag-open="" label="Cao Bằng"></option>
+                <option value="372">Huyện Bảo Lạc</option>
+                <option value="371">Huyện Bảo Lâm</option>
+                <option value="377">Huyện Hạ Lang</option>
+                <option value="374">Huyện Hà Quảng</option>
+                <option value="380">Huyện Hoà An</option>
+                <option value="381">Huyện Nguyên Bình</option>
+                <option value="379">Huyện Phục Hoà</option>
+                <option value="378">Huyện Quảng Uyên</option>
+                <option value="382">Huyện Thạch An</option>
+                <option value="373">Huyện Thông Nông</option>
+                <option value="375">Huyện Trà Lĩnh</option>
+                <option value="376">Huyện Trùng Khánh</option>
+                <option value="370">Thành phố Cao Bằng</option>
+                <option value="26" data-subgroup-tag-close="" label="Cao Bằng"></option>
+                <option value="78" data-subgroup-tag-open="" label="Cà Mau"></option>
+                <option value="597">Huyện Cái Nước</option>
+                <option value="598">Huyện Đầm Dơi</option>
+                <option value="599">Huyện Năm Căn</option>
+                <option value="601">Huyện Ngọc Hiển</option>
+                <option value="600">Huyện Phú Tân</option>
+                <option value="595">Huyện Thới Bình</option>
+                <option value="596">Huyện Trần Văn Thời</option>
+                <option value="594">Huyện U Minh</option>
+                <option value="593">Thành phố Cà Mau</option>
+                <option value="78" data-subgroup-tag-close="" label="Cà Mau"></option>
+                <option value="71" data-subgroup-tag-open="" label="Cần Thơ"></option>
+                <option value="564">Huyện Cờ Đỏ</option>
+                <option value="565">Huyện Phong Điền</option>
+                <option value="566">Huyện Thới Lai</option>
+                <option value="563">Huyện Vĩnh Thạnh</option>
+                <option value="560">Quận Bình Thuỷ</option>
+                <option value="561">Quận Cái Răng</option>
+                <option value="558">Quận Ninh Kiều</option>
+                <option value="559">Quận Ô Môn</option>
+                <option value="562">Quận Thốt Nốt</option>
+                <option value="71" data-subgroup-tag-close="" label="Cần Thơ"></option>
+                <option value="50" data-subgroup-tag-open="" label="Dak Lak"></option>
+                <option value="257">Huyện Buôn Đôn</option>
+                <option value="267">Huyện Cư Kuin</option>
+                <option value="258">Huyện Cư M'gar</option>
+                <option value="255">Huyện Ea H'leo</option>
+                <option value="261">Huyện Ea Kar</option>
+                <option value="256">Huyện Ea Súp</option>
+                <option value="265">Huyện Krông A Na</option>
+                <option value="263">Huyện Krông Bông</option>
+                <option value="259">Huyện Krông Búk</option>
+                <option value="260">Huyện Krông Năng</option>
+                <option value="264">Huyện Krông Pắc</option>
+                <option value="266">Huyện Lắk</option>
+                <option value="262">Huyện M'Đrắk</option>
+                <option value="253">Thành phố Buôn Ma Thuột</option>
+                <option value="254">Thị Xã Buôn Hồ</option>
+                <option value="50" data-subgroup-tag-close="" label="Dak Lak"></option>
+                <option value="1042" data-subgroup-tag-open="" label="Dak Nông"></option>
+                <option value="270">Huyện Cư Jút</option>
+                <option value="269">Huyện Đăk Glong</option>
+                <option value="271">Huyện Đắk Mil</option>
+                <option value="274">Huyện Đắk R'Lấp</option>
+                <option value="273">Huyện Đắk Song</option>
+                <option value="272">Huyện Krông Nô</option>
+                <option value="275">Huyện Tuy Đức</option>
+                <option value="268">Thị xã Gia Nghĩa</option>
+                <option value="1042" data-subgroup-tag-close="" label="Dak Nông"></option>
+                <option value="59" data-subgroup-tag-open="" label="Gia Lai"></option>
+                <option value="241">Huyện Chư Păh</option>
+                <option value="246">Huyện Chư Prông</option>
+                <option value="252">Huyện Chư Pưh</option>
+                <option value="247">Huyện Chư Sê</option>
+                <option value="240">Huyện Đăk Đoa</option>
+                <option value="248">Huyện Đăk Pơ</option>
+                <option value="245">Huyện Đức Cơ</option>
+                <option value="242">Huyện Ia Grai</option>
+                <option value="249">Huyện Ia Pa</option>
+                <option value="239">Huyện KBang</option>
+                <option value="244">Huyện Kông Chro</option>
+                <option value="250">Huyện Krông Pa</option>
+                <option value="243">Huyện Mang Yang</option>
+                <option value="251">Huyện Phú Thiện</option>
+                <option value="236">Thành phố Pleiku</option>
+                <option value="237">Thị xã An Khê</option>
+                <option value="238">Thị xã Ayun Pa</option>
+                <option value="59" data-subgroup-tag-close="" label="Gia Lai"></option>
+                <option value="19" data-subgroup-tag-open="" label="Hà Giang"></option>
+                <option value="365">Huyện Bắc Mê</option>
+                <option value="368">Huyện Bắc Quang</option>
+                <option value="360">Huyện Đồng Văn</option>
+                <option value="366">Huyện Hoàng Su Phì</option>
+                <option value="361">Huyện Mèo Vạc</option>
+                <option value="363">Huyện Quản Bạ</option>
+                <option value="369">Huyện Quang Bình</option>
+                <option value="364">Huyện Vị Xuyên</option>
+                <option value="367">Huyện Xín Mần</option>
+                <option value="362">Huyện Yên Minh</option>
+                <option value="359">Thành phố Hà Giang</option>
+                <option value="19" data-subgroup-tag-close="" label="Hà Giang"></option>
+                <option value="351" data-subgroup-tag-open="" label="Hà Nam"></option>
+                <option value="32">Huyện Bình Lục</option>
+                <option value="29">Huyện Duy Tiên</option>
+                <option value="30">Huyện Kim Bảng</option>
+                <option value="33">Huyện Lý Nhân</option>
+                <option value="31">Huyện Thanh Liêm</option>
+                <option value="28">Thành phố Phủ Lý</option>
+                <option value="351" data-subgroup-tag-close="" label="Hà Nam"></option>
+                <option value="4" data-subgroup-tag-open="" label="Hà Nội"></option>
+                <option value="347">Huyện Ba Vì</option>
+                <option value="353">Huyện Chương Mỹ</option>
+                <option value="349">Huyện Đan Phượng</option>
+                <option value="339">Huyện Đông Anh</option>
+                <option value="340">Huyện Gia Lâm</option>
+                <option value="350">Huyện Hoài Đức</option>
+                <option value="344">Huyện Mê Linh</option>
+                <option value="358">Huyện Mỹ Đức</option>
+                <option value="357">Huyện Ứng Hòa</option>
+                <option value="356">Huyện Phú Xuyên</option>
+                <option value="348">Huyện Phúc Thọ</option>
+                <option value="351">Huyện Quốc Oai</option>
+                <option value="338">Huyện Sóc Sơn</option>
+                <option value="352">Huyện Thạch Thất</option>
+                <option value="354">Huyện Thanh Oai</option>
+                <option value="342">Huyện Thanh Trì</option>
+                <option value="355">Huyện Thường Tín</option>
+                <option value="329">Quận Ba Đình</option>
+                <option value="343">Quận Bắc Từ Liêm</option>
+                <option value="333">Quận Cầu Giấy</option>
+                <option value="334">Quận Đống Đa</option>
+                <option value="345">Quận Hà Đông</option>
+                <option value="335">Quận Hai Bà Trưng</option>
+                <option value="330">Quận Hoàn Kiếm</option>
+                <option value="336">Quận Hoàng Mai</option>
+                <option value="332">Quận Long Biên</option>
+                <option value="341">Quận Nam Từ Liêm</option>
+                <option value="331">Quận Tây Hồ</option>
+                <option value="337">Quận Thanh Xuân</option>
+                <option value="346">Thị xã Sơn Tây</option>
+                <option value="4" data-subgroup-tag-close="" label="Hà Nội"></option>
+                <option value="34" data-subgroup="">Hà Tây</option>
+                <option value="39" data-subgroup-tag-open="" label="Hà Tĩnh"></option>
+                <option value="106">Huyện Can Lộc</option>
+                <option value="109">Huyện Cẩm Xuyên</option>
+                <option value="103">Huyện Đức Thọ</option>
+                <option value="107">Huyện Hương Khê</option>
+                <option value="102">Huyện Hương Sơn</option>
+                <option value="112">Huyện Kỳ Anh</option>
+                <option value="111">Huyện Lộc Hà</option>
+                <option value="105">Huyện Nghi Xuân</option>
+                <option value="108">Huyện Thạch Hà</option>
+                <option value="104">Huyện Vũ Quang</option>
+                <option value="100">Thành phố Hà Tĩnh</option>
+                <option value="101">Thị xã Hồng Lĩnh</option>
+                <option value="110">Thị xã Kỳ Anh</option>
+                <option value="39" data-subgroup-tag-close="" label="Hà Tĩnh"></option>
+                <option value="18" data-subgroup-tag-open="" label="Hòa Bình"></option>
+                <option value="451">Huyện Cao Phong</option>
+                <option value="447">Huyện Đà Bắc</option>
+                <option value="450">Huyện Kim Bôi</option>
+                <option value="448">Huyện Kỳ Sơn</option>
+                <option value="454">Huyện Lạc Sơn</option>
+                <option value="456">Huyện Lạc Thủy</option>
+                <option value="449">Huyện Lương Sơn</option>
+                <option value="453">Huyện Mai Châu</option>
+                <option value="452">Huyện Tân Lạc</option>
+                <option value="455">Huyện Yên Thủy</option>
+                <option value="446">Thành phố Hòa Bình</option>
+                <option value="18" data-subgroup-tag-close="" label="Hòa Bình"></option>
+                <option value="321" data-subgroup-tag-open="" label="Hưng Yên"></option>
+                <option value="15">Huyện Ân Thi</option>
+                <option value="16">Huyện Khoái Châu</option>
+                <option value="17">Huyện Kim Động</option>
+                <option value="14">Huyện Mỹ Hào</option>
+                <option value="19">Huyện Phù Cừ</option>
+                <option value="18">Huyện Tiên Lữ</option>
+                <option value="12">Huyện Văn Giang</option>
+                <option value="11">Huyện Văn Lâm</option>
+                <option value="13">Huyện Yên Mỹ</option>
+                <option value="10">Thành phố Hưng Yên</option>
+                <option value="321" data-subgroup-tag-close="" label="Hưng Yên"></option>
+                <option value="320" data-subgroup-tag-open="" label="Hải Dương"></option>
+                <option value="538">Huyện Bình Giang</option>
+                <option value="537">Huyện Cẩm Giàng</option>
+                <option value="539">Huyện Gia Lộc</option>
+                <option value="535">Huyện Kim Thành</option>
+                <option value="534">Huyện Kinh Môn</option>
+                <option value="533">Huyện Nam Sách</option>
+                <option value="541">Huyện Ninh Giang</option>
+                <option value="536">Huyện Thanh Hà</option>
+                <option value="542">Huyện Thanh Miện</option>
+                <option value="540">Huyện Tứ Kỳ</option>
+                <option value="531">Thành phố Hải Dương</option>
+                <option value="532">Thị xã Chí Linh</option>
+                <option value="320" data-subgroup-tag-close="" label="Hải Dương"></option>
+                <option value="31" data-subgroup-tag-open="" label="Hải Phòng"></option>
+                <option value="3">Huyện An Dương</option>
+                <option value="4">Huyện An Lão</option>
+                <option value="9">Huyện Bạch Long Vĩ</option>
+                <option value="8">Huyện Cát Hải</option>
+                <option value="5">Huyện Kiến Thuỵ</option>
+                <option value="2">Huyện Thuỷ Nguyên</option>
+                <option value="6">Huyện Tiên Lãng</option>
+                <option value="7">Huyện Vĩnh Bảo</option>
+                <option value="548">Quận Đồ Sơn</option>
+                <option value="546">Quận Hải An</option>
+                <option value="543">Quận Hồng Bàng</option>
+                <option value="547">Quận Kiến An</option>
+                <option value="545">Quận Lê Chân</option>
+                <option value="544">Quận Ngô Quyền</option>
+                <option value="31" data-subgroup-tag-close="" label="Hải Phòng"></option>
+                <option value="780" data-subgroup-tag-open="" label="Hậu Giang"></option>
+                <option value="570">Huyện Châu Thành</option>
+                <option value="569">Huyện Châu Thành A</option>
+                <option value="574">Huyện Long Mỹ</option>
+                <option value="571">Huyện Phụng Hiệp</option>
+                <option value="572">Huyện Vị Thuỷ</option>
+                <option value="567">Thành phố Vị Thanh</option>
+                <option value="573">Thị xã Long Mỹ</option>
+                <option value="568">Thị xã Ngã Bảy</option>
+                <option value="780" data-subgroup-tag-close="" label="Hậu Giang"></option>
+                <option value="8" data-subgroup-tag-open="" label="Hồ Chí Minh"></option>
+                <option value="1637">Huyện Bình Chánh</option>
+                <option value="1639">Huyện Cần Giờ</option>
+                <option value="1635">Huyện Củ Chi</option>
+                <option value="1636">Huyện Hóc Môn</option>
+                <option value="1638">Huyện Nhà Bè</option>
+                <option value="1633">Quận Bình Tân</option>
+                <option value="1621">Quận Bình Thạnh</option>
+                <option value="1620">Quận Gò Vấp</option>
+                <option value="1624">Quận Phú Nhuận</option>
+                <option value="1622">Quận Tân Bình</option>
+                <option value="1623">Quận Tân Phú</option>
+                <option value="1616">Quận 1</option>
+                <option value="1627">Quận 10</option>
+                <option value="1628">Quận 11</option>
+                <option value="1617">Quận 12</option>
+                <option value="1626">Quận 3</option>
+                <option value="1629">Quận 4</option>
+                <option value="1630">Quận 5</option>
+                <option value="1631">Quận 6</option>
+                <option value="1634">Quận 7</option>
+                <option value="1632">Quận 8</option>
+                <option value="1618">Thành Phố Thủ Đức</option>
+                <option value="8" data-subgroup-tag-close="" label="Hồ Chí Minh"></option>
+                <option value="1071" data-subgroup="">KV Bắc Trung Bộ</option>
+                <option value="1070" data-subgroup="">KV Nam Trung Bộ</option>
+                <option value="1072" data-subgroup="">KV Tây Nguyên</option>
+                <option value="1069" data-subgroup="">KV Đông Nam Bộ</option>
+                <option value="901" data-subgroup="">Khác</option>
+                <option value="58" data-subgroup-tag-open="" label="Khánh Hòa"></option>
+                <option value="202">Huyện Cam Lâm</option>
+                <option value="206">Huyện Diên Khánh</option>
+                <option value="207">Huyện Khánh Sơn</option>
+                <option value="205">Huyện Khánh Vĩnh</option>
+                <option value="208">Huyện Trường Sa</option>
+                <option value="203">Huyện Vạn Ninh</option>
+                <option value="201">Thành phố Cam Ranh</option>
+                <option value="200">Thành phố Nha Trang</option>
+                <option value="204">Thị xã Ninh Hòa</option>
+                <option value="58" data-subgroup-tag-close="" label="Khánh Hòa"></option>
+                <option value="77" data-subgroup-tag-open="" label="Kiên Giang"></option>
+                <option value="551">Huyện An Biên</option>
+                <option value="552">Huyện An Minh</option>
+                <option value="1720">Huyện Châu Thành</option>
+                <option value="557">Huyện Giang Thành</option>
+                <option value="549">Huyện Giồng Riềng</option>
+                <option value="550">Huyện Gò Quao</option>
+                <option value="1718">Huyện Hòn Đất</option>
+                <option value="555">Huyện Kiên Hải</option>
+                <option value="1717">Huyện Kiên Lương</option>
+                <option value="554">Huyện Phú Quốc</option>
+                <option value="1719">Huyện Tân Hiệp</option>
+                <option value="556">Huyện U Minh Thượng</option>
+                <option value="553">Huyện Vĩnh Thuận</option>
+                <option value="1715">Thành phố Rạch Giá</option>
+                <option value="1716">Thị xã Hà Tiên</option>
+                <option value="77" data-subgroup-tag-close="" label="Kiên Giang"></option>
+                <option value="60" data-subgroup-tag-open="" label="Kon Tum"></option>
+                <option value="227">Huyện Đắk Glei</option>
+                <option value="232">Huyện Đắk Hà</option>
+                <option value="229">Huyện Đắk Tô</option>
+                <option value="235">Huyện Ia H' Drai</option>
+                <option value="230">Huyện Kon Plông</option>
+                <option value="231">Huyện Kon Rẫy</option>
+                <option value="228">Huyện Ngọc Hồi</option>
+                <option value="233">Huyện Sa Thầy</option>
+                <option value="234">Huyện Tu Mơ Rông</option>
+                <option value="226">Thành phố Kon Tum</option>
+                <option value="60" data-subgroup-tag-close="" label="Kon Tum"></option>
+                <option value="23" data-subgroup-tag-open="" label="Lai Châu"></option>
+                <option value="419">Huyện Mường Tè</option>
+                <option value="424">Huyện Nậm Nhùn</option>
+                <option value="421">Huyện Phong Thổ</option>
+                <option value="420">Huyện Sìn Hồ</option>
+                <option value="418">Huyện Tam Đường</option>
+                <option value="423">Huyện Tân Uyên</option>
+                <option value="422">Huyện Than Uyên</option>
+                <option value="417">Thành phố Lai Châu</option>
+                <option value="23" data-subgroup-tag-close="" label="Lai Châu"></option>
+                <option value="72" data-subgroup-tag-open="" label="Long An"></option>
+                <option value="1649">Huyện Bến Lức</option>
+                <option value="1652">Huyện Cần Đước</option>
+                <option value="1653">Huyện Cần Giuộc</option>
+                <option value="1654">Huyện Châu Thành</option>
+                <option value="1648">Huyện Đức Hòa</option>
+                <option value="1647">Huyện Đức Huệ</option>
+                <option value="1644">Huyện Mộc Hóa</option>
+                <option value="1642">Huyện Tân Hưng</option>
+                <option value="1645">Huyện Tân Thạnh</option>
+                <option value="1651">Huyện Tân Trụ</option>
+                <option value="1646">Huyện Thạnh Hóa</option>
+                <option value="1650">Huyện Thủ Thừa</option>
+                <option value="1643">Huyện Vĩnh Hưng</option>
+                <option value="1640">Thành phố Tân An</option>
+                <option value="1641">Thị xã Kiến Tường</option>
+                <option value="72" data-subgroup-tag-close="" label="Long An"></option>
+                <option value="20" data-subgroup-tag-open="" label="Lào Cai"></option>
+                <option value="403">Huyện Bảo Thắng</option>
+                <option value="404">Huyện Bảo Yên</option>
+                <option value="399">Huyện Bát Xát</option>
+                <option value="402">Huyện Bắc Hà</option>
+                <option value="400">Huyện Mường Khương</option>
+                <option value="405">Huyện Sa Pa</option>
+                <option value="401">Huyện Si Ma Cai</option>
+                <option value="406">Huyện Văn Bàn</option>
+                <option value="398">Thành phố Lào Cai</option>
+                <option value="20" data-subgroup-tag-close="" label="Lào Cai"></option>
+                <option value="63" data-subgroup-tag-open="" label="Lâm Đồng"></option>
+                <option value="284">Huyện Bảo Lâm</option>
+                <option value="287">Huyện Cát Tiên</option>
+                <option value="283">Huyện Di Linh</option>
+                <option value="285">Huyện Đạ Huoai</option>
+                <option value="286">Huyện Đạ Tẻh</option>
+                <option value="278">Huyện Đam Rông</option>
+                <option value="281">Huyện Đơn Dương</option>
+                <option value="282">Huyện Đức Trọng</option>
+                <option value="279">Huyện Lạc Dương</option>
+                <option value="280">Huyện Lâm Hà</option>
+                <option value="277">Thành phố Bảo Lộc</option>
+                <option value="276">Thành phố Đà Lạt</option>
+                <option value="63" data-subgroup-tag-close="" label="Lâm Đồng"></option>
+                <option value="25" data-subgroup-tag-open="" label="Lạng Sơn"></option>
+                <option value="472">Huyện Bắc Sơn</option>
+                <option value="468">Huyện Bình Gia</option>
+                <option value="470">Huyện Cao Lộc</option>
+                <option value="474">Huyện Chi Lăng</option>
+                <option value="476">Huyện Đình Lập</option>
+                <option value="473">Huyện Hữu Lũng</option>
+                <option value="475">Huyện Lộc Bình</option>
+                <option value="467">Huyện Tràng Định</option>
+                <option value="469">Huyện Văn Lãng</option>
+                <option value="471">Huyện Văn Quan</option>
+                <option value="466">Thành phố Lạng Sơn</option>
+                <option value="25" data-subgroup-tag-close="" label="Lạng Sơn"></option>
+                <option value="350" data-subgroup-tag-open="" label="Nam Định"></option>
+                <option value="42">Huyện Giao Thủy</option>
+                <option value="43">Huyện Hải Hậu</option>
+                <option value="35">Huyện Mỹ Lộc</option>
+                <option value="39">Huyện Nam Trực</option>
+                <option value="38">Huyện Nghĩa Hưng</option>
+                <option value="40">Huyện Trực Ninh</option>
+                <option value="36">Huyện Vụ Bản</option>
+                <option value="41">Huyện Xuân Trường</option>
+                <option value="37">Huyện Ý Yên</option>
+                <option value="34">Thành phố Nam Định</option>
+                <option value="350" data-subgroup-tag-close="" label="Nam Định"></option>
+                <option value="38" data-subgroup-tag-open="" label="Nghệ An"></option>
+                <option value="91">Huyện Anh Sơn</option>
+                <option value="89">Huyện Con Cuông</option>
+                <option value="92">Huyện Diễn Châu</option>
+                <option value="94">Huyện Đô Lương</option>
+                <option value="98">Huyện Hưng Nguyên</option>
+                <option value="84">Huyện Kỳ Sơn</option>
+                <option value="97">Huyện Nam Đàn</option>
+                <option value="96">Huyện Nghi Lộc</option>
+                <option value="86">Huyện Nghĩa Đàn</option>
+                <option value="82">Huyện Quế Phong</option>
+                <option value="83">Huyện Quỳ Châu</option>
+                <option value="87">Huyện Quỳ Hợp</option>
+                <option value="88">Huyện Quỳnh Lưu</option>
+                <option value="90">Huyện Tân Kỳ</option>
+                <option value="95">Huyện Thanh Chương</option>
+                <option value="85">Huyện Tương Dương</option>
+                <option value="93">Huyện Yên Thành</option>
+                <option value="79">Thành phố Vinh</option>
+                <option value="80">Thị xã Cửa Lò</option>
+                <option value="99">Thị xã Hoàng Mai</option>
+                <option value="81">Thị xã Thái Hoà</option>
+                <option value="38" data-subgroup-tag-close="" label="Nghệ An"></option>
+                <option value="30" data-subgroup-tag-open="" label="Ninh Bình"></option>
+                <option value="47">Huyện Gia Viễn</option>
+                <option value="48">Huyện Hoa Lư</option>
+                <option value="50">Huyện Kim Sơn</option>
+                <option value="46">Huyện Nho Quan</option>
+                <option value="49">Huyện Yên Khánh</option>
+                <option value="51">Huyện Yên Mô</option>
+                <option value="44">Thành phố Ninh Bình</option>
+                <option value="45">Thành phố Tam Điệp</option>
+                <option value="30" data-subgroup-tag-close="" label="Ninh Bình"></option>
+                <option value="68" data-subgroup-tag-open="" label="Ninh Thuận"></option>
+                <option value="210">Huyện Bác Ái</option>
+                <option value="212">Huyện Ninh Hải</option>
+                <option value="213">Huyện Ninh Phước</option>
+                <option value="211">Huyện Ninh Sơn</option>
+                <option value="214">Huyện Thuận Bắc</option>
+                <option value="215">Huyện Thuận Nam</option>
+                <option value="209">Thành phố Phan Rang-Tháp Chàm</option>
+                <option value="68" data-subgroup-tag-close="" label="Ninh Thuận"></option>
+                <option value="210" data-subgroup-tag-open="" label="Phú Thọ"></option>
+                <option value="508">Huyện Cẩm Khê</option>
+                <option value="503">Huyện Đoan Hùng</option>
+                <option value="504">Huyện Hạ Hoà</option>
+                <option value="510">Huyện Lâm Thao</option>
+                <option value="506">Huyện Phù Ninh</option>
+                <option value="509">Huyện Tam Nông</option>
+                <option value="513">Huyện Tân Sơn</option>
+                <option value="505">Huyện Thanh Ba</option>
+                <option value="511">Huyện Thanh Sơn</option>
+                <option value="512">Huyện Thanh Thuỷ</option>
+                <option value="507">Huyện Yên Lập</option>
+                <option value="501">Thành phố Việt Trì</option>
+                <option value="502">Thị xã Phú Thọ</option>
+                <option value="210" data-subgroup-tag-close="" label="Phú Thọ"></option>
+                <option value="57" data-subgroup-tag-open="" label="Phú Yên"></option>
+                <option value="199">Huyện Đông Hòa</option>
+                <option value="193">Huyện Đồng Xuân</option>
+                <option value="198">Huyện Phú Hoà</option>
+                <option value="196">Huyện Sông Hinh</option>
+                <option value="195">Huyện Sơn Hòa</option>
+                <option value="197">Huyện Tây Hoà</option>
+                <option value="194">Huyện Tuy An</option>
+                <option value="191">Thành phố Tuy Hoà</option>
+                <option value="192">Thị xã Sông Cầu</option>
+                <option value="57" data-subgroup-tag-close="" label="Phú Yên"></option>
+                <option value="52" data-subgroup-tag-open="" label="Quảng Bình"></option>
+                <option value="117">Huyện Bố Trạch</option>
+                <option value="119">Huyện Lệ Thủy</option>
+                <option value="114">Huyện Minh Hóa</option>
+                <option value="118">Huyện Quảng Ninh</option>
+                <option value="116">Huyện Quảng Trạch</option>
+                <option value="115">Huyện Tuyên Hóa</option>
+                <option value="113">Thành Phố Đồng Hới</option>
+                <option value="120">Thị xã Ba Đồn</option>
+                <option value="52" data-subgroup-tag-close="" label="Quảng Bình"></option>
+                <option value="510" data-subgroup-tag-open="" label="Quảng Nam"></option>
+                <option value="161">Huyện Bắc Trà My</option>
+                <option value="154">Huyện Duy Xuyên</option>
+                <option value="152">Huyện Đại Lộc</option>
+                <option value="151">Huyện Đông Giang</option>
+                <option value="158">Huyện Hiệp Đức</option>
+                <option value="156">Huyện Nam Giang</option>
+                <option value="162">Huyện Nam Trà My</option>
+                <option value="165">Huyện Nông Sơn</option>
+                <option value="163">Huyện Núi Thành</option>
+                <option value="164">Huyện Phú Ninh</option>
+                <option value="157">Huyện Phước Sơn</option>
+                <option value="155">Huyện Quế Sơn</option>
+                <option value="150">Huyện Tây Giang</option>
+                <option value="159">Huyện Thăng Bình</option>
+                <option value="160">Huyện Tiên Phước</option>
+                <option value="149">Thành phố Hội An</option>
+                <option value="148">Thành phố Tam Kỳ</option>
+                <option value="153">Thị xã Điện Bàn</option>
+                <option value="510" data-subgroup-tag-close="" label="Quảng Nam"></option>
+                <option value="55" data-subgroup-tag-open="" label="Quảng Ngãi"></option>
+                <option value="178">Huyện Ba Tơ</option>
+                <option value="167">Huyện Bình Sơn</option>
+                <option value="177">Huyện Đức Phổ</option>
+                <option value="179">Huyện Lý Sơn</option>
+                <option value="174">Huyện Minh Long</option>
+                <option value="176">Huyện Mộ Đức</option>
+                <option value="175">Huyện Nghĩa Hành</option>
+                <option value="172">Huyện Sơn Hà</option>
+                <option value="173">Huyện Sơn Tây</option>
+                <option value="170">Huyện Sơn Tịnh</option>
+                <option value="169">Huyện Tây Trà</option>
+                <option value="168">Huyện Trà Bồng</option>
+                <option value="171">Huyện Tư Nghĩa</option>
+                <option value="166">Thành phố Quảng Ngãi</option>
+                <option value="55" data-subgroup-tag-close="" label="Quảng Ngãi"></option>
+                <option value="33" data-subgroup-tag-open="" label="Quảng Ninh"></option>
+                <option value="485">Huyện Ba Chẽ</option>
+                <option value="481">Huyện Bình Liêu</option>
+                <option value="490">Huyện Cô Tô</option>
+                <option value="483">Huyện Đầm Hà</option>
+                <option value="484">Huyện Hải Hà</option>
+                <option value="487">Huyện Hoành Bồ</option>
+                <option value="482">Huyện Tiên Yên</option>
+                <option value="486">Huyện Vân Đồn</option>
+                <option value="479">Thành phố Cẩm Phả</option>
+                <option value="477">Thành phố Hạ Long</option>
+                <option value="478">Thành phố Móng Cái</option>
+                <option value="480">Thành phố Uông Bí</option>
+                <option value="488">Thị xã Đông Triều</option>
+                <option value="489">Thị xã Quảng Yên</option>
+                <option value="33" data-subgroup-tag-close="" label="Quảng Ninh"></option>
+                <option value="53" data-subgroup-tag-open="" label="Quảng Trị"></option>
+                <option value="127">Huyện Cam Lộ</option>
+                <option value="130">Huyện Cồn Cỏ</option>
+                <option value="126">Huyện Đa Krông</option>
+                <option value="125">Huyện Gio Linh</option>
+                <option value="129">Huyện Hải Lăng</option>
+                <option value="124">Huyện Hướng Hóa</option>
+                <option value="128">Huyện Triệu Phong</option>
+                <option value="123">Huyện Vĩnh Linh</option>
+                <option value="121">Thành phố Đông Hà</option>
+                <option value="122">Thị xã Quảng Trị</option>
+                <option value="53" data-subgroup-tag-close="" label="Quảng Trị"></option>
+                <option value="79" data-subgroup-tag-open="" label="Sóc Trăng"></option>
+                <option value="576">Huyện Châu Thành</option>
+                <option value="579">Huyện Cù Lao Dung</option>
+                <option value="577">Huyện Kế Sách</option>
+                <option value="580">Huyện Long Phú</option>
+                <option value="578">Huyện Mỹ Tú</option>
+                <option value="581">Huyện Mỹ Xuyên</option>
+                <option value="583">Huyện Thạnh Trị</option>
+                <option value="585">Huyện Trần Đề</option>
+                <option value="575">Thành phố Sóc Trăng</option>
+                <option value="582">Thị xã Ngã Năm</option>
+                <option value="584">Thị xã Vĩnh Châu</option>
+                <option value="79" data-subgroup-tag-close="" label="Sóc Trăng"></option>
+                <option value="22" data-subgroup-tag-open="" label="Sơn La"></option>
+                <option value="429">Huyện Bắc Yên</option>
+                <option value="433">Huyện Mai Sơn</option>
+                <option value="431">Huyện Mộc Châu</option>
+                <option value="428">Huyện Mường La</option>
+                <option value="430">Huyện Phù Yên</option>
+                <option value="426">Huyện Quỳnh Nhai</option>
+                <option value="434">Huyện Sông Mã</option>
+                <option value="435">Huyện Sốp Cộp</option>
+                <option value="427">Huyện Thuận Châu</option>
+                <option value="436">Huyện Vân Hồ</option>
+                <option value="432">Huyện Yên Châu</option>
+                <option value="425">Thành phố Sơn La</option>
+                <option value="22" data-subgroup-tag-close="" label="Sơn La"></option>
+                <option value="37" data-subgroup-tag-open="" label="Thanh Hóa"></option>
+                <option value="57">Huyện Bá Thước</option>
+                <option value="61">Huyện Cẩm Thủy</option>
+                <option value="76">Huyện Đông Sơn</option>
+                <option value="63">Huyện Hà Trung</option>
+                <option value="71">Huyện Hậu Lộc</option>
+                <option value="70">Huyện Hoằng Hóa</option>
+                <option value="59">Huyện Lang Chánh</option>
+                <option value="55">Huyện Mường Lát</option>
+                <option value="72">Huyện Nga Sơn</option>
+                <option value="60">Huyện Ngọc Lặc</option>
+                <option value="74">Huyện Như Thanh</option>
+                <option value="73">Huyện Như Xuân</option>
+                <option value="75">Huyện Nông Cống</option>
+                <option value="56">Huyện Quan Hóa</option>
+                <option value="58">Huyện Quan Sơn</option>
+                <option value="77">Huyện Quảng Xương</option>
+                <option value="62">Huyện Thạch Thành</option>
+                <option value="69">Huyện Thiệu Hóa</option>
+                <option value="66">Huyện Thọ Xuân</option>
+                <option value="67">Huyện Thường Xuân</option>
+                <option value="78">Huyện Tĩnh Gia</option>
+                <option value="68">Huyện Triệu Sơn</option>
+                <option value="64">Huyện Vĩnh Lộc</option>
+                <option value="65">Huyện Yên Định</option>
+                <option value="52">Thành phố Thanh Hóa</option>
+                <option value="53">Thị xã Bỉm Sơn</option>
+                <option value="54">Thị xã Sầm Sơn</option>
+                <option value="37" data-subgroup-tag-close="" label="Thanh Hóa"></option>
+                <option value="36" data-subgroup-tag-open="" label="Thái Bình"></option>
+                <option value="23">Huyện Đông Hưng</option>
+                <option value="22">Huyện Hưng Hà</option>
+                <option value="26">Huyện Kiến Xương</option>
+                <option value="21">Huyện Quỳnh Phụ</option>
+                <option value="24">Huyện Thái Thụy</option>
+                <option value="25">Huyện Tiền Hải</option>
+                <option value="27">Huyện Vũ Thư</option>
+                <option value="20">Thành phố Thái Bình</option>
+                <option value="36" data-subgroup-tag-close="" label="Thái Bình"></option>
+                <option value="280" data-subgroup-tag-open="" label="Thái Nguyên"></option>
+                <option value="463">Huyện Đại Từ</option>
+                <option value="459">Huyện Định Hóa</option>
+                <option value="461">Huyện Đồng Hỷ</option>
+                <option value="465">Huyện Phú Bình</option>
+                <option value="460">Huyện Phú Lương</option>
+                <option value="462">Huyện Võ Nhai</option>
+                <option value="458">Thành phố Sông Công</option>
+                <option value="457">Thành phố Thái Nguyên</option>
+                <option value="464">Thị xã Phổ Yên</option>
+                <option value="280" data-subgroup-tag-close="" label="Thái Nguyên"></option>
+                <option value="54" data-subgroup-tag-open="" label="Thừa Thiên- Huế"></option>
+                <option value="137">Huyện A Lưới</option>
+                <option value="139">Huyện Nam Đông</option>
+                <option value="132">Huyện Phong Điền</option>
+                <option value="138">Huyện Phú Lộc</option>
+                <option value="134">Huyện Phú Vang</option>
+                <option value="133">Huyện Quảng Điền</option>
+                <option value="131">Thành phố Huế</option>
+                <option value="135">Thị xã Hương Thủy</option>
+                <option value="136">Thị xã Hương Trà</option>
+                <option value="54" data-subgroup-tag-close="" label="Thừa Thiên- Huế"></option>
+                <option value="73" data-subgroup-tag-open="" label="Tiền Giang"></option>
+                <option value="1659">Huyện Cái Bè</option>
+                <option value="1660">Huyện Cai Lậy</option>
+                <option value="1661">Huyện Châu Thành</option>
+                <option value="1662">Huyện Chợ Gạo</option>
+                <option value="1664">Huyện Gò Công Đông</option>
+                <option value="1663">Huyện Gò Công Tây</option>
+                <option value="1665">Huyện Tân Phú Đông</option>
+                <option value="1658">Huyện Tân Phước</option>
+                <option value="1655">Thành phố Mỹ Tho</option>
+                <option value="1657">Thị xã Cai Lậy</option>
+                <option value="1656">Thị xã Gò Công</option>
+                <option value="73" data-subgroup-tag-close="" label="Tiền Giang"></option>
+                <option value="1065" data-subgroup="">Toàn quốc</option>
+                <option value="74" data-subgroup-tag-open="" label="Trà Vinh"></option>
+                <option value="1676">Huyện Càng Long</option>
+                <option value="1677">Huyện Cầu Kè</option>
+                <option value="1680">Huyện Cầu Ngang</option>
+                <option value="1679">Huyện Châu Thành</option>
+                <option value="1683">Huyện Duyên Hải</option>
+                <option value="1678">Huyện Tiểu Cần</option>
+                <option value="1681">Huyện Trà Cú</option>
+                <option value="1675">Thành phố Trà Vinh</option>
+                <option value="1682">Thị xã Duyên Hải</option>
+                <option value="74" data-subgroup-tag-close="" label="Trà Vinh"></option>
+                <option value="27" data-subgroup-tag-open="" label="Tuyên Quang"></option>
+                <option value="386">Huyện Chiêm Hóa</option>
+                <option value="387">Huyện Hàm Yên</option>
+                <option value="384">Huyện Lâm Bình</option>
+                <option value="385">Huyện Nà Hang</option>
+                <option value="389">Huyện Sơn Dương</option>
+                <option value="388">Huyện Yên Sơn</option>
+                <option value="383">Thành phố Tuyên Quang</option>
+                <option value="27" data-subgroup-tag-close="" label="Tuyên Quang"></option>
+                <option value="66" data-subgroup-tag-open="" label="Tây Ninh"></option>
+                <option value="306">Huyện Bến Cầu</option>
+                <option value="303">Huyện Châu Thành</option>
+                <option value="302">Huyện Dương Minh Châu</option>
+                <option value="305">Huyện Gò Dầu</option>
+                <option value="304">Huyện Hòa Thành</option>
+                <option value="300">Huyện Tân Biên</option>
+                <option value="301">Huyện Tân Châu</option>
+                <option value="307">Huyện Trảng Bàng</option>
+                <option value="299">Thành phố Tây Ninh</option>
+                <option value="66" data-subgroup-tag-close="" label="Tây Ninh"></option>
+                <option value="70" data-subgroup-tag-open="" label="Vĩnh Long"></option>
+                <option value="1687">Huyện Vũng Liêm</option>
+                <option value="1691">Huyện Bình Tân</option>
+                <option value="1685">Huyện Long Hồ</option>
+                <option value="1686">Huyện Mang Thít</option>
+                <option value="1688">Huyện Tam Bình</option>
+                <option value="1690">Huyện Trà Ôn</option>
+                <option value="1684">Thành phố Vĩnh Long</option>
+                <option value="1689">Thị xã Bình Minh</option>
+                <option value="70" data-subgroup-tag-close="" label="Vĩnh Long"></option>
+                <option value="211" data-subgroup-tag-open="" label="Vĩnh Phúc"></option>
+                <option value="519">Huyện Bình Xuyên</option>
+                <option value="516">Huyện Lập Thạch</option>
+                <option value="522">Huyện Sông Lô</option>
+                <option value="517">Huyện Tam Dương</option>
+                <option value="518">Huyện Tam Đảo</option>
+                <option value="521">Huyện Vĩnh Tường</option>
+                <option value="520">Huyện Yên Lạc</option>
+                <option value="514">Thành phố Vĩnh Yên</option>
+                <option value="515">Thị xã Phúc Yên</option>
+                <option value="211" data-subgroup-tag-close="" label="Vĩnh Phúc"></option>
+                <option value="29" data-subgroup-tag-open="" label="Yên Bái"></option>
+                <option value="439">Huyện Lục Yên</option>
+                <option value="441">Huyện Mù Căng Chải</option>
+                <option value="443">Huyện Trạm Tấu</option>
+                <option value="442">Huyện Trấn Yên</option>
+                <option value="444">Huyện Văn Chấn</option>
+                <option value="440">Huyện Văn Yên</option>
+                <option value="445">Huyện Yên Bình</option>
+                <option value="437">Thành phố Yên Bái</option>
+                <option value="438">Thị xã Nghĩa Lộ</option>
+                <option value="29" data-subgroup-tag-close="" label="Yên Bái"></option>
+                <option value="900" data-subgroup-tag-open="" label="Điện Biên"></option>
+                <option value="413">Huyện Điện Biên</option>
+                <option value="414">Huyện Điện Biên Đông</option>
+                <option value="410">Huyện Mường Chà</option>
+                <option value="415">Huyện Mường Ảng</option>
+                <option value="409">Huyện Mường Nhé</option>
+                <option value="416">Huyện Nậm Pồ</option>
+                <option value="411">Huyện Tủa Chùa</option>
+                <option value="412">Huyện Tuần Giáo</option>
+                <option value="407">Thành phố Điện Biên Phủ</option>
+                <option value="408">Thị Xã Mường Lay</option>
+                <option value="900" data-subgroup-tag-close="" label="Điện Biên"></option>
+                <option value="511" data-subgroup-tag-open="" label="Đà Nẵng"></option>
+                <option value="146">Huyện Hòa Vang</option>
+                <option value="147">Huyện Hoàng Sa</option>
+                <option value="145">Quận Cẩm Lệ</option>
+                <option value="142">Quận Hải Châu</option>
+                <option value="140">Quận Liên Chiểu</option>
+                <option value="144">Quận Ngũ Hành Sơn</option>
+                <option value="143">Quận Sơn Trà</option>
+                <option value="141">Quận Thanh Khê</option>
+                <option value="511" data-subgroup-tag-close="" label="Đà Nẵng"></option>
+                <option value="1064" data-subgroup="">Đồng Bằng Sông Cửu Long</option>
+                <option value="61" data-subgroup-tag-open="" label="Đồng Nai"></option>
+                <option value="324">Huyện Cẩm Mỹ</option>
+                <option value="321">Huyện Định Quán</option>
+                <option value="325">Huyện Long Thành</option>
+                <option value="327">Huyện Nhơn Trạch</option>
+                <option value="319">Huyện Tân Phú</option>
+                <option value="323">Huyện Thống Nhất</option>
+                <option value="322">Huyện Trảng Bom</option>
+                <option value="320">Huyện Vĩnh Cửu</option>
+                <option value="326">Huyện Xuân Lộc</option>
+                <option value="317">Thành phố Biên Hòa</option>
+                <option value="318">Thị xã Long Khánh</option>
+                <option value="61" data-subgroup-tag-close="" label="Đồng Nai"></option>
+                <option value="67" data-subgroup-tag-open="" label="Đồng Tháp"></option>
+                <option value="1699">Huyện Cao Lãnh</option>
+                <option value="1703">Huyện Châu Thành</option>
+                <option value="1696">Huyện Hồng Ngự</option>
+                <option value="1702">Huyện Lai Vung</option>
+                <option value="1701">Huyện Lấp Vò</option>
+                <option value="1697">Huyện Tam Nông</option>
+                <option value="1695">Huyện Tân Hồng</option>
+                <option value="1700">Huyện Thanh Bình</option>
+                <option value="1698">Huyện Tháp Mười</option>
+                <option value="1692">Thành phố Cao Lãnh</option>
+                <option value="1693">Thành phố Sa Đéc</option>
+                <option value="1694">Thị xã Hồng Ngự</option>
+                <option value="67" data-subgroup-tag-close="" label="Đồng Tháp"></option>
+                <option value="1" data-group-tag-close="" label="Viet Nam"></option>
+                <option value="22" data-group-tag-open="" label="Bangladesh"></option>
+                <option value="1068" data-subgroup="">Bangladesh</option>
+                <option value="22" data-group-tag-close="" label="Bangladesh"></option>
+                <option value="14" data-group-tag-open="" label="Campuchia"></option>
+                <option value="1098" data-subgroup="">Banteay Meanchey</option>
+                <option value="1096" data-subgroup="">Battambang</option>
+                <option value="1092" data-subgroup="">Kampong Chhnang</option>
+                <option value="1090" data-subgroup="">Kampong Speu</option>
+                <option value="1085" data-subgroup="">Kampot</option>
+                <option value="1088" data-subgroup="">Kandal</option>
+                <option value="1084" data-subgroup="">Kep</option>
+                <option value="1091" data-subgroup="">Koh Kong</option>
+                <option value="1093" data-subgroup="">Kratie</option>
+                <option value="1094" data-subgroup="">Kâmpóng Thum, Cambodia</option>
+                <option value="1102" data-subgroup="">Mondulkiri</option>
+                <option value="1104" data-subgroup="">Otdar Meanchey</option>
+                <option value="1103" data-subgroup="">Pailin</option>
+                <option value="1041" data-subgroup="">Phnompenh</option>
+                <option value="1105" data-subgroup="">Preah Sihanouk</option>
+                <option value="1099" data-subgroup="">Preah Vihear</option>
+                <option value="1089" data-subgroup="">Prey Veng</option>
+                <option value="1095" data-subgroup="">Pursat</option>
+                <option value="1101" data-subgroup="">Rotanak Kiri</option>
+                <option value="1097" data-subgroup="">Siem Reap</option>
+                <option value="1083" data-subgroup="">Sihanoukville</option>
+                <option value="1100" data-subgroup="">Stung Treng</option>
+                <option value="1087" data-subgroup="">Svay Rieng</option>
+                <option value="1086" data-subgroup="">Takeo</option>
+                <option value="1082" data-subgroup="">Tbong Khmum</option>
+                <option value="14" data-group-tag-close="" label="Campuchia"></option>
+                <option value="4" data-group-tag-open="" label="Canada"></option>
+                <option value="1007" data-subgroup="">Montreal</option>
+                <option value="1008" data-subgroup="">Quebec City</option>
+                <option value="1006" data-subgroup="">Toronto</option>
+                <option value="4" data-group-tag-close="" label="Canada"></option>
+                <option value="25" data-group-tag-open="" label="Công Gô"></option>
+                <option value="1080" data-subgroup="">Kinshasa</option>
+                <option value="25" data-group-tag-close="" label="Công Gô"></option>
+                <option value="20" data-group-tag-open="" label="Đài Loan"></option>
+                <option value="1066" data-subgroup="">Cao Hùng</option>
+                <option value="20" data-group-tag-close="" label="Đài Loan"></option>
+                <option value="8" data-group-tag-open="" label="Hàn Quốc"></option>
+                <option value="1017" data-subgroup="">Pusan</option>
+                <option value="1018" data-subgroup="">Seoul</option>
+                <option value="8" data-group-tag-close="" label="Hàn Quốc"></option>
+                <option value="13" data-group-tag-open="" label="Hoa Kỳ"></option>
+                <option value="1037" data-subgroup="">Boston</option>
+                <option value="1034" data-subgroup="">Chicago</option>
+                <option value="1032" data-subgroup="">Dallas</option>
+                <option value="1077" data-subgroup-tag-open="" label="Florida"></option>
+                <option value="895">Apalachicola</option>
+                <option value="896">Bartow</option>
+                <option value="897">Belle Glade</option>
+                <option value="898">Boca Raton</option>
+                <option value="899">Bradenton</option>
+                <option value="900">Cape Coral</option>
+                <option value="901">Clearwater</option>
+                <option value="902">Cocoa Beach</option>
+                <option value="903">Cocoa-Rockledge</option>
+                <option value="904">Coral Gables</option>
+                <option value="905">Daytona Beach</option>
+                <option value="906">De Land</option>
+                <option value="907">Deerfield Beach</option>
+                <option value="908">Delray Beach</option>
+                <option value="909">Fernandina Beach</option>
+                <option value="910">Fort Lauderdale</option>
+                <option value="911">Fort Myers</option>
+                <option value="912">Fort Pierce</option>
+                <option value="913">Fort Walton Beach</option>
+                <option value="914">Gainesville</option>
+                <option value="915">Hallandale Beach</option>
+                <option value="916">Hialeah</option>
+                <option value="917">Hollywood</option>
+                <option value="918">Homestead</option>
+                <option value="919">Jacksonville</option>
+                <option value="920">Key West</option>
+                <option value="921">Lake City</option>
+                <option value="922">Lake Wales</option>
+                <option value="923">Lakeland</option>
+                <option value="924">Largo</option>
+                <option value="925">Melbourne</option>
+                <option value="926">Miami</option>
+                <option value="927">Miami Beach</option>
+                <option value="928">Naples</option>
+                <option value="929">New Smyrna Beach</option>
+                <option value="930">Ocala</option>
+                <option value="931">Orlando</option>
+                <option value="932">Ormond Beach</option>
+                <option value="933">Palatka</option>
+                <option value="934">Palm Bay</option>
+                <option value="935">Palm Beach</option>
+                <option value="936">Panama City</option>
+                <option value="937">Pensacola</option>
+                <option value="938">Pompano Beach</option>
+                <option value="939">Saint Augustine</option>
+                <option value="940">Saint Petersburg</option>
+                <option value="941">Sanford</option>
+                <option value="942">Sarasota</option>
+                <option value="943">Sebring</option>
+                <option value="944">Tallahassee</option>
+                <option value="945">Tampa</option>
+                <option value="946">Tarpon Springs</option>
+                <option value="947">Titusville</option>
+                <option value="948">Venice</option>
+                <option value="949">West Palm Beach</option>
+                <option value="950">White Springs</option>
+                <option value="951">Winter Haven</option>
+                <option value="952">Winter Park</option>
+                <option value="1077" data-subgroup-tag-close="" label="Florida"></option>
+                <option value="1031" data-subgroup="">Houston</option>
+                <option value="1026" data-subgroup="">Los Angeles</option>
+                <option value="1035" data-subgroup-tag-open="" label="Louisiana"></option>
+                <option value="1559">Abbeville</option>
+                <option value="1560">Alexandria</option>
+                <option value="1561">Bastrop</option>
+                <option value="1562">Baton Rouge</option>
+                <option value="1563">Bogalusa</option>
+                <option value="1564">Bossier City</option>
+                <option value="1565">Gretna</option>
+                <option value="1566">Houma</option>
+                <option value="1567">Lafayette</option>
+                <option value="1568">Lake Charles</option>
+                <option value="1569">Monroe</option>
+                <option value="1570">Morgan City</option>
+                <option value="1571">Natchitoches</option>
+                <option value="1572">New Iberia</option>
+                <option value="1573">New Orleans</option>
+                <option value="1574">Opelousas</option>
+                <option value="1575">Ruston</option>
+                <option value="1576">Saint Martinville</option>
+                <option value="1577">Shreveport</option>
+                <option value="1578">Thibodaux</option>
+                <option value="1035" data-subgroup-tag-close="" label="Louisiana"></option>
+                <option value="1033" data-subgroup="">Miami</option>
+                <option value="1027" data-subgroup-tag-open="" label="New York"></option>
+                <option value="1853">Albany</option>
+                <option value="1854">Amsterdam</option>
+                <option value="1855">Auburn</option>
+                <option value="1856">Babylon</option>
+                <option value="1857">Batavia</option>
+                <option value="1858">Beacon</option>
+                <option value="1859">Bedford</option>
+                <option value="1860">Binghamton</option>
+                <option value="1861">Bronx</option>
+                <option value="1862">Brooklyn</option>
+                <option value="1863">Buffalo</option>
+                <option value="1864">Chautauqua</option>
+                <option value="1865">Cheektowaga</option>
+                <option value="1866">Clinton</option>
+                <option value="1867">Cohoes</option>
+                <option value="1868">Coney Island</option>
+                <option value="1869">Cooperstown</option>
+                <option value="1870">Corning</option>
+                <option value="1871">Cortland</option>
+                <option value="1872">Crown Point</option>
+                <option value="1873">Dunkirk</option>
+                <option value="1874">East Aurora</option>
+                <option value="1875">East Hampton</option>
+                <option value="1876">Eastchester</option>
+                <option value="1877">Elmira</option>
+                <option value="1878">Flushing</option>
+                <option value="1879">Forest Hills</option>
+                <option value="1880">Fredonia</option>
+                <option value="1881">Garden City</option>
+                <option value="1882">Geneva</option>
+                <option value="1883">Glens Falls</option>
+                <option value="1884">Gloversville</option>
+                <option value="1885">Great Neck</option>
+                <option value="1886">Hammondsport</option>
+                <option value="1887">Harlem</option>
+                <option value="1888">Hempstead</option>
+                <option value="1889">Herkimer</option>
+                <option value="1890">Hudson</option>
+                <option value="1891">Huntington</option>
+                <option value="1892">Hyde Park</option>
+                <option value="1893">Ilion</option>
+                <option value="1894">Ithaca</option>
+                <option value="1895">Jamestown</option>
+                <option value="1896">Johnstown</option>
+                <option value="1897">Kingston</option>
+                <option value="1898">Lackawanna</option>
+                <option value="1899">Lake Placid</option>
+                <option value="1900">Levittown</option>
+                <option value="1901">Lockport</option>
+                <option value="1902">Mamaroneck</option>
+                <option value="1903">Manhattan</option>
+                <option value="1904">Massena</option>
+                <option value="1905">Middletown</option>
+                <option value="1906">Mineola</option>
+                <option value="1907">Mount Vernon</option>
+                <option value="1908">New Paltz</option>
+                <option value="1909">New Rochelle</option>
+                <option value="1910">New Windsor</option>
+                <option value="1911">New York City</option>
+                <option value="1912">Newburgh</option>
+                <option value="1913">Niagara Falls</option>
+                <option value="1914">North Hempstead</option>
+                <option value="1915">Nyack</option>
+                <option value="1916">Ogdensburg</option>
+                <option value="1917">Olean</option>
+                <option value="1918">Oneida</option>
+                <option value="1919">Oneonta</option>
+                <option value="1920">Ossining</option>
+                <option value="1921">Oswego</option>
+                <option value="1922">Oyster Bay</option>
+                <option value="1923">Palmyra</option>
+                <option value="1924">Peekskill</option>
+                <option value="1925">Plattsburgh</option>
+                <option value="1926">Port Washington</option>
+                <option value="1927">Potsdam</option>
+                <option value="1928">Poughkeepsie</option>
+                <option value="1929">Queens</option>
+                <option value="1930">Rensselaer</option>
+                <option value="1931">Rochester</option>
+                <option value="1932">Rome</option>
+                <option value="1933">Rotterdam</option>
+                <option value="1934">Rye</option>
+                <option value="1935">Sag Harbor</option>
+                <option value="1936">Saranac Lake</option>
+                <option value="1937">Saratoga Springs</option>
+                <option value="1938">Scarsdale</option>
+                <option value="1939">Schenectady</option>
+                <option value="1940">Seneca Falls</option>
+                <option value="1941">Southampton</option>
+                <option value="1942">Staten Island</option>
+                <option value="1943">Stony Brook</option>
+                <option value="1944">Stony Point</option>
+                <option value="1945">Syracuse</option>
+                <option value="1946">Tarrytown</option>
+                <option value="1947">Ticonderoga</option>
+                <option value="1948">Tonawanda</option>
+                <option value="1949">Troy</option>
+                <option value="1950">Utica</option>
+                <option value="1951">Watertown</option>
+                <option value="1952">Watervliet</option>
+                <option value="1953">Watkins Glen</option>
+                <option value="1954">West Seneca</option>
+                <option value="1955">White Plains</option>
+                <option value="1956">Woodstock</option>
+                <option value="1957">Yonkers</option>
+                <option value="1027" data-subgroup-tag-close="" label="New York"></option>
+                <option value="1036" data-subgroup="">Orange County</option>
+                <option value="1061" data-subgroup="">Panama City</option>
+                <option value="1060" data-subgroup-tag-open="" label="Pennsylvania"></option>
+                <option value="2164">Abington</option>
+                <option value="2165">Aliquippa</option>
+                <option value="2166">Allentown</option>
+                <option value="2167">Altoona</option>
+                <option value="2168">Ambridge</option>
+                <option value="2169">Bedford</option>
+                <option value="2170">Bethlehem</option>
+                <option value="2171">Bloomsburg</option>
+                <option value="2172">Bradford</option>
+                <option value="2173">Bristol</option>
+                <option value="2174">Carbondale</option>
+                <option value="2175">Carlisle</option>
+                <option value="2176">Chambersburg</option>
+                <option value="2177">Chester</option>
+                <option value="2178">Columbia</option>
+                <option value="2179">Easton</option>
+                <option value="2180">Erie</option>
+                <option value="2181">Franklin</option>
+                <option value="2182">Germantown</option>
+                <option value="2183">Gettysburg</option>
+                <option value="2184">Greensburg</option>
+                <option value="2185">Hanover</option>
+                <option value="2186">Harmony</option>
+                <option value="2187">Harrisburg</option>
+                <option value="2188">Hazleton</option>
+                <option value="2189">Hershey</option>
+                <option value="2190">Homestead</option>
+                <option value="2191">Honesdale</option>
+                <option value="2192">Indiana</option>
+                <option value="2193">Jeannette</option>
+                <option value="2194">Jim Thorpe</option>
+                <option value="2195">Johnstown</option>
+                <option value="2196">Lancaster</option>
+                <option value="2197">Lebanon</option>
+                <option value="2198">Levittown</option>
+                <option value="2199">Lewistown</option>
+                <option value="2200">Lock Haven</option>
+                <option value="2201">Lower Southampton</option>
+                <option value="2202">McKeesport</option>
+                <option value="2203">Meadville</option>
+                <option value="2204">Middletown</option>
+                <option value="2205">Monroeville</option>
+                <option value="2206">Nanticoke</option>
+                <option value="2207">New Castle</option>
+                <option value="2208">New Hope</option>
+                <option value="2209">New Kensington</option>
+                <option value="2210">Norristown</option>
+                <option value="2925">Oaks</option>
+                <option value="2211">Oil City</option>
+                <option value="2212">Philadelphia</option>
+                <option value="2213">Phoenixville</option>
+                <option value="2214">Pittsburgh</option>
+                <option value="2215">Pottstown</option>
+                <option value="2216">Pottsville</option>
+                <option value="2217">Reading</option>
+                <option value="2218">Scranton</option>
+                <option value="2219">Shamokin</option>
+                <option value="2220">Sharon</option>
+                <option value="2221">State College</option>
+                <option value="2222">Stroudsburg</option>
+                <option value="2223">Sunbury</option>
+                <option value="2224">Swarthmore</option>
+                <option value="2225">Tamaqua</option>
+                <option value="2226">Titusville</option>
+                <option value="2227">Uniontown</option>
+                <option value="2228">Warren</option>
+                <option value="2229">Washington</option>
+                <option value="2230">West Chester</option>
+                <option value="2231">Wilkes-Barre</option>
+                <option value="2232">Williamsport</option>
+                <option value="2233">York</option>
+                <option value="1060" data-subgroup-tag-close="" label="Pennsylvania"></option>
+                <option value="1038" data-subgroup="">Phoenix</option>
+                <option value="1039" data-subgroup="">San Diego</option>
+                <option value="1028" data-subgroup="">San Francisco</option>
+                <option value="1029" data-subgroup="">San Jose</option>
+                <option value="1030" data-subgroup="">Seattle</option>
+                <option value="1062" data-subgroup="">Washington DC</option>
+                <option value="1063" data-subgroup="">Wisconsin Dells</option>
+                <option value="13" data-group-tag-close="" label="Hoa Kỳ"></option>
+                <option value="24" data-group-tag-open="" label="Hồng Kông"></option>
+                <option value="1079" data-subgroup="">Hồng Kông</option>
+                <option value="24" data-group-tag-close="" label="Hồng Kông"></option>
+                <option value="19" data-group-tag-open="" label="Lào"></option>
+                <option value="1106" data-subgroup="">Attapeu</option>
+                <option value="1107" data-subgroup="">Bokeo</option>
+                <option value="1108" data-subgroup="">Bolikhamsai</option>
+                <option value="1109" data-subgroup="">Champasak</option>
+                <option value="1110" data-subgroup="">Houaphanh</option>
+                <option value="1111" data-subgroup="">Khammouane</option>
+                <option value="1112" data-subgroup="">Louang Namtha</option>
+                <option value="1113" data-subgroup="">Luang Prabang</option>
+                <option value="1114" data-subgroup="">Oudomxay</option>
+                <option value="1115" data-subgroup="">Phongsaly</option>
+                <option value="1116" data-subgroup="">Sainyabuli</option>
+                <option value="1117" data-subgroup="">Salavan</option>
+                <option value="1118" data-subgroup="">Savannakhet</option>
+                <option value="1119" data-subgroup="">Sekong</option>
+                <option value="1059" data-subgroup="">Vientiane</option>
+                <option value="1121" data-subgroup="">Xaisomboun</option>
+                <option value="1120" data-subgroup="">Xiangkhouang</option>
+                <option value="19" data-group-tag-close="" label="Lào"></option>
+                <option value="9" data-group-tag-open="" label="Malaysia"></option>
+                <option value="1019" data-subgroup="">Kuala Lumpur</option>
+                <option value="1078" data-subgroup="">Malaysia</option>
+                <option value="9" data-group-tag-close="" label="Malaysia"></option>
+                <option value="21" data-group-tag-open="" label="Myanmar"></option>
+                <option value="1075" data-subgroup="">Myanmar</option>
+                <option value="21" data-group-tag-close="" label="Myanmar"></option>
+                <option value="2" data-group-tag-open="" label="Nhật Bản"></option>
+                <option value="1056" data-subgroup="">Hiroshima</option>
+                <option value="1043" data-subgroup="">Hokkaido</option>
+                <option value="1076" data-subgroup="">Hyogoken</option>
+                <option value="1049" data-subgroup="">Kakogawa</option>
+                <option value="1047" data-subgroup="">Nagaokakyo</option>
+                <option value="1000" data-subgroup="">Osaka</option>
+                <option value="1048" data-subgroup="">Shin Osaka</option>
+                <option value="1001" data-subgroup="">Tokyo</option>
+                <option value="1045" data-subgroup="">Tosabori</option>
+                <option value="1046" data-subgroup="">Yodoyabashi</option>
+                <option value="1002" data-subgroup="">Yokohama</option>
+                <option value="2" data-group-tag-close="" label="Nhật Bản"></option>
+                <option value="23" data-group-tag-open="" label="Quốc tế"></option>
+                <option value="1073" data-subgroup="">Quốc tế</option>
+                <option value="23" data-group-tag-close="" label="Quốc tế"></option>
+                <option value="10" data-group-tag-open="" label="Singapore"></option>
+                <option value="1040" data-subgroup="">Singapore</option>
+                <option value="10" data-group-tag-close="" label="Singapore"></option>
+                <option value="5" data-group-tag-open="" label="Trung Quốc"></option>
+                <option value="1009" data-subgroup="">Beijing</option>
+                <option value="1057" data-subgroup="">Macau</option>
+                <option value="1074" data-subgroup="">Quảng Châu</option>
+                <option value="1010" data-subgroup="">Shanghai</option>
+                <option value="5" data-group-tag-close="" label="Trung Quốc"></option>
+                <option value="3" data-group-tag-open="" label="Úc"></option>
+                <option value="1067" data-subgroup="">All</option>
+                <option value="1003" data-subgroup="">Canberra</option>
+                <option value="1004" data-subgroup="">Melbourne</option>
+                <option value="1005" data-subgroup="">Sydney</option>
+                <option value="3" data-group-tag-close="" label="Úc"></option>
+                <option value="16" data-group-tag-open="" label="Ukraine"></option>
+                <option value="1053" data-subgroup="">Kharkiv</option>
+                <option value="1051" data-subgroup="">Lugansk</option>
+                <option value="1052" data-subgroup="">Lutsk</option>
+                <option value="1050" data-subgroup="">Nikolaev</option>
+                <option value="1054" data-subgroup="">Vinnitsa</option>
+                <option value="16" data-group-tag-close="" label="Ukraine"></option>
+                <option value="237" data-group-tag-open="" label="Yemen"></option>
+                <option value="2137" data-subgroup="">yemen 1</option>
+                <option value="237" data-group-tag-close="" label="Yemen"></option>
                 </select>
             </div>
 
@@ -74,7 +1344,7 @@
             <button type="reset" class="btn btn-secondary">Reset</button>
         </form>
 
-
+        <script src="datasample.js" defer></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 MultipleSelectHierarchy.build('.hierarchy-select', {
@@ -89,11 +1359,14 @@
                         console.log("Selected Locations:", selectedItems);
                     }
                 });
+
+
             });
         </script>
     </div>
 
     <script src="script.js" defer></script>
+
 </body>
 
 </html>

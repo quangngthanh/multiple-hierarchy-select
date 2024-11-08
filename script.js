@@ -578,7 +578,7 @@ class MultipleSelectHierarchy {
     });
 
     if (totalChipsWidth > availableWidth) {
-      const scaleFactor = 0.95*availableWidth / totalChipsWidth;
+      const scaleFactor = 0.97*availableWidth / totalChipsWidth;
       let currentLineWidth = 0;
       
       chips.forEach((chip, index) => {
@@ -1127,16 +1127,20 @@ class MultipleSelectHierarchy {
   }
 
   static parseSelectOptions(element) {
-    const options = Array.from(element.options).filter(opt => opt.value);
+    const options = Array.from(element.options).filter(opt => opt.value || opt.hasAttribute('data-group-tag-open'));
     const hierarchyData = [];
     const selectedValues = {};
     
     let currentGroup = null;
     let currentSubgroup = null;
+    let groupIndex = 0;
+    let subgroupIndex = 0;
 
     options.forEach(option => {
+        // Generate ID based on index if value is empty
+        const nodeId = option.value || `group_${groupIndex}`;
         const node = {
-            id: option.value,
+            id: nodeId,
             name: option.label || option.text,
             children: []
         };
@@ -1144,43 +1148,52 @@ class MultipleSelectHierarchy {
         if (option.hasAttribute('data-group-tag-open')) {
             currentGroup = {
                 node,
-                id: option.value
+                id: nodeId
             };
             hierarchyData.push(node);
-            // Initialize group in selectedValues if not exists
+            groupIndex++;
+            // Reset subgroup index for new group
+            subgroupIndex = 0;
+            
             if (option.selected) {
-                selectedValues[option.value] = {};
+                selectedValues[nodeId] = {};
             }
         } else if (option.hasAttribute('data-group-tag-close')) {
             currentGroup = null;
         } else if (option.hasAttribute('data-subgroup-tag-open')) {
+            const subgroupId = option.value || `${currentGroup?.id}_sub_${subgroupIndex}`;
+            node.id = subgroupId;
+            
             currentSubgroup = {
                 node,
-                id: option.value
+                id: subgroupId
             };
             if (currentGroup) {
                 currentGroup.node.children.push(node);
+                subgroupIndex++;
             }
-            // Track if subgroup itself is selected
+            
             if (option.selected && currentGroup) {
                 selectedValues[currentGroup.id] = selectedValues[currentGroup.id] || {};
-                selectedValues[currentGroup.id][option.value] = null;
+                selectedValues[currentGroup.id][subgroupId] = null;
             }
         } else if (option.hasAttribute('data-subgroup-tag-close')) {
             currentSubgroup = null;
         } else if (option.hasAttribute('data-subgroup')) {
-            // Handle direct subgroup without open/close tags
+            const subgroupId = option.value || `${currentGroup?.id}_sub_${subgroupIndex}`;
+            node.id = subgroupId;
+            
             if (currentGroup) {
                 currentGroup.node.children.push(node);
-                // Track if this subgroup is selected
+                subgroupIndex++;
+                
                 if (option.selected) {
                     selectedValues[currentGroup.id] = selectedValues[currentGroup.id] || {};
-                    selectedValues[currentGroup.id][option.value] = null;
+                    selectedValues[currentGroup.id][subgroupId] = null;
                 }
             }
         } else if (currentSubgroup) {
             currentSubgroup.node.children.push(node);
-            // Track selected children under subgroups
             if (option.selected && currentGroup) {
                 selectedValues[currentGroup.id] = selectedValues[currentGroup.id] || {};
                 if (!selectedValues[currentGroup.id][currentSubgroup.id]) {
@@ -1197,7 +1210,7 @@ class MultipleSelectHierarchy {
         data: hierarchyData,
         selectedValues: selectedValues
     };
-  }
+}
 
   static build(selector, config = {}) {
     const elements = document.querySelectorAll(selector);
