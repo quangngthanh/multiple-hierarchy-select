@@ -28,12 +28,14 @@ class MultipleSelectHierarchy {
             clearAllText: "Clear",
             selectedText: "You have selected {n} items",
             defaultSelectionText: "Please select items",
+            showSearchBox: true,
+            showCardTitle: true,
             unitChildText: "Items",
             showGroupHeaders: true,
             onChange: options.onChange || function() {},
             ...options,
         };
-
+        console.log('this.options :>> ', this.options);
         this.items = this.processData(data);
         this.selectedItems = {};
         if (options.value) {
@@ -73,8 +75,9 @@ class MultipleSelectHierarchy {
             }, 0);
         }
     }
-
+    
     render() {
+        console.log('this.options :>> ', this.options.showCardTitle);
         const container = document.createElement("div");
         container.className = "multiple-select-hierarchy";
         container.innerHTML = `
@@ -86,16 +89,20 @@ class MultipleSelectHierarchy {
                 </div>
                 <div class="card select-card" style="display: none;">
                     <div class="p-3" id="${this.id}-card-body">
-                        <h5 class="card-title mb-3">${this.options.placeholder}</h5>
-                        <div class="search-container">
-                          <div class="search-input-wrapper">
-                            <svg class="icon-search" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M7.33333 12.6667C10.2789 12.6667 12.6667 10.2789 12.6667 7.33333C12.6667 4.38781 10.2789 2 7.33333 2C4.38781 2 2 4.38781 2 7.33333C2 10.2789 4.38781 12.6667 7.33333 12.6667Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                              <path d="M14 14L11 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                            <input type="text" class="search-input" placeholder="${this.options.searchPlaceholder}" id="${this.id}-search-input">
-                          </div>
-                        </div>
+                        ${this.options.showCardTitle !== false ? `
+                            <h5 class="card-title mb-3">${this.options.placeholder}</h5>
+                        ` : ''}
+                        ${this.options.showSearchBox !== false ? `
+                            <div class="search-container">
+                                <div class="search-input-wrapper">
+                                    <svg class="icon-search" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M7.33333 12.6667C10.2789 12.6667 12.6667 10.2789 12.6667 7.33333C12.6667 4.38781 10.2789 2 7.33333 2C4.38781 2 2 4.38781 2 7.33333C2 10.2789 4.38781 12.6667 7.33333 12.6667Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M14 14L11 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    <input type="text" class="search-input" placeholder="${this.options.searchPlaceholder}" id="${this.id}-search-input">
+                                </div>
+                            </div>
+                        ` : ''}
                         <div id="${this.id}-selection-info" class="mb-2 text-muted">${this.options.defaultSelectionText}</div>
                         <ul class="list-group" id="${this.id}-item-list"></ul>
                     </div>
@@ -253,7 +260,13 @@ class MultipleSelectHierarchy {
             signal: this.signal,
         });
 
-        this.searchInput.addEventListener("input", (e) => this.handleSearch(e.target.value), { signal: this.signal });
+        // Only attach search input listener if search box is shown
+        if (this.options.showSearchBox !== false && this.searchInput) {
+            this.searchInput.addEventListener("input", 
+                (e) => this.handleSearch(e.target.value), 
+                { signal: this.signal }
+            );
+        }
     }
 
     setItems(items) {
@@ -640,6 +653,10 @@ class MultipleSelectHierarchy {
 
     if (existingHeader) {
       existingHeader.remove();
+    }
+
+    if (this.options.showCardTitle === false) {
+      return;
     }
 
     const header = document.createElement("h5");
@@ -1133,69 +1150,75 @@ class MultipleSelectHierarchy {
     
     let currentGroup = null;
     let currentSubgroup = null;
-    let groupIndex = 0;
-    let subgroupIndex = 0;
 
     options.forEach(option => {
-        // Generate ID based on index if value is empty
-        const nodeId = option.value || `group_${groupIndex}`;
-        const node = {
-            id: nodeId,
-            name: option.label || option.text,
-            children: []
-        };
-
         if (option.hasAttribute('data-group-tag-open')) {
+            // Start a new group
             currentGroup = {
-                node,
-                id: nodeId
+                id: option.value || `group_${hierarchyData.length}`,
+                name: option.label || option.text,
+                children: []
             };
-            hierarchyData.push(node);
-            groupIndex++;
-            // Reset subgroup index for new group
-            subgroupIndex = 0;
-            
-            if (option.selected) {
-                selectedValues[nodeId] = {};
-            }
-        } else if (option.hasAttribute('data-group-tag-close')) {
-            currentGroup = null;
-        } else if (option.hasAttribute('data-subgroup-tag-open')) {
-            const subgroupId = option.value || `${currentGroup?.id}_sub_${subgroupIndex}`;
-            node.id = subgroupId;
-            
-            currentSubgroup = {
-                node,
-                id: subgroupId
-            };
-            if (currentGroup) {
-                currentGroup.node.children.push(node);
-                subgroupIndex++;
-            }
-            
-            if (option.selected && currentGroup) {
-                selectedValues[currentGroup.id] = selectedValues[currentGroup.id] || {};
-                selectedValues[currentGroup.id][subgroupId] = null;
-            }
-        } else if (option.hasAttribute('data-subgroup-tag-close')) {
+            hierarchyData.push(currentGroup);
             currentSubgroup = null;
-        } else if (option.hasAttribute('data-subgroup')) {
-            const subgroupId = option.value || `${currentGroup?.id}_sub_${subgroupIndex}`;
-            node.id = subgroupId;
             
+        } else if (option.hasAttribute('data-group-tag-close')) {
+            // End current group
+            currentGroup = null;
+            currentSubgroup = null;
+            
+        } else if (option.hasAttribute('data-subgroup-tag-open')) {
+            // Start a new subgroup
+            currentSubgroup = {
+                id: option.value,
+                name: option.label || option.text,
+                children: []
+            };
             if (currentGroup) {
-                currentGroup.node.children.push(node);
-                subgroupIndex++;
-                
-                if (option.selected) {
-                    selectedValues[currentGroup.id] = selectedValues[currentGroup.id] || {};
-                    selectedValues[currentGroup.id][subgroupId] = null;
-                }
+                currentGroup.children.push(currentSubgroup);
             }
-        } else if (currentSubgroup) {
-            currentSubgroup.node.children.push(node);
+            
+            // Handle selected subgroups
             if (option.selected && currentGroup) {
-                selectedValues[currentGroup.id] = selectedValues[currentGroup.id] || {};
+                if (!selectedValues[currentGroup.id]) {
+                    selectedValues[currentGroup.id] = {};
+                }
+                selectedValues[currentGroup.id][option.value] = null;
+            }
+            
+        } else if (option.hasAttribute('data-subgroup-tag-close')) {
+            // End current subgroup
+            currentSubgroup = null;
+            
+        } else if (currentGroup && !currentSubgroup) {
+            // Handle direct children of group (subgroups without data-subgroup attribute)
+            const subgroup = {
+                id: option.value,
+                name: option.text,
+                children: [] // Empty children array for subgroups without children
+            };
+            currentGroup.children.push(subgroup);
+            
+            // Handle selected subgroups
+            if (option.selected) {
+                if (!selectedValues[currentGroup.id]) {
+                    selectedValues[currentGroup.id] = {};
+                }
+                selectedValues[currentGroup.id][option.value] = null;
+            }
+            
+        } else if (currentSubgroup) {
+            // Add child to current subgroup
+            currentSubgroup.children.push({
+                id: option.value,
+                name: option.text
+            });
+            
+            // Handle selected children
+            if (option.selected && currentGroup) {
+                if (!selectedValues[currentGroup.id]) {
+                    selectedValues[currentGroup.id] = {};
+                }
                 if (!selectedValues[currentGroup.id][currentSubgroup.id]) {
                     selectedValues[currentGroup.id][currentSubgroup.id] = [];
                 }
@@ -1215,6 +1238,31 @@ class MultipleSelectHierarchy {
   static build(selector, config = {}) {
     const elements = document.querySelectorAll(selector);
     return Array.from(elements).map(element => {
+        // Get configuration from data attributes
+        const dataConfig = {
+            maxSelections: parseInt(element.dataset.maxSelections) || config.maxSelections,
+            placeholder: element.dataset.placeholder || config.placeholder,
+            searchPlaceholder: element.dataset.searchPlaceholder || config.searchPlaceholder,
+            defaultSelectionText: element.dataset.defaultSelectionText || config.defaultSelectionText,
+            unitChildText: element.dataset.unitChildText || config.unitChildText,
+            allText: element.dataset.allText || config.allText,
+            showSearchBox: element.dataset.showSearchBox !== undefined ? 
+                element.dataset.showSearchBox === 'true' : 
+                config.showSearchBox,
+            showCardTitle: element.dataset.showCardTitle !== undefined ?
+                element.dataset.showCardTitle === 'true' :
+                config.showCardTitle,
+            showGroupHeaders: element.dataset.showGroupHeaders !== undefined ? 
+                element.dataset.showGroupHeaders === 'true' : 
+                config.showGroupHeaders,
+            onChange: config.onChange
+        };
+        // Merge data attributes with passed config, giving priority to data attributes
+        const mergedConfig = {
+            ...config,
+            ...dataConfig
+        };
+
         let hierarchyData;
         let initialValue = {};
 
@@ -1224,17 +1272,18 @@ class MultipleSelectHierarchy {
             const parsed = MultipleSelectHierarchy.parseSelectOptions(element);
             hierarchyData = parsed.data;
             initialValue = parsed.selectedValues;
-            console.log('parsed', parsed);
         }
+        
         // Replace the select element with a div
         const container = document.createElement('div');
         container.className = element.className;
         container.id = element.id;
         container.name = element.name;
         element.parentNode.replaceChild(container, element);
-        
+        console.log('hierarchyData :>> ', hierarchyData);
+        console.log('mergedConfig :>> ', mergedConfig);
         const instance = new MultipleSelectHierarchy(container, hierarchyData, {
-            ...config,
+            ...mergedConfig,
             value: JSON.stringify(initialValue)
         });
 
@@ -1246,9 +1295,10 @@ class MultipleSelectHierarchy {
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll("form").forEach((form) => {
     form.addEventListener("reset", (event) => {
+      console.log('event :>> ', event);
       MultipleSelectHierarchy.resetBySelector(
         event.target,
-        ".hierarchy-select-container"
+        ".hierarchy-select"
       );
     });
   });
