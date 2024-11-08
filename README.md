@@ -1,174 +1,94 @@
-# Multiple Select Hierarchy Component
+# Multiple Select Examples
 
-A customizable hierarchical select component with search functionality, group headers, and chip display.
+A customizable hierarchical select component that supports grouped options, search functionality, and multiple selection patterns.
 
 ## Features
-- Multi-level hierarchical selection
-- Search functionality with diacritics support
-- Customizable group headers
-- Responsive chip display with ellipsis
-- Maximum selection limit
+- Multiple selection with maximum limit
+- Grouped and hierarchical options
+- Search functionality 
+- Customizable placeholders and labels
 - Form integration
-- Smooth scrolling and navigation
-- Back/forward navigation between levels
-- Clear all functionality
-- Keyboard accessibility
+- Responsive design
+- Data attributes configuration
 
-## Installation
+## Usage
 
-1. Include the required CSS files:
+Add the select element with the `hierarchy-select` class:
+
 ```html
-<link href="bootstrap.css" rel="stylesheet">
-<link href="styles.css" rel="stylesheet">
+<select class="form-select hierarchy-select" multiple>
+    <!-- Options structure -->
+</select>
 ```
 
-2. Add the container element:
+### Basic Example
 ```html
-<div class="hierarchy-select-container" data-name="selected-items"></div>
+<select class="form-select hierarchy-select" 
+    data-max-selections="3"
+    data-placeholder="Select items"
+    data-search-placeholder="Search..."
+    multiple>
+    <option data-group-tag-open></option>
+    <option value="option1">Option 1</option>
+    <option value="option2">Option 2</option>
+    <option value="option3">Option 3</option>
+    <option data-group-tag-close></option>
+</select>
 ```
 
-3. Include the JavaScript:
+### Grouped Example
 ```html
-<script src="script.js"></script>
+<select class="form-select hierarchy-select" multiple>
+    <option value="0" data-group-tag-open label="Group 1"></option>
+        <option value="1">Item 1</option>
+        <option value="2">Item 2</option>
+        <option value="3">Item 3</option>
+    <option value="0" data-group-tag-close></option>
+</select>
 ```
 
-## Basic Usage
-
-```javascript
-const container = document.querySelector(".hierarchy-select-container");
-const data = [
-  {
-    id: 1,
-    name: "Group 1",
-    children: [
-      {
-        id: 2,
-        name: "Subgroup 1",
-        children: [
-          { id: 3, name: "Item 1" },
-          { id: 4, name: "Item 2" }
-        ]
-      }
-    ]
-  }
-];
-
-const hierarchy = new MultipleSelectHierarchy(container, data, {
-  maxSelections: 3,
-  onChange: (value) => console.log('Selected:', value)
-});
-```
-
-## Data Structure
-
-```javascript
-const data = [
-  {
-    id: "unique_id",        // Required: Unique identifier
-    name: "Display Name",   // Required: Display text
-    children: [            // Optional: Array of child items
-      {
-        id: "child_id",
-        name: "Child Name",
-        children: []       // Can be nested further
-      }
-    ]
-  }
-];
+### Hierarchical Example
+```html
+<select class="hierarchy-select" multiple>
+    <option value="1" data-group-tag-open label="Parent"></option>
+        <option value="2" data-subgroup-tag-open label="Child Group"></option>
+            <option value="3">Item 1</option>
+            <option value="4">Item 2</option>
+        <option value="2" data-subgroup-tag-close></option>
+    <option value="1" data-group-tag-close></option>
+</select>
 ```
 
 ## Configuration Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| maxSelections | number | 3 | Maximum number of parent items that can be selected |
-| placeholder | string | "Please select" | Main input placeholder |
-| searchPlaceholder | string | "Search" | Search input placeholder |
-| showGroupHeaders | boolean | true | Toggle group header visibility |
-| allText | string | "All" | Text for "select all" option |
-| clearAllText | string | "Clear" | Text for clear button |
-| selectedText | string | "You have selected {n} items" | Selection count text ({n} is replaced with count) |
-| defaultSelectionText | string | "Please select items" | Text shown when nothing is selected |
-| unitChildText | string | "Items" | Unit text for child items count |
-| onChange | function | null | Callback function when selection changes |
+Configure the select using data attributes:
 
-## Methods
+| Attribute | Description | Default |
+|-----------|-------------|---------|
+| data-max-selections | Maximum number of selections allowed | No limit |
+| data-placeholder | Main placeholder text | "Select" |
+| data-search-placeholder | Search input placeholder | "Search..." |
+| data-default-selection-text | Text shown when nothing selected | "Select items" |
+| data-unit-child-text | Text for child items | "Items" |
+| data-all-text | Text for "select all" option | "All" |
+| data-show-group-headers | Show/hide group headers | true |
+| data-show-search-box | Show/hide search functionality | true |
+| data-show-card-title | Show/hide card title | true |
+| data-output-format | Output format ("flat" or "hierarchical") | "hierarchical" |
 
-### setValue(value)
-Set selected items programmatically
-```javascript
-hierarchy.setValue({
-  "group1": {
-    "subgroup1": null  // null means all children selected
-  }
-});
-```
+## Special Option Attributes
 
-### reset()
-Clear all selections
-```javascript
-hierarchy.reset();
-```
+| Attribute | Description |
+|-----------|-------------|
+| data-group-tag-open | Marks start of a group |
+| data-group-tag-close | Marks end of a group |
+| data-subgroup-tag-open | Marks start of a subgroup |
+| data-subgroup-tag-close | Marks end of a subgroup |
+| label | Group/subgroup label |
 
-### destroy()
-Remove event listeners and clean up
-```javascript
-hierarchy.destroy();
-```
-
-### setItems(items)
-Update the component's data
-```javascript
-hierarchy.setItems(newData);
-```
-
-## Form Integration
-
-```html
-<form id="myForm">
-  <div class="hierarchy-select-container" data-name="locations"></div>
-  <button type="reset">Reset</button>
-  <button type="submit">Submit</button>
-</form>
-
-<script>
-document.getElementById('myForm').addEventListener('submit', (e) => {
-  e.preventDefault();
-  const formData = new FormData(e.target);
-  const selectedLocations = JSON.parse(formData.get('locations'));
-  console.log(selectedLocations);
-});
-</script>
-```
-
-## Output Format
-
-The selected values are stored in JSON format:
-
-```javascript
-{
-  "groupId": {                // Parent group ID
-    "subgroupId": {          // Subgroup ID
-      "childId": null,       // null = all items selected
-      "childId2": [1, 2, 3]  // Array = specific items selected
-    }
-  }
-}
-```
-
-## Styling
-
-Customize appearance using CSS variables:
-```css
-.multiple-select-hierarchy {
-  --msh-primary-color: #0d6efd;
-  --msh-border-color: #dee2e6;
-  --msh-text-color: #212529;
-  --msh-bg-color: #fff;
-  --msh-hover-bg: #f8f9fa;
-  --msh-chip-bg: #e9ecef;
-}
-```
+## Dependencies
+- Bootstrap 5.x CSS
+- Custom styles (styles.css)
 
 ## Browser Support
 - Chrome (latest)
@@ -178,4 +98,4 @@ Customize appearance using CSS variables:
 
 ## License
 
-MIT License - feel free to use in personal and commercial projects.
+MIT License
