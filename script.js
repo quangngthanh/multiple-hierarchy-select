@@ -75,11 +75,11 @@ class MultipleSelectHierarchy {
             }, 0);
         }
     }
-    
+
     render() {
-        const container = document.createElement("div");
-        container.className = "multiple-select-hierarchy";
-        container.innerHTML = `
+            const container = document.createElement("div");
+            container.className = "multiple-select-hierarchy";
+            container.innerHTML = `
             <div class="dropdown">
                 <div class="input-group">
                     <div class="form-control d-flex flex-wrap align-items-center" id="${this.id}-chips-container" tabindex="0">
@@ -1144,11 +1144,40 @@ processSelectedItems() {
     this.triggerOnChange();
   }
 
-  static parseSelectOptions(element) {
-    const options = Array.from(element.options).filter(opt => opt.value || opt.hasAttribute('data-group-tag-open'));
+  static parseSelectOptions(element) {   
+    const options = Array.from(element.options).filter(opt => opt.value);
     const hierarchyData = [];
     const selectedValues = {};
     
+    // Check if this is a normal select (hierarchy-select-normal)
+    const isNormalSelect = element.classList.contains('hierarchy-select-normal');
+    if (isNormalSelect) {
+        const defaultGroup = {
+            id: 'default_group',
+            name: 'Options',
+            children: options.map(option => ({
+                id: option.value,
+                name: option.text,
+                children: []
+            }))
+        };
+        hierarchyData.push(defaultGroup);
+        
+        // Handle selected values for normal select
+        const selectedOptions = options.filter(option => option.selected);
+        if (selectedOptions.length > 0) {
+            selectedValues[defaultGroup.id] = {};
+            selectedOptions.forEach(option => {
+                selectedValues[defaultGroup.id][option.value] = null;
+            });
+        }
+        
+        return {
+            data: hierarchyData,
+            selectedValues: selectedValues
+        };
+    }
+
     let currentGroup = null;
     let currentSubgroup = null;
 
@@ -1196,7 +1225,7 @@ processSelectedItems() {
             const subgroup = {
                 id: option.value,
                 name: option.text,
-                children: [] // Empty children array for subgroups without children
+                children: []
             };
             currentGroup.children.push(subgroup);
             
@@ -1313,6 +1342,23 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log("Selected Items:", selectedItems);
         }
     });
+
+    MultipleSelectHierarchy.build('.hierarchy-select-normal', {
+      maxSelections: 3,
+      placeholder: "Please select",
+      searchPlaceholder: "Search",
+      allText: "All",
+      clearAllText: "Clear",
+      selectedText: "You have selected {n} items",
+      defaultSelectionText: "Please select items",
+      showSearchBox: true,
+      showCardTitle: true,
+      outputFormat: "flat",
+      unitChildText: "Items",
+      onChange: function(selectedItems) {
+          console.log("Selected Items:", selectedItems);
+      }
+  });
 
   document.querySelectorAll("form").forEach((form) => {
     form.addEventListener("reset", (event) => {

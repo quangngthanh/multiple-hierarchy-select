@@ -59,6 +59,17 @@ Add the select element with the `hierarchy-select` class:
 </select>
 ```
 
+### Normal Select Example
+```html
+<select class="hierarchy-select-normal" multiple>
+    <option value="1">Option 1</option>
+    <option value="2">Option 2</option>
+    <option value="3">Option 3</option>
+</select>
+```
+
+The `hierarchy-select-normal` class creates a simpler select component without grouping functionality, suitable for flat lists of options. It maintains the multiple selection and search capabilities while removing the hierarchical structure features.
+
 ## Configuration Options
 
 Configure the select using data attributes:

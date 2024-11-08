@@ -20,37 +20,33 @@
                 <label for="jobTitle" class="form-label">Job Title</label>
                 <input type="text" class="form-control" id="jobTitle" name="jobTitle" required>
             </div>
+            <div class="mb-3">
+                <label for="simpleSelect1" class="form-label">Normal Select Example</label>
+                <select class="form-select hierarchy-select-normal" id="normalSelect" name="normalSelect" data-max-selections="3" data-placeholder="Select chon" data-search-placeholder="Search locations..." data-default-selection-text="Select locations" data-all-text="All"
+                    data-show-group-headers="false" data-show-search-box="false" data-show-card-title="false" data-output-format="flat" multiple>
+                    <option value="option1" selected>Option 1</option>
+                    <option value="option2" selected>Option 2</option>
+                    <option value="option4">Option 4</option>
+                    <option value="option3" selected>Option 3</option>
+                    <option value="option5">Option 5</option>
+                </select>
+            </div>
 
             <div class="mb-3">
                 <label for="simpleSelect" class="form-label">Simple Select Example</label>
-                <select class="form-select hierarchy-select" id="simpleSelect" name="simpleSelect"
-                    data-max-selections="3"
-                    data-placeholder="Select chon"
-                    data-search-placeholder="Search locations..."
-                    data-default-selection-text="Select locations"
-                    data-unit-child-text="Districts"
-                    data-all-text="All"
-                    data-show-group-headers="false"
-                    data-show-search-box="false"
-                    data-show-card-title="false"
-                    data-output-format="flat"
-                    multiple
-                    >
-                    <option  data-group-tag-open ></option>
+                <select class="form-select hierarchy-select" id="simpleSelect" name="simpleSelect" data-max-selections="3" data-placeholder="Select chon" data-search-placeholder="Search locations..." data-default-selection-text="Select locations" data-unit-child-text="Districts"
+                    data-all-text="All" data-show-group-headers="false" data-show-search-box="false" data-show-card-title="false" data-output-format="flat" multiple>
+                    <option value="0" data-group-tag-open ></option>
                     <option value="option1" selected>Option 1</option>
                     <option value="option2" selected>Option 2</option>
                     <option value="option3">Option 3</option>
-                    <option  data-group-tag-close ></option>
+                    <option value="0" data-group-tag-close ></option>
                 </select>
             </div>
 
             <div class="mb-3">
                 <label for="groupedSelect" class="form-label">Grouped Select Example</label>
-                <select class="form-select hierarchy-select" id="groupedSelect" name="groupedSelect" 
-                    data-output-format="flat"
-                    data-show-group-headers="false"
-                    multiple
-                >
+                <select class="form-select hierarchy-select" id="groupedSelect" name="groupedSelect" data-output-format="flat" data-show-group-headers="false" multiple>
                     <option value="0" data-group-tag-open label="Ngành Điện"></option>
                         <option value="1" >Điện</option>
                         <option value="2" >Điện tử</option>
@@ -66,9 +62,7 @@
 
             <div class="mb-3">
                 <label class="form-label">Primary Work Location</label>
-                <select class="hierarchy-select" id="primary-location" name="primary-location" multiple
-                    data-show-search-box="false"
-                >
+                <select class="hierarchy-select" id="primary-location" name="primary-location" multiple data-show-search-box="false">
                     <option value="">Select Location</option>
                     <option value="1" data-group-tag-open label="Vietnam"></option>
                         <option value="8" data-subgroup-tag-open label="Ho Chi Minh City"></option>
@@ -1360,7 +1354,7 @@
 
             <button type="submit" class="btn btn-primary">Submit</button>
             <button type="reset" class="btn btn-secondary">Reset</button>
-        </form>       
+        </form>
     </div>
 
     <script src="script.js" defer></script>
