@@ -323,15 +323,8 @@ class MultipleSelectHierarchy {
                             li.innerHTML = li.innerHTML = `
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="form-check d-flex align-item-center gap-2">
-                                    <input 
-                                        class="form-check-input" 
-                                        type="checkbox" 
-                                        id="${this.id}-child-${child.id}" 
-                                        ${isChecked ? "checked" : ""}
-                                    >
-                                    <label class="form-check-label mt-1" for="${this.id}-child-${child.id}">
-                                        ${child.name}
-                                        ${this.selectedItems[child.id] 
+                                    <input class="form-check-input" type="checkbox" id="${this.id}-child-${child.id}" ${isChecked ? "checked" : ""}>
+                                    <label class="form-check-label mt-1" for="${this.id}-child-${child.id}">${child.name}${this.selectedItems[child.id] 
                                             ? `<span class="text-black-50">
                                                 ${this.selectedItems[child.id] === null
                                                     ? `\u00A0(${this.options.allText})`
@@ -344,20 +337,8 @@ class MultipleSelectHierarchy {
                                 </div>
                                 ${hasChildren
                                     ? `<button type="button" class="btn btn-link p-0">
-                                        <svg 
-                                            class="icon-chevron-right" 
-                                            width="24" 
-                                            height="24" 
-                                            viewBox="0 0 24 24" 
-                                            fill="none" 
-                                            xmlns="http://www.w3.org/2000/svg"
-                                        >
-                                            <path 
-                                                d="M9 18L15 12L9 6" 
-                                                stroke="currentColor" 
-                                                stroke-width="2" 
-                                                stroke-linecap="round" 
-                                                stroke-linejoin="round"
+                                        <svg class="icon-chevron-right" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                             />
                                         </svg>
                                        </button>`
@@ -765,13 +746,8 @@ processSelectedItems() {
 
     if (selectedCount > 0) {
       selectionInfo.innerHTML = `
-            <div class="d-flex justify-content-between align-items-center">
-                <span>${this.options.selectedText.replace(
-        "{n}",
-        selectedCount
-      )}</span>
-                <a href="#" class="text-primary text-decoration-none" id="${this.id
-        }-clear-all">
+            <div class="d-flex justify-content-between align-items-center"><span>${this.options.selectedText.replace("{n}", selectedCount)}</span>
+                <a href="#" class="text-primary text-decoration-none" id="${this.id}-clear-all">
                     ${this.options.clearAllText}
                 </a>
             </div>
