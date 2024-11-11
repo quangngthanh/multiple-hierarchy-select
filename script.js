@@ -1138,7 +1138,7 @@ processSelectedItems() {
   }
 
   static parseSelectOptions(element) {   
-    const options = Array.from(element.options).filter(opt => opt.value);
+    const options = Array.from(element.options).filter(opt => opt.value || opt.value === '');
     const hierarchyData = [];
     const selectedValues = {};
     
