@@ -547,10 +547,15 @@ class MultipleSelectHierarchy {
 
   hideSelectCard() {
     if (this.selectCard) {
-      this.selectCard.style.display = "none";
-      this.scrollPositions.clear();
+        this.selectCard.style.display = "none";
+        this.scrollPositions.clear();
+        // Reset search input and restore original items view
+        if (this.options.showSearchBox !== false && this.searchInput) {
+            this.searchInput.value = "";
+            this.selectedParent = null;
+        }
     }
-  }
+}
 
   updateInput() {
     requestAnimationFrame(() => {
