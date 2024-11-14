@@ -132,41 +132,10 @@ class MultipleSelectHierarchy {
             (e) => {
                 const target = e.target;
                 const btnLink = target.closest(".btn-link");
-                const listItem = target.closest(".list-group-item");
+                const checkbox = target.closest(".form-check-input");
                 const label = target.closest(".form-check-label");
+                const listItem = target.closest(".list-group-item");
                 
-                // Handle checkbox clicks
-                if (target.matches(".form-check-input")) {
-                    // Check if this is a child checkbox
-                    if (target.id.startsWith(`${this.id}-child-`)) {
-                        const itemId = target.id.replace(`${this.id}-child-`, "");
-                        const item = this.findItemById((itemId));
-                        if (item && this.selectedParent) {
-                            this.handleChildSelection(
-                                this.selectedParent,
-                                item,
-                                target.checked
-                            );
-                        }
-                    } else if (target.id === `${this.id}-allChildren`) {
-                        // Handle "All" checkbox
-                        if (this.selectedParent) {
-                            this.handleAllChildrenSelection(
-                                this.selectedParent,
-                                target.checked
-                            );
-                        }
-                    } else {
-                        // Handle parent checkbox
-                        const itemId = target.id.replace(`${this.id}-item-`, "");
-                        const item = this.findItemById((itemId));
-                        if (item) {
-                            this.handleItemSelection(item, target.checked);
-                        }
-                    }
-                    return;
-                }
-
                 // Handle button link clicks
                 if (btnLink) {
                     e.preventDefault();
@@ -181,18 +150,10 @@ class MultipleSelectHierarchy {
                     }
                     return;
                 }
-                // Handle list item clicks (excluding clicks on buttons and checkboxes)
-                if (
-                    listItem &&
-                    !target.closest(".btn-link") &&
-                    !target.matches(".form-check-input")
-                ) {
-                    const checkbox = listItem.querySelector(".form-check-input");
-                    if (!checkbox) return;
-
-                    checkbox.checked = !checkbox.checked;
-
-                    // Check if this is a child item
+    
+                // Handle checkbox changes
+                if (checkbox) {
+                    // Check if this is a child checkbox
                     if (checkbox.id.startsWith(`${this.id}-child-`)) {
                         const itemId = checkbox.id.replace(`${this.id}-child-`, "");
                         const item = this.findItemById((itemId));
@@ -219,8 +180,45 @@ class MultipleSelectHierarchy {
                             this.handleItemSelection(item, checkbox.checked);
                         }
                     }
+                    return;
                 }
-            }, { signal: this.signal }
+    
+                // Only handle list item clicks if not clicking label or checkbox
+                if (listItem && !listItem.classList.contains('group-header') && !label && !checkbox) {
+                    const checkbox = listItem.querySelector('.form-check-input');
+                    if (checkbox && !btnLink) {
+                        const newCheckedState = !checkbox.checked;
+                        checkbox.checked = newCheckedState;
+                        
+                        // Handle the selection based on checkbox type
+                        if (checkbox.id.startsWith(`${this.id}-child-`)) {
+                            const itemId = checkbox.id.replace(`${this.id}-child-`, "");
+                            const item = this.findItemById((itemId));
+                            if (item && this.selectedParent) {
+                                this.handleChildSelection(
+                                    this.selectedParent,
+                                    item,
+                                    newCheckedState
+                                );
+                            }
+                        } else if (checkbox.id === `${this.id}-allChildren`) {
+                            if (this.selectedParent) {
+                                this.handleAllChildrenSelection(
+                                    this.selectedParent,
+                                    newCheckedState
+                                );
+                            }
+                        } else {
+                            const itemId = checkbox.id.replace(`${this.id}-item-`, "");
+                            const item = this.findItemById((itemId));
+                            if (item) {
+                                this.handleItemSelection(item, newCheckedState);
+                            }
+                        }
+                    }
+                }
+            }, 
+            { signal: this.signal }
         );
 
         this.chipsContainer.addEventListener(
