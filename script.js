@@ -133,7 +133,8 @@ class MultipleSelectHierarchy {
                 const target = e.target;
                 const btnLink = target.closest(".btn-link");
                 const listItem = target.closest(".list-group-item");
-
+                const label = target.closest(".form-check-label");
+                
                 // Handle checkbox clicks
                 if (target.matches(".form-check-input")) {
                     // Check if this is a child checkbox
@@ -324,7 +325,7 @@ class MultipleSelectHierarchy {
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="form-check d-flex align-item-center gap-2">
                                     <input class="form-check-input" type="checkbox" id="${this.id}-child-${child.id}" ${isChecked ? "checked" : ""}>
-                                    <label class="form-check-label mt-1" for="${this.id}-child-${child.id}">${child.name}${this.selectedItems[child.id] 
+                                    <label class="form-check-label mt-1" for="${this.id}-child-${child.id}">${child.name.trim()}${this.selectedItems[child.id] 
                                             ? `<span class="text-black-50">
                                                 ${this.selectedItems[child.id] === null
                                                     ? `\u00A0(${this.options.allText})`
@@ -385,27 +386,35 @@ class MultipleSelectHierarchy {
     const selectedParentCount = Object.keys(this.selectedItems).length;
     const isNewSelection = !this.selectedItems[item.id];
 
-    if (
-      isChecked &&
-      isNewSelection &&
-      selectedParentCount >= this.options.maxSelections
-    ) {
-      setTimeout(() => {
-        const checkbox = document.getElementById(`${this.id}-item-${item.id}`);
-        if (checkbox) checkbox.checked = false;
-      }, 0);
-      return;
+    if (isChecked && isNewSelection && selectedParentCount >= this.options.maxSelections) {
+        setTimeout(() => {
+            const checkbox = document.getElementById(`${this.id}-item-${item.id}`);
+            if (checkbox) checkbox.checked = false;
+        }, 0);
+        return;
     }
     
     if (isChecked) {
-      this.selectedItems[item.id] = null;
+        this.selectedItems[item.id] = null;
     } else {
-      delete this.selectedItems[item.id];
+        delete this.selectedItems[item.id];
     }
 
     this.updateInput();
     this.updateSelectionInfo();
-    this.renderItems(this.items);
+    
+    // Update only the selected item's label
+    const itemLabel = document.querySelector(`label[for="${this.id}-item-${item.id}"]`);
+    if (itemLabel) {
+        const hasChildren = item.children && item.children.length > 0;
+        if (hasChildren && isChecked) {
+            const selectionText = `\u00A0(${this.options.allText})`;
+            itemLabel.innerHTML = `${item.name.trim()}<span class="text-black-50">${selectionText}</span>`;
+        } else {
+            itemLabel.innerHTML = item.name.trim();
+        }
+    }
+    
     this.triggerOnChange();
   }
 
@@ -455,8 +464,14 @@ class MultipleSelectHierarchy {
     }
 
     this.updateInput();
+    this.updateInput();
     this.updateSelectionInfo();
-    this.renderChildren(parent);
+    
+    const searchTerm = this.searchInput?.value?.trim();
+    if (!searchTerm) {
+        this.renderChildren(parent);
+    }
+    
     this.triggerOnChange();
   }
 
@@ -483,7 +498,12 @@ class MultipleSelectHierarchy {
     }
     this.updateInput();
     this.updateSelectionInfo();
-    this.renderChildren(parent);
+    
+    const searchTerm = this.searchInput?.value?.trim();
+    if (!searchTerm) {
+        this.renderChildren(parent);
+    }
+    
     this.triggerOnChange();
   }
 
@@ -845,10 +865,7 @@ processSelectedItems() {
     checkboxContainer.innerHTML = `
         <input class="form-check-input" type="checkbox" id="${this.id}-item-${item.id}" 
             ${isChecked ? "checked" : ""} ${isDisabled ? "disabled" : ""}>
-        <label class="form-check-label mt-1" for="${this.id}-item-${item.id}">
-            ${item.name}
-            <span class="text-black-50">${selectionText}</span>
-        </label>
+        <label class="form-check-label mt-1" for="${this.id}-item-${item.id}">${item.name.trim()}<span class="text-black-50">${selectionText}</span></label>
     `;
 
     li.appendChild(checkboxContainer);
@@ -1155,7 +1172,7 @@ processSelectedItems() {
             name: 'Options',
             children: options.map(option => ({
                 id: option.value,
-                name: option.text,
+                name: option.text.trim(),
                 children: []
             }))
         };
@@ -1184,7 +1201,7 @@ processSelectedItems() {
             // Start a new group
             currentGroup = {
                 id: option.value || `group_${hierarchyData.length}`,
-                name: option.label || option.text,
+                name: (option.label || option.text).trim(),
                 children: []
             };
             hierarchyData.push(currentGroup);
@@ -1199,7 +1216,7 @@ processSelectedItems() {
             // Start a new subgroup
             currentSubgroup = {
                 id: option.value,
-                name: option.label || option.text,
+                name: (option.label || option.text).trim(),
                 children: []
             };
             if (currentGroup) {
@@ -1222,7 +1239,7 @@ processSelectedItems() {
             // Handle direct children of group (subgroups without data-subgroup attribute)
             const subgroup = {
                 id: option.value,
-                name: option.text,
+                name: option.text.trim(),
                 children: []
             };
             currentGroup.children.push(subgroup);
@@ -1239,7 +1256,7 @@ processSelectedItems() {
             // Add child to current subgroup
             currentSubgroup.children.push({
                 id: option.value,
-                name: option.text
+                name: option.text.trim()
             });
             
             // Handle selected children
