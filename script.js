@@ -48,11 +48,25 @@ class MultipleSelectHierarchy {
 
         this.handleSearch = debounce((searchTerm) => {
             const searchLower = removeDiacritics(searchTerm.toLowerCase());
+            const itemList = this.getElement("itemList");
+
+            // Disable smooth scrolling temporarily
+            itemList.style.scrollBehavior = "auto";
+
             if (this.selectedParent) {
                 this.renderFilteredChildren(searchLower);
             } else {
+                // Reset scroll position to top when searching in parent view
                 this.renderFilteredItems(searchLower);
+                requestAnimationFrame(() => {
+                    itemList.scrollTop = 0;
+                });
             }
+
+            // Re-enable smooth scrolling after a small delay
+            setTimeout(() => {
+                itemList.style.scrollBehavior = "smooth";
+            }, 100);
         }, 150);
         this.init();
         this.abortController = new AbortController();
