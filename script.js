@@ -224,22 +224,10 @@ class MultipleSelectHierarchy {
         this.chipsContainer.addEventListener(
             "click",
             () => {
-                this.chipsContainer.focus();
                 this.showSelectCard();
-            }, { signal: this.signal }
-        );
-
-        this.chipsContainer.addEventListener(
-            "focus",
-            () => {
-                this.chipsContainer.classList.add("focused");
-            }, { signal: this.signal }
-        );
-
-        this.chipsContainer.addEventListener(
-            "blur",
-            () => {
-                this.chipsContainer.classList.remove("focused");
+                if (this.options.showSearchBox !== false && this.searchInput) {
+                    this.searchInput.focus();
+                }
             }, { signal: this.signal }
         );
 
@@ -353,19 +341,6 @@ class MultipleSelectHierarchy {
           { signal: this.signal }
         );
 
-        if (hasChildren) {
-          const button = li.querySelector(".btn-link");
-          button.addEventListener(
-            "click",
-            (e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              this.handleItemClick(child);
-            },
-            { signal: this.signal }
-          );
-        }
-
         this.itemList.appendChild(li);
       });
 
@@ -401,7 +376,28 @@ class MultipleSelectHierarchy {
     this.updateInput();
     this.updateSelectionInfo();
     
-    // Update only the selected item's label
+    // Update all items' disabled states based on new selection count
+    const newSelectedParentCount = Object.keys(this.selectedItems).length;
+    const listItems = this.itemList.querySelectorAll('.list-group-item:not(.group-header)');
+    
+    listItems.forEach(listItem => {
+        const checkbox = listItem.querySelector('.form-check-input');
+        if (!checkbox) return;
+        
+        const itemId = checkbox.id.replace(`${this.id}-item-`, "");
+        const isSelected = this.selectedItems[itemId] !== undefined;
+        
+        // Update disabled state and pointer-events
+        if (!isSelected && newSelectedParentCount >= this.options.maxSelections) {
+            checkbox.disabled = true;
+            listItem.classList.add('pointer-events-none');
+        } else {
+            checkbox.disabled = false;
+            listItem.classList.remove('pointer-events-none');
+        }
+    });
+    
+    // Only update the label of the item that changed
     const itemLabel = document.querySelector(`label[for="${this.id}-item-${item.id}"]`);
     if (itemLabel) {
         const hasChildren = item.children && item.children.length > 0;
@@ -414,7 +410,7 @@ class MultipleSelectHierarchy {
     }
     
     this.triggerOnChange();
-  }
+}
 
   handleChildSelection(parent, child, isChecked) {
     if (this.selectedItems[parent.id] === null && !isChecked) {
@@ -893,7 +889,7 @@ processSelectedItems() {
     const allLi = document.createElement("li");
     allLi.className = "list-group-item";
     allLi.innerHTML = `
-        <div class="form-check">
+        <div class="form-check d-flex align-item-center gap-2">
             <input class="form-check-input" type="checkbox" id="${this.id}-allChildren">
             <label class="form-check-label mt-1" for="${this.id}-allChildren">${this.options.allText}</label>
         </div>
@@ -925,9 +921,7 @@ processSelectedItems() {
                       id="${this.id}-child-${child.id}" 
                       ${isChecked ? "checked" : ""}
                   >
-                  <label class="form-check-label mt-1" for="${this.id}-child-${child.id}">
-                      ${child.name}
-                  </label>
+                  <label class="form-check-label mt-1" for="${this.id}-child-${child.id}">${child.name.trim()}</label>
               </div>
               ${child.children && child.children.length > 0 
                   ? `<button type="button" class="btn btn-link p-0">
@@ -952,19 +946,6 @@ processSelectedItems() {
           ),
         { signal: this.signal }
       );
-
-      if (child.children && child.children.length > 0) {
-        const button = li.querySelector(".btn-link");
-        button.addEventListener(
-          "click",
-          (e) => {
-            e.preventDefault();
-            this.handleItemClick(child);
-          },
-          { signal: this.signal }
-        );
-      }
-
       fragment.appendChild(li);
     });
 
@@ -1053,7 +1034,7 @@ processSelectedItems() {
 
       return {
         id: uniqueId,  // Use combined ID internally
-        name: item.name,
+        name: item.name.trim(),
         children: item.children ? this.processData(item.children, uniqueId) : [],
       };
     });
