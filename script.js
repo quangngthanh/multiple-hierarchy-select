@@ -33,6 +33,7 @@ class MultipleSelectHierarchy {
             outputFormat: "flat",
             unitChildText: "Items",
             showGroupHeaders: true,
+            resetScrollOnClose: false,
             onChange: options.onChange || function() {},
             ...options,
         };
@@ -138,6 +139,7 @@ class MultipleSelectHierarchy {
         this.itemList = container.querySelector(`#${this.id}-item-list`);
 
         this.cacheElements();
+        
     }
 
     attachEventListeners() {
@@ -241,20 +243,27 @@ class MultipleSelectHierarchy {
                 this.showSelectCard();
                 if (this.options.showSearchBox !== false && this.searchInput) {
                     this.searchInput.focus();
+                    // reset input value
+                    this.searchInput.value = "";
+                    // show parent view
+                    this.selectedParent = null;
                 }
             }, { signal: this.signal }
         );
 
         document.addEventListener(
-            "click",
-            (e) => {
-                if (!this.selectCard.contains(e.target) &&
-                    !this.chipsContainer.contains(e.target)
-                ) {
-                    this.hideSelectCard();
-                }
-            }, { signal: this.signal }
-        );
+          "click",
+          (e) => {
+              // Add check to prevent multiple triggers
+              if (this.selectCard.style.display === "block" && 
+                  !this.selectCard.contains(e.target) &&
+                  !this.chipsContainer.contains(e.target)
+              ) {
+                  this.hideSelectCard();
+              }
+          }, 
+          { signal: this.signal }
+      );
 
         this.selectCard.addEventListener("click", (e) => e.stopPropagation(), {
             signal: this.signal,
@@ -268,7 +277,7 @@ class MultipleSelectHierarchy {
             );
         }
     }
-
+    
     setItems(items) {
         this.items = items;
         this.renderItems(this.items);
@@ -285,7 +294,7 @@ class MultipleSelectHierarchy {
                 groupHeader.innerHTML = `<div class="group-label text-black">${group.name}</div>`;
                 fragment.appendChild(groupHeader);
             }
-
+            
             if (group.children && group.children.length > 0) {
                 group.children.forEach((subgroup) => {
                     const li = this.createItemElement(subgroup, selectedParentCount);
@@ -571,13 +580,29 @@ class MultipleSelectHierarchy {
     this.selectCard.style.display = "block";
     this.updateHeader(this.options.placeholder);
     this.renderItems(this.items);
+
+    // Reset scroll position if resetScrollOnClose is true
+    if (this.options.resetScrollOnClose) {
+        const itemList = this.getElement("itemList");
+        itemList.style.scrollBehavior = "auto";
+        itemList.scrollTop = 0;
+        setTimeout(() => {
+            itemList.style.scrollBehavior = "smooth";
+        }, 100);
+    }    
+   
   }
 
   hideSelectCard() {
-    if (this.selectCard) {
+    if (this.selectCard && this.selectCard.style.display !== "none") {
         this.selectCard.style.display = "none";
-        this.scrollPositions.clear();
-        // Reset search input and restore original items view
+        
+        // Only clear scroll positions if resetScrollOnClose is true
+        if (this.options.resetScrollOnClose) {
+            this.scrollPositions.clear();
+        }
+        
+        // Reset search input and selectedParent
         if (this.options.showSearchBox !== false && this.searchInput) {
             this.searchInput.value = "";
             this.selectedParent = null;
@@ -1296,6 +1321,9 @@ processSelectedItems() {
                 element.dataset.showGroupHeaders === 'true' : 
                 config.showGroupHeaders,
             outputFormat: element.dataset.outputFormat || config.outputFormat,
+            resetScrollOnClose: element.dataset.resetScrollOnClose !== undefined ?
+                element.dataset.resetScrollOnClose === 'true' :
+                config.resetScrollOnClose,
             onChange: config.onChange
         };
         // Merge data attributes with passed config, giving priority to data attributes
@@ -1346,6 +1374,7 @@ document.addEventListener("DOMContentLoaded", () => {
         outputFormat: "grouped",
         unitChildText: "Items",
         showGroupHeaders: true,
+        resetScrollOnClose: false
         // onChange: function(selectedItems) {
         //     console.log("Selected Items:", selectedItems);
         // }
@@ -1363,6 +1392,7 @@ document.addEventListener("DOMContentLoaded", () => {
       showCardTitle: true,
       outputFormat: "flat",
       unitChildText: "Items",
+      resetScrollOnClose: false
       // onChange: function(selectedItems) {
       //     console.log("Selected Items:", selectedItems);
       // }
