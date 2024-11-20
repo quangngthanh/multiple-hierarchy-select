@@ -89,7 +89,6 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     flex: 1;
-    min-width: 0;
 }
 
 .multiple-select-hierarchy .chip .close {
@@ -337,10 +336,13 @@
     pointer-events: none;
 }
 
+
 /* Add this to your CSS */
+
 .multiple-select-hierarchy .hierarchy-select {
     visibility: hidden;
 }
+
 .multiple-select-hierarchy .hierarchy-select-ready {
     visibility: visible;
 }

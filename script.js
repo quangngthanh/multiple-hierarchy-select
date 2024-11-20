@@ -1,100 +1,102 @@
 function debounce(func, wait) {
-  let timeout;
-  return function executedFunction(...args) {
-      const later = () => {
-          clearTimeout(timeout);
-          func.apply(this, args);
-      };
-      clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
-  };
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func.apply(this, args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
 }
 
 function removeDiacritics(text) {
-  return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 
 class MultipleSelectHierarchy {
-  constructor(element, data, options = {}) {
-      this.element = element;
-      this.data = data;
-      this.id = `msh-${Math.random().toString(36).slice(2, 9)}`;
-      this.domCache = new Map();
-      this.options = {
-          maxSelections: 3,
-          placeholder: "Please select",
-          searchPlaceholder: "Search",
-          allText: "All",
-          clearAllText: "Clear",
-          selectedText: "You have selected {n} items",
-          defaultSelectionText: "Please select items",
-          showSearchBox: true,
-          showCardTitle: true,
-          outputFormat: "flat",
-          unitChildText: "Items",
-          showGroupHeaders: true,
-          resetScrollOnClose: false,
-          onChange: options.onChange || function() {},
-          ...options,
-      };
-      this.items = this.processData(data);
-      this.selectedItems = {};
-      if (options.value) {
-          this.initializeWithValue(options.value);
-      }
-      if (!MultipleSelectHierarchy.instances) {
-          MultipleSelectHierarchy.instances = new WeakMap();
-      }
-      MultipleSelectHierarchy.instances.set(element, this);
+    constructor(element, data, options = {}) {
+        this.element = element;
+        this.data = data;
+        this.id = `msh-${Math.random().toString(36).slice(2, 9)}`;
+        this.domCache = new Map();
+        this.options = {
+            maxSelections: 3,
+            placeholder: "Please select",
+            searchPlaceholder: "Search",
+            allText: "All",
+            clearAllText: "Clear",
+            selectedText: "You have selected {n} items",
+            defaultSelectionText: "Please select items",
+            showSearchBox: true,
+            showCardTitle: true,
+            outputFormat: "flat",
+            unitChildText: "Items",
+            showGroupHeaders: true,
+            resetScrollOnClose: false,
+            onChange: options.onChange || function() {},
+            ...options,
+        };
+        this.items = this.processData(data);
+        this.selectedItems = {};
+        if (options.value) {
+            this.initializeWithValue(options.value);
+        }
+        if (!MultipleSelectHierarchy.instances) {
+            MultipleSelectHierarchy.instances = new WeakMap();
+        }
+        MultipleSelectHierarchy.instances.set(element, this);
 
-      this.handleSearch = debounce((searchTerm) => {
-          const searchLower = removeDiacritics(searchTerm.toLowerCase());
-          const itemList = this.getElement("itemList");
+        this.handleSearch = debounce((searchTerm) => {
+            const searchLower = removeDiacritics(searchTerm.toLowerCase());
+            const itemList = this.getElement("itemList");
 
-          // Disable smooth scrolling temporarily
-          itemList.style.scrollBehavior = "auto";
+            // Disable smooth scrolling temporarily
+            itemList.style.scrollBehavior = "auto";
 
-          if (this.selectedParent) {
-              this.renderFilteredChildren(searchLower);
-          } else {
-              // Reset scroll position to top when searching in parent view
-              this.renderFilteredItems(searchLower);
-              requestAnimationFrame(() => {
-                  itemList.scrollTop = 0;
-              });
-          }
+            if (this.selectedParent) {
+                this.renderFilteredChildren(searchLower);
+            } else {
+                // Reset scroll position to top when searching in parent view
+                this.renderFilteredItems(searchLower);
+                requestAnimationFrame(() => {
+                    itemList.scrollTop = 0;
+                });
+            }
 
-          // Re-enable smooth scrolling after a small delay
-          setTimeout(() => {
-              itemList.style.scrollBehavior = "smooth";
-          }, 100);
-      }, 150);
-      this.init();
-      this.abortController = new AbortController();
-      this.signal = this.abortController.signal;
-      this.scrollPositions = new Map();
-  }
+            // Re-enable smooth scrolling after a small delay
+            setTimeout(() => {
+                itemList.style.scrollBehavior = "smooth";
+            }, 100);
+        }, 150);
+        this.init();
+        this.abortController = new AbortController();
+        this.signal = this.abortController.signal;
+        this.scrollPositions = new Map();
 
-  init() {
-      this.render();
-      this.attachEventListeners();
-      this.updateInput();
-      this.renderItems(this.items);
-  }
 
-  triggerOnChange() {
-      if (typeof this.options.onChange === "function") {
-          setTimeout(() => {
-              const valueInput = this.getElement("selectedItemsInput");
-              this.options.onChange(valueInput.value);
-          }, 0);
-      }
-  }
+    }
 
-  render() {
-          const container = document.createElement("div");
-          container.className = "multiple-select-hierarchy";
-          container.innerHTML = `
+    init() {
+        this.render();
+        this.attachEventListeners();
+        this.updateInput();
+        this.renderItems(this.items);
+    }
+
+    triggerOnChange() {
+        if (typeof this.options.onChange === "function") {
+            setTimeout(() => {
+                const valueInput = this.getElement("selectedItemsInput");
+                this.options.onChange(valueInput.value);
+            }, 0);
+        }
+    }
+
+    render() {
+            const container = document.createElement("div");
+            container.className = "multiple-select-hierarchy";
+            container.innerHTML = `
           <div class="dropdown">
               <div class="input-group">
                   <div class="form-control d-flex flex-wrap align-items-center" id="${this.id}-chips-container" tabindex="0">
@@ -681,81 +683,41 @@ processSelectedItems() {
   };
 }
 
-
 renderChips(chips) {
-  const containerWidth = this.chipsContainer.offsetWidth;
-  const chipMargin = 4;
-  const chipPadding = 8; 
-  const containerPadding = 10;
-  const closeButtonWidth = 16;
-  const availableWidth = containerWidth - containerPadding;
-  
-  let totalChipsWidth = 0;
-  const chipWidths = [];
+    const containerWidth = this.chipsContainer.offsetWidth;
+    console.log('containerWidth', containerWidth);
+    const chipGap = 4;
+    const chipPadding = 4; 
+    const containerPadding = 10;
+    const closeButtonWidth = 13;
+    const availableWidth = containerWidth - containerPadding*2;
+    const minChipWidth = closeButtonWidth + (chipPadding * 2 + chipGap);
+    console.log('minChipWidth', minChipWidth);
+    console.log('availableWidth', availableWidth);
+    // First append all chips to measure their natural width
+    this.chipsContainer.innerHTML = '';
+    chips.forEach(chip => this.chipsContainer.appendChild(chip));
 
-  // Create a temporary div to measure the actual width of the text
-  const measureDiv = document.createElement('div');
-  measureDiv.style.position = 'absolute';
-  measureDiv.style.visibility = 'hidden';
-  measureDiv.style.whiteSpace = 'nowrap';
-  document.body.appendChild(measureDiv);
-
-  try {
-      chips.forEach((chip) => {
-          const chipText = chip.querySelector('.chip-text');
-          const computedStyle = window.getComputedStyle(chipText);
-          measureDiv.style.font = computedStyle.font;
-          measureDiv.textContent = chipText.textContent;
-          
-          const textWidth = measureDiv.offsetWidth;
-          const chipWidth = textWidth + closeButtonWidth + (chipPadding * 2) + chipMargin;
-          
-          totalChipsWidth += chipWidth;
-          chipWidths.push(chipWidth);
-      });
-
-      if (totalChipsWidth > availableWidth) {
-          const scaleFactor = 0.97 * availableWidth / totalChipsWidth;
-          
-          chips.forEach((chip, index) => {
-              const newWidth = Math.max(
-                  Math.floor(chipWidths[index] * scaleFactor) - chipMargin,
-                  closeButtonWidth + (chipPadding * 2)
-              );
-              this.adjustChipWidth(chip, newWidth, closeButtonWidth, chipPadding);
-              this.chipsContainer.appendChild(chip);
-          });
-      } else {
-          // Set style for text overflow in case enough space
-          chips.forEach(chip => {
-              const chipText = chip.querySelector('.chip-text');
-              // Set only the necessary styles for text overflow
-              chipText.style.overflow = 'hidden';
-              chipText.style.textOverflow = 'ellipsis';
-              chipText.style.whiteSpace = 'nowrap';
-              chip.style.flex = '0 0 auto';
-              this.chipsContainer.appendChild(chip);
-          });
-      }
-  } finally {
-      // Remove the measureDiv after use
-      document.body.removeChild(measureDiv);
-  }
-}
-
-adjustChipWidth(chip, width, closeButtonWidth, chipPadding) {
-  const minWidth = closeButtonWidth + (chipPadding * 2);
-  width = Math.max(width, minWidth);
-  
-  chip.style.width = `${width}px`;
-  chip.style.flex = '0 0 auto';
-  
-  const chipText = chip.querySelector('.chip-text');
-  const textWidth = width - closeButtonWidth - (chipPadding * 2);
-  chipText.style.width = `${textWidth}px`;
-  chipText.style.overflow = 'hidden';
-  chipText.style.textOverflow = 'ellipsis';
-  chipText.style.whiteSpace = 'nowrap';
+    // Measure total width in one pass
+    const chipWidths = Array.from(this.chipsContainer.querySelectorAll('.chip'))
+        .map(chip => chip.offsetWidth + chipGap);  // Only add gap, offsetWidth already includes padding
+    console.log('chipWidths', chipWidths);
+    const totalChipsWidth = chipWidths.reduce((sum, width) => sum + width, 0);
+    console.log('totalChipsWidth', totalChipsWidth);
+    // Only reflow if necessary
+    if (totalChipsWidth > availableWidth) {
+        const scaleFactor = 0.98 * availableWidth / totalChipsWidth;
+        // console.log('scaleFactor', scaleFactor);
+        this.chipsContainer.innerHTML = ''; // Clear once
+        chips.forEach((chip, index) => {
+            const newWidth = Math.max(
+                Math.floor(chipWidths[index] * scaleFactor) - chipGap,
+                minChipWidth
+            );
+            chip.style.width = `${newWidth}px`;
+            this.chipsContainer.appendChild(chip);
+        });
+    }
 }
 
 createChip(text, id) {
@@ -778,10 +740,29 @@ createChip(text, id) {
 
 removeSelection(id) {
   delete this.selectedItems[id];
-  this.updateInput();
-  this.updateSelectionInfo();
-  this.renderItems(this.items);
-  this.triggerOnChange();
+   // Update everything in the correct order
+   this.updateInput();
+   this.updateSelectionInfo();
+   this.renderItems(this.items);
+   
+   // Add this line to update chips layout after removal
+   requestAnimationFrame(() => {
+       this.updateChipsLayout();
+   });
+   
+   this.triggerOnChange();
+}
+
+updateChipsLayout() {
+    console.log('updateChipsLayout');
+    const chips = Array.from(this.chipsContainer.querySelectorAll('.chip'));
+    if (chips.length === 0) {
+        // If no chips, render placeholder
+        this.renderPlaceholder();
+        return;
+    }
+
+    this.renderChips(chips);
 }
 
 updateHeader(title, showBackButton = false) {
@@ -1064,6 +1045,7 @@ renderFilteredItems(searchTerm) {
 }
 
 renderPlaceholder() {
+  this.chipsContainer.innerHTML = ""; // Clear the container before rendering
   const placeholderSpan = document.createElement("span");
   placeholderSpan.textContent = this.options.placeholder;
   placeholderSpan.className = "placeholder-text";
@@ -1388,7 +1370,7 @@ static build(selector, config = {}) {
 
 document.addEventListener("DOMContentLoaded", () => {
   MultipleSelectHierarchy.build('.hierarchy-select', {
-      maxSelections: 3,
+      maxSelections: 4,
       placeholder: "Please select",
       searchPlaceholder: "Search",
       allText: "All",
@@ -1407,31 +1389,37 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   MultipleSelectHierarchy.build('.hierarchy-select-normal', {
-    maxSelections: 3,
-    placeholder: "Please select",
-    searchPlaceholder: "Search",
-    allText: "All",
-    clearAllText: "Clear",
-    selectedText: "You have selected {n} items",
-    defaultSelectionText: "Please select items",
-    showSearchBox: true,
-    showCardTitle: true,
-    outputFormat: "flat",
-    unitChildText: "Items",
-    resetScrollOnClose: false
-    // onChange: function(selectedItems) {
-    //     console.log("Selected Items:", selectedItems);
-    // }
-});
+        maxSelections: 3,
+        placeholder: "Please select",
+        searchPlaceholder: "Search",
+        allText: "All",
+        clearAllText: "Clear",
+        selectedText: "You have selected {n} items",
+        defaultSelectionText: "Please select items",
+        showSearchBox: true,
+        showCardTitle: true,
+        outputFormat: "flat",
+        unitChildText: "Items",
+        resetScrollOnClose: false
+        // onChange: function(selectedItems) {
+        //     console.log("Selected Items:", selectedItems);
+        // }
+    });
 
-document.querySelectorAll("form").forEach((form) => {
-  form.addEventListener("reset", (event) => {
-    MultipleSelectHierarchy.resetBySelector(
-      event.target,
-      ".hierarchy-select, .hierarchy-select-normal"
-    );
-  });
-});
+    document.querySelectorAll("form").forEach((form) => {
+    form.addEventListener("reset", (event) => {
+        MultipleSelectHierarchy.resetBySelector(
+        event.target,
+        ".hierarchy-select, .hierarchy-select-normal"
+        );
+    });
+    });
+
+    window.addEventListener('resize', () => {
+        MultipleSelectHierarchy.instances.forEach((instance) => {
+            instance.updateChipsLayout();
+        });
+    });
 
 });
 
