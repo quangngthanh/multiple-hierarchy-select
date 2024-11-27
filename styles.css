@@ -346,3 +346,33 @@
 .multiple-select-hierarchy .hierarchy-select-ready {
     visibility: visible;
 }
+
+
+.multiple-select-hierarchy .search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.multiple-select-hierarchy .btn-clear-search {
+    position: absolute;
+    right: 8px;
+    background: none;
+    border: none;
+    padding: 0;
+    width: 16px;
+    height: 16px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+    cursor: pointer;
+}
+
+.multiple-select-hierarchy .btn-clear-search:hover {
+    color: #000;
+}
+
+.multiple-select-hierarchy .search-input {
+    padding-right: 32px;
+}

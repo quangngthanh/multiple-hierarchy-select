@@ -116,6 +116,11 @@ class MultipleSelectHierarchy {
                                     <path d="M14 14L11 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                 </svg>
                                 <input type="text" class="search-input" placeholder="${this.options.searchPlaceholder}" id="${this.id}-search-input">
+                                <button type="button" class="btn-clear-search" style="display: none;">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
                             </div>
                         </div>
                     ` : ''}
@@ -273,10 +278,19 @@ attachEventListeners() {
 
     // Only attach search input listener if search box is shown
     if (this.options.showSearchBox !== false && this.searchInput) {
-        this.searchInput.addEventListener("input", 
-            (e) => this.handleSearch(e.target.value), 
-            { signal: this.signal }
-        );
+        const clearSearchBtn = this.selectCard.querySelector('.btn-clear-search');
+        
+        this.searchInput.addEventListener("input", (e) => {
+            clearSearchBtn.style.display = e.target.value ? "flex" : "none";
+            this.handleSearch(e.target.value);
+        }, { signal: this.signal });
+
+        clearSearchBtn.addEventListener("click", () => {
+            this.searchInput.value = "";
+            clearSearchBtn.style.display = "none";
+            this.handleSearch("");
+            this.searchInput.focus();
+        }, { signal: this.signal });
     }
 }
 
@@ -582,6 +596,15 @@ showSelectCard() {
 this.selectCard.style.display = "block";
 this.updateHeader(this.options.placeholder);
 this.renderItems(this.items);
+
+// Reset search input and clear button
+if (this.options.showSearchBox !== false && this.searchInput) {
+    this.searchInput.value = "";
+    const clearSearchBtn = this.selectCard.querySelector('.btn-clear-search');
+    if (clearSearchBtn) {
+        clearSearchBtn.style.display = "none";
+    }
+}
 
 // Reset scroll position if resetScrollOnClose is true
 if (this.options.resetScrollOnClose) {
