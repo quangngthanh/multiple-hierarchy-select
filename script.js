@@ -1073,16 +1073,16 @@ return element;
 }
 
 processData(items, parentId = '') {
-return items.map((item) => {
-  // Create unique ID by combining parent ID with current ID
-  const uniqueId = parentId ? `${parentId}_${item.id}` : `${item.id}`;
+  return items.map((item) => {
+    // Create unique ID by combining parent ID with current ID
+    const uniqueId = parentId ? `${parentId}::${item.id}` : `${item.id}`;
 
-  return {
-    id: uniqueId,  // Use combined ID internally
-    name: item.name.trim(),
-    children: item.children ? this.processData(item.children, uniqueId) : [],
-  };
-});
+    return {
+      id: uniqueId,  // Use combined ID internally
+      name: item.name.trim(),
+      children: item.children ? this.processData(item.children, uniqueId) : [],
+    };
+  });
 }
 
 
@@ -1118,7 +1118,8 @@ return null;
 }
 
 getOriginalId(combinedId) {
-return combinedId.split('_').pop();
+  const parts = combinedId.split('::');
+  return parts[parts.length - 1];
 }
 
 initializeWithValue(value) {
