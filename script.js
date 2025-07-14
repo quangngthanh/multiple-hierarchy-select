@@ -1155,7 +1155,7 @@ try {
     // Process the (potentially trimmed) initial value
     Object.entries(processedValue).forEach(([groupId, groupData]) => {
         Object.entries(groupData).forEach(([subgroupId, selections]) => {
-            const parent = this.findItemById(`${groupId}_${subgroupId}`);
+            const parent = this.findItemById(`${groupId}::${subgroupId}`);
             if (!parent) return;
 
             if (selections === null) {
@@ -1165,7 +1165,7 @@ try {
                     const child = parent.children?.find(c =>
                         this.getOriginalId(c.id) == childId
                     );
-                    return child ? child.id : `${parent.id}_${childId}`;
+                    return child ? child.id : `${parent.id}::${childId}`;
                 });
             }
         });
