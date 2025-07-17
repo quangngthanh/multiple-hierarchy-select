@@ -1075,7 +1075,7 @@ return element;
 processData(items, parentId = '') {
   return items.map((item) => {
     // Create unique ID by combining parent ID with current ID
-    const uniqueId = parentId ? `${parentId}::${item.id}` : `${item.id}`;
+    const uniqueId = parentId ? `${parentId}__${item.id}` : `${item.id}`;
 
     return {
       id: uniqueId,  // Use combined ID internally
@@ -1118,7 +1118,7 @@ return null;
 }
 
 getOriginalId(combinedId) {
-  const parts = combinedId.split('::');
+  const parts = combinedId.split('__');
   return parts[parts.length - 1];
 }
 
@@ -1155,7 +1155,7 @@ try {
     // Process the (potentially trimmed) initial value
     Object.entries(processedValue).forEach(([groupId, groupData]) => {
         Object.entries(groupData).forEach(([subgroupId, selections]) => {
-            const parent = this.findItemById(`${groupId}::${subgroupId}`);
+            const parent = this.findItemById(`${groupId}__${subgroupId}`);
             if (!parent) return;
 
             if (selections === null) {
@@ -1165,7 +1165,7 @@ try {
                     const child = parent.children?.find(c =>
                         this.getOriginalId(c.id) == childId
                     );
-                    return child ? child.id : `${parent.id}::${childId}`;
+                    return child ? child.id : `${parent.id}__${childId}`;
                 });
             }
         });
