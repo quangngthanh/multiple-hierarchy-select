@@ -11,7 +11,11 @@ function debounce(func, wait) {
 }
 
 function removeDiacritics(text) {
-  return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    text = text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    text = text.replace(/[đĐ]/g, (match)=> {
+      return match === 'đ' ? 'd' : 'D';
+    });
+  return text;
 }
 
 class MultipleSelectHierarchy {
