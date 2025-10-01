@@ -58,7 +58,7 @@
 
 .multiple-select-hierarchy .select-card {
     position: absolute;
-    z-index: 1000;
+    z-index: 99999;
     width: 100%;
     top: 100%;
     left: 0;
@@ -66,7 +66,6 @@
     border-radius: 0.5rem;
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
     font-size: 14px;
-    z-index: 1;
 }
 
 .multiple-select-hierarchy .chip {
@@ -104,9 +103,7 @@
     font-size: 14px;
 }
 
-
 /* Updated styles for the search box */
-
 .multiple-select-hierarchy .search-container {
     position: relative;
     margin-bottom: 0.75rem;
@@ -188,7 +185,7 @@
     padding: 4px 10px;
     min-height: 35px;
     overflow-x: hidden;
-    border-radius: 5px !important;
+    border-radius: 3px ;
 }
 
 .multiple-select-hierarchy .btn-link:disabled {
@@ -274,10 +271,6 @@
     letter-spacing: 0.5px;
 }
 
-.multiple-select-hierarchy .subgroup-item {
-    padding-left: 1.5rem;
-}
-
 
 /* Add these styles */
 
@@ -345,4 +338,168 @@
 
 .multiple-select-hierarchy .hierarchy-select-ready {
     visibility: visible;
+}
+
+/* ===== BOOTSTRAP UTILITIES - ESSENTIAL CLASSES (scoped) ===== */
+
+
+.multiple-select-hierarchy .form-control {
+    font-size: 15px;
+    line-height: 1.5;
+    color: #1C202A;
+    background-color: #ffffff;
+    background-clip: padding-box;
+    border: 1px solid #dddddd;
+    border-radius: 0.3rem;
+    transition: border-color 0.15s 
+        ease-in-out, box-shadow 0.15s 
+        ease-in-out;
+}
+
+/* Flexbox Utilities */
+.multiple-select-hierarchy .d-flex { display: flex !important; }
+.multiple-select-hierarchy .flex-wrap { flex-wrap: wrap !important; }
+.multiple-select-hierarchy .align-items-center { align-items: center !important; }
+.multiple-select-hierarchy .justify-content-between { justify-content: space-between !important; }
+.multiple-select-hierarchy .align-item-center { align-items: center !important; }
+
+/* Card */
+.multiple-select-hierarchy .card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border-radius: 0.25rem;
+}
+.multiple-select-hierarchy .p-3 { padding: 1rem !important; }
+.multiple-select-hierarchy .mt-0 { margin-top: 0 !important; }
+
+/* List group (basic structure so items align correctly) */
+.multiple-select-hierarchy .list-group {
+    display: flex;
+    flex-direction: column;
+    padding-left: 0;
+    margin-bottom: 0;
+    border-radius: 0.25rem;
+}
+
+/* Form check (checkbox) */
+.multiple-select-hierarchy .form-check { position: relative; display: block; }
+.multiple-select-hierarchy .form-check-input {
+    width: 1.5rem;
+    height: 1.5rem;
+    vertical-align: top;
+    background-color: #ffffff;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 2px solid rgba(0, 0, 0, 0.25);
+    background-size: contain;
+    transition: background-color 0.15s ease-in-out,
+                background-position 0.15s ease-in-out,
+                border-color 0.15s ease-in-out,
+                box-shadow 0.15s ease-in-out;
+}
+.multiple-select-hierarchy .form-check-input[type="checkbox"] { border-radius: 0.45em !important; }
+
+.multiple-select-hierarchy .form-check-label { color: #212529; cursor: pointer; font-size: 0.875rem; line-height: 1.5; }
+
+/* Text utilities used in markup */
+.multiple-select-hierarchy .text-muted { color: #6c757d !important; }
+.multiple-select-hierarchy .text-black-50 { color: rgba(0,0,0,.5) !important; }
+.multiple-select-hierarchy .mt-1 { margin-top: 0.25rem !important; }
+.multiple-select-hierarchy .mb-2 { margin-bottom: 0.5rem !important; }
+
+/* Spacing */
+.multiple-select-hierarchy .gap-2 { gap: 0.5rem !important; }
+
+/* Input group + dropdown container */
+.multiple-select-hierarchy .input-group { position: relative; display: flex; flex-wrap: wrap; align-items: stretch; width: 100%; }
+.multiple-select-hierarchy .input-group > .form-control { position: relative; flex: 1 1 auto; width: 1%; min-width: 0; }
+.multiple-select-hierarchy .dropdown { position: relative; }
+
+/* === Overrides to match original UI (radius + border color) === */
+.multiple-select-hierarchy .form-control {
+    border-radius: 3px !important;
+}
+
+.multiple-select-hierarchy .form-control:focus,
+.multiple-select-hierarchy .form-control.focused {
+    border-color: #2F4BA0 !important;
+    box-shadow: 0 0 0 0.2rem rgba(47, 75, 160, 0.15) !important;
+}
+
+/* Search input has single outer border from wrapper */
+.multiple-select-hierarchy .search-input-wrapper {
+    border-radius: 5px !important;
+    border: 1px solid #ced4da !important;
+}
+
+.multiple-select-hierarchy .search-input-wrapper:focus-within {
+    border-color: #2F4BA0 !important;
+    box-shadow: 0 0 0 0.2rem rgba(47, 75, 160, 0.15) !important;
+}
+
+.multiple-select-hierarchy .search-input {
+    border: none !important;
+    border-radius: 5px !important;
+}
+
+main, span, ol, ul, pre, div {
+    scrollbar-width: thin;
+    scrollbar-color: #EFF2F5 transparent;
+}
+
+.multiple-select-hierarchy .scrollbar-custom {
+    scrollbar-width: thin;
+    scrollbar-color: #EFF2F5 transparent;
+}
+
+.multiple-select-hierarchy .form-check-input:checked {
+    background-color: #2f4ba0;
+    border-color: #2f4ba0;
+}
+.multiple-select-hierarchy .form-check-input[type=checkbox] {
+    border-radius: 0.45em;
+}
+
+.multiple-select-hierarchy .form-check-input {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-top: -0.125rem;
+    vertical-align: top;
+    background-color: #ffffff;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    appearance: none;
+    transition: background-color 0.15s 
+    ease-in-out, background-position 0.15s 
+    ease-in-out, border-color 0.15s 
+    ease-in-out, box-shadow 0.15s 
+    ease-in-out;
+}
+
+.multiple-select-hierarchy .form-check-input:checked[type=checkbox] {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 13 11' width='13' height='11' fill='none'%3e%3cpath d='M11.0426 1.02893C11.3258 0.695792 11.8254 0.655283 12.1585 0.938451C12.4917 1.22162 12.5322 1.72124 12.249 2.05437L5.51985 9.97104C5.23224 10.3094 4.72261 10.3451 4.3907 10.05L0.828197 6.88335C0.50141 6.59288 0.471975 6.09249 0.762452 5.7657C1.05293 5.43891 1.55332 5.40948 1.88011 5.69995L4.83765 8.32889L11.0426 1.02893Z' fill='%23FFFFFF'/%3e%3c/svg%3e");
+}
+
+.multiple-select-hierarchy .form-check:not(.form-switch) .form-check-input[type=checkbox] {
+    background-size: 60% 60%;
+}
+
+.multiple-select-hierarchy .form-check-input {
+    margin-top: 0.2rem;
+}
+
+.multiple-select-hierarchy.form-check-input:disabled {
+    pointer-events: none;
+    filter: none;
+    opacity: 0.5 !important;
+}
+
+.multiple-select-hierarchy .form-check-input[disabled]~.form-check-label, .form-check-input:disabled~.form-check-label {
+    opacity: 0.5 !important;
 }
