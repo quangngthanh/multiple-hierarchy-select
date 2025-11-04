@@ -1188,13 +1188,15 @@ setValue(value) {
   this.triggerOnChange();
 }
 
-static parseSelectOptions(element) {   
+static parseSelectOptions(element) {
   const options = Array.from(element.options).filter(opt => opt.value || opt.value === '');
   const hierarchyData = [];
   const selectedValues = {};
-  
-  // Check if this is a normal select (hierarchy-select-normal)
-  const isNormalSelect = element.classList.contains('hierarchy-select-normal');
+
+  // Check if this is a normal select (hierarchy-select-normal or hierarchy-select-normal-*)
+  const isNormalSelect = Array.from(element.classList).some(cls =>
+    cls === 'hierarchy-select-normal' || cls.startsWith('hierarchy-select-normal-')
+  );
   if (isNormalSelect) {
       const defaultGroup = {
           id: 'default_group',
@@ -1362,10 +1364,12 @@ static build(selector, config = {}) {
       container.classList.add('hierarchy-select-ready');
       element.parentNode.replaceChild(container, element);
 
+      console.log('mergedConfig.value', mergedConfig.value);
       // Use config.value if provided, otherwise use parsed initialValue
       const finalValue = mergedConfig.value !== undefined
           ? mergedConfig.value
           : (Object.keys(initialValue).length > 0 ? JSON.stringify(initialValue) : undefined);
+      console.log('finalValue', finalValue);
       const instance = new MultipleSelectHierarchy(container, hierarchyData, {
           ...mergedConfig,
           value: finalValue
