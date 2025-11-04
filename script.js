@@ -1179,13 +1179,24 @@ initializeWithValue(value) {
   }
 }
 
-setValue(value) {
+setValue(value,callback = null) {
   this.selectedItems = {};
   this.initializeWithValue(value);
   this.updateInput();
   this.updateSelectionInfo();
   this.renderItems(this.items);
   this.triggerOnChange();
+  if (callback) {
+    const runAfterRender = () => {
+      // Defer to ensure DOM has painted
+      if (typeof window !== 'undefined' && typeof window.requestAnimationFrame === 'function') {
+        window.requestAnimationFrame(() => {
+          setTimeout(() => callback(this.selectedItems), 0);
+        });
+      }
+    };
+    runAfterRender();
+  }
 }
 
 static parseSelectOptions(element) {
@@ -1364,12 +1375,9 @@ static build(selector, config = {}) {
       container.classList.add('hierarchy-select-ready');
       element.parentNode.replaceChild(container, element);
 
-      console.log('mergedConfig.value', mergedConfig.value);
-      // Use config.value if provided, otherwise use parsed initialValue
       const finalValue = mergedConfig.value !== undefined
           ? mergedConfig.value
           : (Object.keys(initialValue).length > 0 ? JSON.stringify(initialValue) : undefined);
-      console.log('finalValue', finalValue);
       const instance = new MultipleSelectHierarchy(container, hierarchyData, {
           ...mergedConfig,
           value: finalValue
